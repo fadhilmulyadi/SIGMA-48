@@ -14,6 +14,9 @@ public class Mission {
     private String tujuan;
     private String deskripsi;
     private String targetId;
+    private String analisisRisiko;
+    private String jenisOperasi;
+    private String lokasi;
     private MissionStatus status;
     private List<String> assignedAgents;
     private Map<String, CoverIdentity> coverIdentities;
@@ -115,6 +118,33 @@ public class Mission {
     public void setDokBriefingPath(String dokBriefingPath) {
         this.dokBriefingPath = dokBriefingPath;
         updateUpdatedAt();
+    }
+
+    public String getAnalisisRisiko() {
+        return analisisRisiko;
+    }
+
+    public void setAnalisisRisiko(String analisisRisiko) {
+        this.analisisRisiko = analisisRisiko;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public String getJenisOperasi() {
+        return jenisOperasi;
+    }
+    
+    public void setJenisOperasi(String jenisOperasi) {
+        this.jenisOperasi = jenisOperasi;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public String getLokasi() {
+        return lokasi;
+    }
+    
+    public void setLokasi(String lokasi) {
+        this.lokasi = lokasi;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public LocalDateTime getCreatedAt() {
