@@ -34,14 +34,19 @@ public class MissionManager {
             return Optional.empty();
         }
 
-        Mission mission = new Mission(judul, tujuan, deskripsi, targetId);
-        mission.setStatus(MissionStatus.PLANNED); // Set status awal misi ke "Planned"
-        mission.setCreatedAt(LocalDateTime.now());
-        mission.setUpdatedAt(LocalDateTime.now());
+        Mission mission = new Mission();
+        mission.setJudul(judul);
+        mission.setTujuan(tujuan);
+        mission.setDeskripsi(deskripsi != null ? deskripsi : "");
+        mission.setTargetId(targetId);
 
-        missionDao.saveMission(mission); // Simpan misi
-
-        return Optional.of(mission);
+        boolean saved = missionDao.saveMission(mission);
+        if (saved) {
+            return Optional.of(mission);
+        } else {
+            System.err.println("Gagal menyimpan draft misi baru ke database/file.");
+            return Optional.empty();
+        }
     }
 
     //Method getAllMissions
