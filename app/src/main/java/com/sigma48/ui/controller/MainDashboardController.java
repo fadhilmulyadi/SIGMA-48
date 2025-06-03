@@ -11,20 +11,30 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class MainDashboardController {
 
     @FXML
+    private BorderPane mainDashboardPane;
+    
+    @FXML
     private Label welcomeLabel;
 
     @FXML
-    private Label roleSpecificContentLabel;
+    private VBox navigationMenuBox;
 
     @FXML
     private Button logoutButton;
+
+    @FXML
+    private StackPane contentAreaPane;
 
     private User currentUser;
 
@@ -33,32 +43,9 @@ public class MainDashboardController {
         this.currentUser = Main.authManager.getCurrentUser();
         if (currentUser != null) {
             welcomeLabel.setText("Selamat Datang, " + currentUser.getUsername() + "! Role: " + currentUser.getRole().getDisplayName());
-            displayRoleSpecificContent(currentUser.getRole());
+            setupNavigationMenu(currentUser.getRole());
         } else {
             welcomeLabel.setText("Error: Tidak ada pengguna yang login.");
-        }
-    }
-
-    private void displayRoleSpecificContent(Role role) {
-        switch (role) {
-            case DIREKTUR_INTELIJEN:
-                roleSpecificContentLabel.setText("Fitur untuk Direktur Intelijen.");
-                break;
-            case ANALIS_INTELIJEN:
-                roleSpecificContentLabel.setText("Fitur untuk Analis Intelijen.");
-                break;
-            case KOMANDAN_OPERASI:
-                roleSpecificContentLabel.setText("Fitur untuk Komandan Operasi.");
-                break;
-            case AGEN_LAPANGAN:
-                roleSpecificContentLabel.setText("Fitur untuk Agen Lapangan.");
-                break;
-            case TEKNISI_DUKUNGAN:
-                roleSpecificContentLabel.setText("Fitur untuk Teknisi Dukungan.");
-                break;
-            default:
-                roleSpecificContentLabel.setText("Dashboard standar.");
-                break;
         }
     }
 
@@ -73,6 +60,58 @@ public class MainDashboardController {
             currentStage.setScene(loginScene);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void addButtonToMenu(String buttonText, Runnable action) {
+        Button button = new Button(buttonText);
+        button.setOnAction(event -> action.run());
+        button.setMaxWidth(Double.MAX_VALUE);
+        button.getStyleClass().add("nav-button");
+        navigationMenuBox.getChildren().add(button);
+    }
+
+    private void setupNavigationMenu(Role role) {
+        navigationMenuBox.getChildren().clear();
+
+        switch (role) {
+            case DIREKTUR_INTELIJEN:
+                addButtonToMenu("Lihat Semua Misi", () -> loadView("/com/sigma48/fxml/MissionListView.fxml"));
+                addButtonToMenu("Buat Misi Baru", () -> loadView("/com/sigma48/fxml/MissionCreateForm.fxml"));
+                break;
+            case ANALIS_INTELIJEN:
+                addButtonToMenu("Lihat Semua Misi", () -> loadView("/com/sigma48/fxml/MissionListView.fxml"));
+                addButtonToMenu("Buat Misi Baru", () -> loadView("/com/sigma48/fxml/MissionCreateForm.fxml"));
+                break;
+            case KOMANDAN_OPERASI:
+                addButtonToMenu("Lihat Semua Misi", () -> loadView("/com/sigma48/fxml/MissionListView.fxml"));
+                break;
+            case AGEN_LAPANGAN:
+                break;
+            case TEKNISI_DUKUNGAN:
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void loadView(String fxmlPath) {
+        try {
+            URL fxmlUrl = getClass().getResource(fxmlPath);
+            if (fxmlUrl == null) {
+                System.err.println("Cannot find FXML file: " + fxmlPath);
+                contentAreaPane.getChildren().setAll(new Label("Error: Gagal memuat tampilan. File tidak ditemukan: " + fxmlPath));
+                return;
+            }
+            
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent view = loader.load();
+
+            contentAreaPane.getChildren().setAll(view);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            contentAreaPane.getChildren().setAll(new Label("Error: Gagal memuat tampilan " + fxmlPath));
         }
     }
 }
