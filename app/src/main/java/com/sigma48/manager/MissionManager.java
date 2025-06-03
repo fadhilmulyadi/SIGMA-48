@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class MissionManager {
 
-    private final MissionDao missionDao;
+    public final MissionDao missionDao;
     private final TargetDao targetDao;
 
     //Konstruktor
