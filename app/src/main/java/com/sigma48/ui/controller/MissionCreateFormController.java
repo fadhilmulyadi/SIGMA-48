@@ -3,6 +3,7 @@ package com.sigma48.ui.controller;
 import com.sigma48.Main; // Akses AuthManager untuk createdByUserId
 import com.sigma48.dao.MissionDao; // Atau via ServiceLocator/DI
 import com.sigma48.dao.TargetDao;   // Atau via ServiceLocator/DI
+import com.sigma48.dao.UserDao;
 import com.sigma48.manager.MissionManager;
 import com.sigma48.manager.TargetManager;
 import com.sigma48.model.Mission;
@@ -53,7 +54,7 @@ public class MissionCreateFormController {
 
     @FXML
     public void initialize() {
-        this.missionManager = new MissionManager(new MissionDao(), new TargetDao());
+        this.missionManager = new MissionManager(new MissionDao(), new TargetDao(), new UserDao());
         this.targetManager = new TargetManager(new TargetDao());
 
         loadTargetsToComboBox();

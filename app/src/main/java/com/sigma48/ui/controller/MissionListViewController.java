@@ -3,6 +3,7 @@ package com.sigma48.ui.controller;
 import com.sigma48.Main; // Jika perlu akses AuthManager untuk hak akses
 import com.sigma48.dao.MissionDao;
 import com.sigma48.dao.TargetDao;
+import com.sigma48.dao.UserDao;
 import com.sigma48.manager.MissionManager;
 import com.sigma48.manager.TargetManager;
 import com.sigma48.model.Mission;
@@ -83,7 +84,7 @@ public class MissionListViewController {
 
     @FXML
     public void initialize() {
-        this.missionManager = new MissionManager(new MissionDao(), new TargetDao());
+        this.missionManager = new MissionManager(new MissionDao(), new TargetDao(), new UserDao());
         this.targetManager = new TargetManager(new TargetDao());
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
