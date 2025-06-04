@@ -21,12 +21,14 @@ public class MissionManager {
     public final MissionDao missionDao;
     private final TargetDao targetDao;
     private final UserDao userDao;
+    private final UserManager userManager;
 
     //Konstruktor
-    public MissionManager(MissionDao missionDao, TargetDao targetDao, UserDao userDao) {
+    public MissionManager(MissionDao missionDao, TargetDao targetDao, UserDao userDao, UserManager userManager) {
         this.missionDao = missionDao;
         this.targetDao = targetDao;
         this.userDao = userDao;
+        this.userManager = userManager;
     }
 
     //Method createDraftMission
@@ -214,5 +216,40 @@ public class MissionManager {
                 .filter(mission -> mission.getStatus() == MissionStatus.ACTIVE)
                 .sorted(Comparator.comparing(Mission::getUpdatedAt, Comparator.nullsLast(Comparator.reverseOrder()))) // Urutkan dari yang terbaru diupdate
                 .collect(Collectors.toList());
+    }
+
+    public boolean concludeMission(String missionId, MissionStatus finalStatus, String conclusionNotes, String userIdPerformingAction) {
+
+        if (finalStatus != MissionStatus.COMPLETED && finalStatus != MissionStatus.FAILED) {
+            System.err.println("MissionManager: Status akhir tidak valid untuk penyelesaian misi. Harus COMPLETED atau FAILED.");
+            return false;
+        }
+
+        Optional<Mission> missionOpt = missionDao.findMissionById(missionId);
+        if (!missionOpt.isPresent()) {
+            System.err.println("MissionManager: Misi dengan ID " + missionId + " tidak ditemukan.");
+            return false;
+        }
+
+        // Validasi hak akses
+        Optional<User> userOpt = userManager.findUserById(userIdPerformingAction);
+        if (!userOpt.isPresent() || userOpt.get().getRole() != Role.DIREKTUR_INTELIJEN) {
+            System.err.println("MissionManager: Pengguna " + userIdPerformingAction + " tidak memiliki wewenang untuk menyelesaikan misi.");
+            return false;
+        }
+
+        Mission mission = missionOpt.get();
+        // Validasi status misi saat ini
+        if (mission.getStatus() != MissionStatus.ACTIVE && mission.getStatus() != MissionStatus.READY_FOR_BRIEFING && mission.getStatus() != MissionStatus.PLANNED) {
+            System.err.println("MissionManager: Misi " + missionId + " dengan status " + mission.getStatus().getDisplayName() + " tidak dapat diselesaikan saat ini.");
+            return false;
+        }
+
+        mission.setStatus(finalStatus);
+        if (conclusionNotes != null) {
+            mission.setConclusionNotes(conclusionNotes);
+        }
+
+        return missionDao.saveMission(mission);
     }
 }
