@@ -178,4 +178,16 @@ public class MissionManager {
         mission.addCoverIdentity(agentId, coverIdentity); // Menggunakan helper method di Mission.java
         return missionDao.saveMission(mission);
     }
+
+    public boolean updateMissionDokBriefingPath(String missionId, String dokBriefingPath) {
+    Optional<Mission> missionOptional = missionDao.findMissionById(missionId);
+    if (missionOptional.isPresent()) {
+        Mission mission = missionOptional.get();
+        mission.setDokBriefingPath(dokBriefingPath);
+        mission.updateUpdatedAt();
+        return missionDao.saveMission(mission);
+    }
+    System.err.println("Gagal memperbarui path dok briefing: Misi dengan ID '" + missionId + "' tidak ditemukan.");
+    return false;
+}
 }

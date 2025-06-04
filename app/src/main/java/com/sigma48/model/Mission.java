@@ -168,14 +168,15 @@ public class Mission {
         updateUpdatedAt();
     }
 
+    public String getKomandanId() {
+        return komandanId;
+    }
+
     public void setKomandanId(String komandanId) {
         this.komandanId = komandanId;
         updateUpdatedAt();
     }
 
-    public String getKomandaId() {
-        return komandanId;
-    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -213,7 +214,7 @@ public class Mission {
     }
 
     // Update waktu terakhir
-    private void updateUpdatedAt() {
+    public void updateUpdatedAt() {
         this.updatedAt = LocalDateTime.now();
     }
 
