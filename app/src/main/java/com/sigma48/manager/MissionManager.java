@@ -10,8 +10,11 @@ import com.sigma48.model.User;
 import com.sigma48.model.Role;
 import com.sigma48.model.CoverIdentity;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MissionManager {
 
@@ -180,14 +183,36 @@ public class MissionManager {
     }
 
     public boolean updateMissionDokBriefingPath(String missionId, String dokBriefingPath) {
-    Optional<Mission> missionOptional = missionDao.findMissionById(missionId);
-    if (missionOptional.isPresent()) {
-        Mission mission = missionOptional.get();
-        mission.setDokBriefingPath(dokBriefingPath);
-        mission.updateUpdatedAt();
-        return missionDao.saveMission(mission);
+        Optional<Mission> missionOptional = missionDao.findMissionById(missionId);
+        if (missionOptional.isPresent()) {
+            Mission mission = missionOptional.get();
+            mission.setDokBriefingPath(dokBriefingPath);
+            mission.updateUpdatedAt();
+            return missionDao.saveMission(mission);
+        }
+        System.err.println("Gagal memperbarui path dok briefing: Misi dengan ID '" + missionId + "' tidak ditemukan.");
+        return false;
     }
-    System.err.println("Gagal memperbarui path dok briefing: Misi dengan ID '" + missionId + "' tidak ditemukan.");
-    return false;
-}
+
+    public List<Mission> getMissionsForAgent(String agentId) {
+        if (agentId == null || agentId.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Mission> allMissions = missionDao.getAllMissions(); // Mengambil semua misi
+        return allMissions.stream()
+                .filter(mission -> mission.getAssignedAgents() != null && 
+                                mission.getAssignedAgents().contains(agentId))
+                .filter(mission -> mission.getStatus() == MissionStatus.READY_FOR_BRIEFING || 
+                                mission.getStatus() == MissionStatus.ACTIVE) // Hanya tampilkan yang relevan untuk dikerjakan
+                .sorted(Comparator.comparing(Mission::getUpdatedAt, Comparator.nullsLast(Comparator.reverseOrder()))) // Urutkan dari yang terbaru diupdate
+                .collect(Collectors.toList());
+    }
+
+    public List<Mission> getActiveMissions() {
+        List<Mission> allMissions = missionDao.getAllMissions(); // Mengambil semua misi
+        return allMissions.stream()
+                .filter(mission -> mission.getStatus() == MissionStatus.ACTIVE)
+                .sorted(Comparator.comparing(Mission::getUpdatedAt, Comparator.nullsLast(Comparator.reverseOrder()))) // Urutkan dari yang terbaru diupdate
+                .collect(Collectors.toList());
+    }
 }
