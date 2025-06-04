@@ -2,9 +2,13 @@ package com.sigma48.manager;
 
 import com.sigma48.dao.MissionDao;
 import com.sigma48.dao.TargetDao;
+import com.sigma48.dao.UserDao;
 import com.sigma48.model.Mission;
 import com.sigma48.model.MissionStatus;
 import com.sigma48.model.Target;
+import com.sigma48.model.User;
+import com.sigma48.model.Role;
+import com.sigma48.model.CoverIdentity;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -13,11 +17,13 @@ public class MissionManager {
 
     public final MissionDao missionDao;
     private final TargetDao targetDao;
+    private final UserDao userDao;
 
     //Konstruktor
-    public MissionManager(MissionDao missionDao, TargetDao targetDao) {
+    public MissionManager(MissionDao missionDao, TargetDao targetDao, UserDao userDao) {
         this.missionDao = missionDao;
         this.targetDao = targetDao;
+        this.userDao = userDao;
     }
 
     //Method createDraftMission
@@ -82,5 +88,94 @@ public class MissionManager {
         missionDao.saveMission(mission); // Simpan perubahan
 
         return true;
+    }
+
+    //Method updateOperationalPlan
+    public boolean updateOperationalPlan(String missionId, String strategi, String protokol, String jenisOperasi, String lokasi, String analisisRisiko) {
+        Optional<Mission> missionOptional = missionDao.findMissionById(missionId);
+        if (!missionOptional.isPresent()) {
+            System.err.println("Misi dengan ID " + missionId + " tidak ditemukan untuk update rencana.");
+            return false;
+        }
+        
+        Mission mission = missionOptional.get();
+        // Hanya update jika nilai baru diberikan
+        if (strategi != null) mission.setStrategi(strategi);
+        if (protokol != null) mission.setProtokol(protokol);
+        if (jenisOperasi != null) mission.setJenisOperasi(jenisOperasi);
+        if (lokasi != null) mission.setLokasi(lokasi);
+        if (analisisRisiko != null) mission.setAnalisisRisiko(analisisRisiko);
+        
+        return missionDao.saveMission(mission);
+    }
+    
+    //Method setMissionCommander
+    public boolean setMissionCommander(String missionId, String komandanId) {
+        Optional<Mission> missionOptional = missionDao.findMissionById(missionId);
+        if (!missionOptional.isPresent()) {
+            System.err.println("Misi dengan ID " + missionId + " tidak ditemukan.");
+            return false;
+        }
+        
+        Optional<User> userOptional = userDao.findUserById(komandanId);
+        if (!userOptional.isPresent() || userOptional.get().getRole() != Role.KOMANDAN_OPERASI) {
+            System.err.println("User dengan ID " + komandanId + " tidak ditemukan atau bukan Komandan Operasi.");
+            return false;
+        }
+        
+        Mission mission = missionOptional.get();
+        mission.setKomandanId(komandanId);
+        return missionDao.saveMission(mission);
+    }
+    
+    //Method assignAgentToMission
+    public boolean assignAgentToMission(String missionId, String agentId) {
+        Optional<Mission> missionOptional = missionDao.findMissionById(missionId);
+        if (!missionOptional.isPresent()) {
+            System.err.println("Misi dengan ID " + missionId + " tidak ditemukan.");
+            return false;
+        }
+        
+        Optional<User> userOptional = userDao.findUserById(agentId);
+        // Validasi apakah user adalah Agen Lapangan
+        if (!userOptional.isPresent() || userOptional.get().getRole() != Role.AGEN_LAPANGAN) {
+            System.err.println("User dengan ID " + agentId + " tidak ditemukan atau bukan Agen Lapangan.");
+            return false;
+        }
+        
+        Mission mission = missionOptional.get();
+        mission.addAgent(agentId); // Menggunakan helper method di Mission.java
+        return missionDao.saveMission(mission);
+    }
+    
+    //Method removeAgentFromMission
+    public boolean removeAgentFromMission(String missionId, String agentId) {
+        Optional<Mission> missionOptional = missionDao.findMissionById(missionId);
+        if (!missionOptional.isPresent()) {
+            System.err.println("Misi dengan ID " + missionId + " tidak ditemukan.");
+            return false;
+        }
+
+        Mission mission = missionOptional.get();
+        mission.removeAgent(agentId);
+        return missionDao.saveMission(mission);
+    }
+
+    public boolean assignCoverIdentityToAgent(String missionId, String agentId, CoverIdentity coverIdentity) {
+        Optional<Mission> missionOptional = missionDao.findMissionById(missionId);
+        if (!missionOptional.isPresent()) {
+            System.err.println("Misi dengan ID " + missionId + " tidak ditemukan.");
+            return false;
+        }
+
+        Mission mission = missionOptional.get();
+        // Pastikan agen tersebut memang ditugaskan ke misi ini
+        if (!mission.getAssignedAgents().contains(agentId)) {
+            System.err.println("Agen dengan ID " + agentId + " tidak ditugaskan ke misi " + missionId);
+            return false;
+        }
+
+        mission.addCoverIdentity(agentId, coverIdentity); // Menggunakan helper method di Mission.java
+        return missionDao.saveMission(mission);
     }
 }
