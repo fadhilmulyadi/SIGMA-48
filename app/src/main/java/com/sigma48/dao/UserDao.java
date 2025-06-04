@@ -84,4 +84,14 @@ public class UserDao {
             return Optional.empty();
         }
     }
+
+    public List<User> getAllUsers() {
+           try {
+               return getAllUsersInternal();
+           } catch (IOException e) {
+               System.err.println("Error membaca semua data pengguna: " + e.getMessage());
+               e.printStackTrace();
+               return new ArrayList<>();
+           }
+       }
 }

@@ -17,6 +17,9 @@ public class Mission {
     private String analisisRisiko;
     private String jenisOperasi;
     private String lokasi;
+    private String strategi;
+    private String protokol;
+    private String komandanId;
     private MissionStatus status;
     private List<String> assignedAgents;
     private Map<String, CoverIdentity> coverIdentities;
@@ -126,7 +129,7 @@ public class Mission {
 
     public void setAnalisisRisiko(String analisisRisiko) {
         this.analisisRisiko = analisisRisiko;
-        this.updatedAt = LocalDateTime.now();
+        updateUpdatedAt();;
     }
     
     public String getJenisOperasi() {
@@ -135,7 +138,7 @@ public class Mission {
     
     public void setJenisOperasi(String jenisOperasi) {
         this.jenisOperasi = jenisOperasi;
-        this.updatedAt = LocalDateTime.now();
+        updateUpdatedAt();;
     }
     
     public String getLokasi() {
@@ -144,8 +147,36 @@ public class Mission {
     
     public void setLokasi(String lokasi) {
         this.lokasi = lokasi;
-        this.updatedAt = LocalDateTime.now();
+        updateUpdatedAt();
     }
+
+    public String getStrategi() {
+        return strategi;
+    }
+
+    public void setStrategi(String strategi) {
+        this.strategi = strategi;
+        updateUpdatedAt();
+    }
+
+    public String getProtokol() {
+        return protokol;
+    }
+    
+    public void setProtokol(String protokol) {
+        this.protokol = protokol;
+        updateUpdatedAt();
+    }
+
+    public String getKomandanId() {
+        return komandanId;
+    }
+
+    public void setKomandanId(String komandanId) {
+        this.komandanId = komandanId;
+        updateUpdatedAt();
+    }
+
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -183,7 +214,7 @@ public class Mission {
     }
 
     // Update waktu terakhir
-    private void updateUpdatedAt() {
+    public void updateUpdatedAt() {
         this.updatedAt = LocalDateTime.now();
     }
 
