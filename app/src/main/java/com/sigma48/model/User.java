@@ -1,5 +1,6 @@
 package com.sigma48.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class User {
@@ -7,9 +8,14 @@ public class User {
     private String username;
     private String passwordHash;
     private Role role;
+    private boolean isActive;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastLogin;
 
     public User() {
         this.id = UUID.randomUUID().toString();
+        this.createdAt = LocalDateTime.now();
+        this.isActive = true;    
     }
 
     public User(String username, String passwordHash, Role role) {
@@ -49,5 +55,29 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(LocalDateTime lastLogin) {
+        this.lastLogin = lastLogin;
     }
 }

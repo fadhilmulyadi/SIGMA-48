@@ -20,6 +20,7 @@ public class Mission {
     private String strategi;
     private String protokol;
     private String komandanId;
+    private String conclusionNotes;
     private MissionStatus status;
     private List<String> assignedAgents;
     private Map<String, CoverIdentity> coverIdentities;
@@ -174,6 +175,15 @@ public class Mission {
 
     public void setKomandanId(String komandanId) {
         this.komandanId = komandanId;
+        updateUpdatedAt();
+    }
+
+    public String getConclusionNotes() {
+        return conclusionNotes;
+    }
+
+    public void setConclusionNotes(String conclusionNotes) {
+        this.conclusionNotes = conclusionNotes;
         updateUpdatedAt();
     }
 
