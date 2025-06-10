@@ -66,6 +66,8 @@ public class UserManager {
             Agent newAgent = new Agent();
             newAgent.setUsername(username);
             newAgent.setPasswordHash(passwordHash);
+            newAgent.setRole(role); 
+            
             if (spesialisasiIfAgent != null) {
                 newAgent.setSpesialisasi(spesialisasiIfAgent);
             }
@@ -74,7 +76,7 @@ public class UserManager {
             newUser = new User(username, passwordHash, role);
         }
         
-        newUser.setActive(isActive);
+        newUser.setActive(isActive); // Gunakan status dari parameter
 
         boolean saved = userDao.saveUser(newUser);
         return saved ? Optional.of(newUser) : Optional.empty();
@@ -84,12 +86,11 @@ public class UserManager {
                               Boolean isActive, List<String> newSpesialisasiIfAgent) {
         Optional<User> userOptional = userDao.findUserById(userId);
         if (!userOptional.isPresent()) {
-            System.err.println("UserManager: Pengguna dengan ID '" + userId + "' tidak ditemukan untuk diupdate.");
+            System.err.println("UserManager: Pengguna dengan ID '" + userId + "' tidak ditemukan.");
             return false;
         }
         User userToUpdate = userOptional.get();
 
-        // Validasi username baru jika diubah
         if (newUsername != null && !newUsername.trim().isEmpty() && !newUsername.equalsIgnoreCase(userToUpdate.getUsername())) {
             if (userDao.findByUsername(newUsername).isPresent()) {
                 System.err.println("UserManager: Username baru '" + newUsername + "' sudah digunakan.");
@@ -98,21 +99,18 @@ public class UserManager {
             userToUpdate.setUsername(newUsername);
         }
 
-        if (newRole != null) {
+        if (newRole != null && userToUpdate.getRole() != newRole) {
             userToUpdate.setRole(newRole);
-            if (userToUpdate instanceof Agent && newRole == Role.AGEN_LAPANGAN) {
-                ((Agent) userToUpdate).setSpesialisasi(newSpesialisasiIfAgent != null ? newSpesialisasiIfAgent : new ArrayList<>());
-            } else if (newRole != Role.AGEN_LAPANGAN && userToUpdate instanceof Agent) {
-                 ((Agent) userToUpdate).setSpesialisasi(new ArrayList<>());
-            } else if (newRole == Role.AGEN_LAPANGAN && !(userToUpdate instanceof Agent)) {
-                System.err.println("UserManager: Perubahan peran ke Agen dari User non-Agen memerlukan penanganan khusus (buat objek Agent baru).");
-            }
+        }
+        
+        if (userToUpdate instanceof Agent) {
+            ((Agent) userToUpdate).setSpesialisasi(newSpesialisasiIfAgent != null ? newSpesialisasiIfAgent : new ArrayList<>());
         }
 
         if (isActive != null) {
             userToUpdate.setActive(isActive);
         }
-
+        
         return userDao.saveUser(userToUpdate);
     }
 

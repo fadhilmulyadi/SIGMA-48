@@ -9,6 +9,7 @@ import com.sigma48.model.Target;
 import com.sigma48.model.User;
 import com.sigma48.model.Role;
 import com.sigma48.model.CoverIdentity;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,14 +22,12 @@ public class MissionManager {
     public final MissionDao missionDao;
     private final TargetDao targetDao;
     private final UserDao userDao;
-    private final UserManager userManager;
 
     //Konstruktor
-    public MissionManager(MissionDao missionDao, TargetDao targetDao, UserDao userDao, UserManager userManager) {
+    public MissionManager(MissionDao missionDao, TargetDao targetDao, UserDao userDao) {
         this.missionDao = missionDao;
         this.targetDao = targetDao;
         this.userDao = userDao;
-        this.userManager = userManager;
     }
 
     //Method createDraftMission
@@ -75,24 +74,10 @@ public class MissionManager {
 
     //Method updateMissionStatus
     public boolean updateMissionStatus(String missionId, MissionStatus newStatus) {
-        if (missionId == null || missionId.trim().isEmpty() || newStatus == null) {
-            return false; // Pastikan missionId dan newStatus tidak null atau kosong
-        }
-
-        Optional<Mission> missionOptional = missionDao.findMissionById(missionId);
-
-        if (!missionOptional.isPresent()) {
-            System.err.println("Misi dengan ID " + missionId + " tidak ditemukan.");
-            return false;
-        }
-
-        Mission mission = missionOptional.get();
-        mission.setStatus(newStatus); // Set status misi dengan yang baru
-        mission.setUpdatedAt(LocalDateTime.now()); // Update waktu terakhir diperbarui
-
-        missionDao.saveMission(mission); // Simpan perubahan
-
-        return true;
+        return missionDao.findMissionById(missionId).map(mission -> {
+            mission.setStatus(newStatus);
+            return missionDao.saveMission(mission);
+        }).orElse(false);
     }
 
     //Method updateOperationalPlan
@@ -218,38 +203,110 @@ public class MissionManager {
                 .collect(Collectors.toList());
     }
 
-    public boolean concludeMission(String missionId, MissionStatus finalStatus, String conclusionNotes, String userIdPerformingAction) {
-
-        if (finalStatus != MissionStatus.COMPLETED && finalStatus != MissionStatus.FAILED) {
-            System.err.println("MissionManager: Status akhir tidak valid untuk penyelesaian misi. Harus COMPLETED atau FAILED.");
-            return false;
-        }
-
+    public boolean concludeMission(String missionId, MissionStatus finalStatus, String conclusionNotes, String direkturId) {
+        if (finalStatus != MissionStatus.COMPLETED && finalStatus != MissionStatus.FAILED) return false;
         Optional<Mission> missionOpt = missionDao.findMissionById(missionId);
-        if (!missionOpt.isPresent()) {
-            System.err.println("MissionManager: Misi dengan ID " + missionId + " tidak ditemukan.");
-            return false;
-        }
-
-        // Validasi hak akses
-        Optional<User> userOpt = userManager.findUserById(userIdPerformingAction);
-        if (!userOpt.isPresent() || userOpt.get().getRole() != Role.DIREKTUR_INTELIJEN) {
-            System.err.println("MissionManager: Pengguna " + userIdPerformingAction + " tidak memiliki wewenang untuk menyelesaikan misi.");
-            return false;
-        }
-
+        if (!missionOpt.isPresent()) return false;
+        Optional<User> direkturOpt = userDao.findUserById(direkturId);
+        if (!direkturOpt.isPresent() || direkturOpt.get().getRole() != Role.DIREKTUR_INTELIJEN) return false;
         Mission mission = missionOpt.get();
-        // Validasi status misi saat ini
-        if (mission.getStatus() != MissionStatus.ACTIVE && mission.getStatus() != MissionStatus.READY_FOR_BRIEFING && mission.getStatus() != MissionStatus.PLANNED) {
-            System.err.println("MissionManager: Misi " + missionId + " dengan status " + mission.getStatus().getDisplayName() + " tidak dapat diselesaikan saat ini.");
-            return false;
-        }
-
         mission.setStatus(finalStatus);
-        if (conclusionNotes != null) {
-            mission.setConclusionNotes(conclusionNotes);
-        }
-
+        mission.setConclusionNotes(conclusionNotes);
         return missionDao.saveMission(mission);
     }
+
+    public List<Mission> getMissionsForCommanderToPlan(String commanderId) {
+        if (commanderId == null || commanderId.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Mission> allMissions = missionDao.getAllMissions();
+        return allMissions.stream()
+                .filter(mission -> commanderId.equals(mission.getKomandanId())) // Misi milik Komandan ini
+                .filter(mission -> mission.getStatus() == MissionStatus.MENUNGGU_PERENCANAAN_KOMANDAN ||
+                                   mission.getStatus() == MissionStatus.PLANNED) // Status yang relevan untuk perencanaan
+                .sorted(Comparator.comparing(Mission::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()))) // Urutkan dari yang paling lama dibuat
+                .collect(Collectors.toList());
+    }
+
+    public List<Mission> getMissionsByStatus(MissionStatus status) {
+        if (status == null) {
+            return new ArrayList<>();
+        }
+        List<Mission> allMissions = missionDao.getAllMissions();
+        return allMissions.stream()
+                .filter(mission -> mission.getStatus() == status)
+                .sorted(Comparator.comparing(Mission::getUpdatedAt, Comparator.nullsLast(Comparator.reverseOrder()))) // Urutkan dari yang terbaru diupdate
+                .collect(Collectors.toList());
+    }
+
+    public Optional<Mission> submitNewDraft(Mission draftMission) {
+        if (draftMission == null) return Optional.empty();
+        draftMission.setStatus(MissionStatus.DRAFT_ANALIS);
+        boolean saved = missionDao.saveMission(draftMission);
+        return saved ? Optional.of(draftMission) : Optional.empty();
+    }
+
+    public boolean approveDraftAndAssignCommander(String missionId, String komandanId, String direkturId) {
+        Optional<Mission> missionOpt = missionDao.findMissionById(missionId);
+        if (!missionOpt.isPresent() || missionOpt.get().getStatus() != MissionStatus.DRAFT_ANALIS) {
+            System.err.println("MissionManager: Misi tidak ditemukan atau statusnya bukan DRAFT ANALIS.");
+            return false;
+        }
+        Optional<User> komandanUserOpt = userDao.findUserById(komandanId);
+        if (!komandanUserOpt.isPresent() || komandanUserOpt.get().getRole() != Role.KOMANDAN_OPERASI) {
+            System.err.println("MissionManager: User yang ditunjuk bukan Komandan Operasi yang valid.");
+            return false;
+        }
+        Mission mission = missionOpt.get();
+        mission.setKomandanId(komandanId);
+        mission.setStatus(MissionStatus.MENUNGGU_PERENCANAAN_KOMANDAN);
+        return missionDao.saveMission(mission);
+    }
+
+    public boolean updateFullMissionDetails(Mission missionWithUpdates) {
+        if (missionWithUpdates == null || missionWithUpdates.getId() == null) {
+            return false;
+        }
+        return missionDao.saveMission(missionWithUpdates);
+    }
+
+    public boolean finalizePlanningAndSetReadyForBriefing(String missionId, String komandanIdVerifikasi) {
+        Optional<Mission> missionOpt = missionDao.findMissionById(missionId);
+        if (!missionOpt.isPresent()) return false;
+        Mission mission = missionOpt.get();
+        if (mission.getKomandanId() == null || !mission.getKomandanId().equals(komandanIdVerifikasi)) return false;
+        if (mission.getStrategi() == null || mission.getStrategi().trim().isEmpty() ||
+            mission.getProtokol() == null || mission.getProtokol().trim().isEmpty() ||
+            mission.getAssignedAgents() == null || mission.getAssignedAgents().isEmpty()) return false;
+        if (mission.getStatus() != MissionStatus.MENUNGGU_PERENCANAAN_KOMANDAN && mission.getStatus() != MissionStatus.PLANNED) return false;
+        mission.setStatus(MissionStatus.READY_FOR_BRIEFING);
+        return missionDao.saveMission(mission);
+    }
+
+    public List<Mission> getMissionsForCommander(String commanderId) {
+        if (commanderId == null || commanderId.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        return missionDao.getAllMissions().stream()
+                .filter(mission -> commanderId.equals(mission.getKomandanId()))
+                .collect(Collectors.toList());
+    }
+
+    // public void updateMission(Mission updatedMission) {
+    //     // 1. Ambil semua misi yang ada dari file.
+    //     List<Mission> allMissions = missionDao.getAllMissions();
+
+    //     // 2. Cari misi yang akan di-update berdasarkan ID, lalu ganti dengan data baru.
+    //     for (int i = 0; i < allMissions.size(); i++) {
+    //         if (allMissions.get(i).getId().equals(updatedMission.getId())) {
+    //             // Set waktu update sebelum menyimpan
+    //             updatedMission.setUpdatedAt(LocalDateTime.now());
+    //             allMissions.set(i, updatedMission); // Ganti objek lama dengan yang baru
+    //             break;
+    //         }
+    //     }
+
+    //     missionDao.saveAll(allMissions);
+    //     System.out.println("MissionManager: Misi dengan ID " + updatedMission.getId() + " berhasil diperbarui.");
+    // }
 }

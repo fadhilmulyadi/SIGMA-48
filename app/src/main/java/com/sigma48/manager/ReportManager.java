@@ -5,13 +5,10 @@ import com.sigma48.model.Mission;
 import com.sigma48.model.MissionStatus;
 import com.sigma48.model.Report;
 import com.sigma48.model.Role;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class ReportManager {
     private ReportDao reportDao;
@@ -22,18 +19,21 @@ public class ReportManager {
         this.missionManager = missionManager;
     }
 
-    public Optional<Report> submitReport(String missionId, String userId, Role userRole, String isi, List<String> lampiranPaths) {
+    public Optional<Report> submitReport(String missionId, String userId, Role userRole, String isi, List<String> lampiranPaths, String lokasi) {
         // Validasi input dasar
         if (missionId == null || missionId.trim().isEmpty() ||
             userId == null || userId.trim().isEmpty() ||
             userRole == null ||
-            isi == null || isi.trim().isEmpty()) {
-            System.err.println("ReportManager: Data laporan tidak lengkap (missionId, userId, userRole, isi wajib diisi).");
+            isi == null || isi.trim().isEmpty() ||
+            lokasi == null || lokasi.trim().isEmpty()) { // Validasi lokasi ditambahkan
+            System.err.println("ReportManager: Data laporan tidak lengkap (missionId, userId, userRole, isi, dan lokasi wajib diisi).");
             return Optional.empty();
         }
 
         // Buat objek Report baru
         Report newReport = new Report(missionId, userId, userRole, isi);
+        newReport.setLokasi(lokasi);
+
         if (lampiranPaths != null && !lampiranPaths.isEmpty()) {
             newReport.setLampiran(lampiranPaths);
         }
@@ -64,6 +64,14 @@ public class ReportManager {
         }
 
         return Optional.of(newReport);
+    }
+
+    public boolean saveReport(Report reportToSave) {
+        if (reportToSave == null) {
+            return false;
+        }
+        // Meneruskan panggilan langsung ke metode saveReport yang ada di ReportDao
+        return reportDao.saveReport(reportToSave);
     }
 
     public List<Report> getReportsForMission(String missionId) {
