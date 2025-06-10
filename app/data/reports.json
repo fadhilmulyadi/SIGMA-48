@@ -1,0 +1,64 @@
+[ {
+  "reportId" : "f38228f0-1360-4c91-be03-59fe03f37e71",
+  "missionId" : "05a37ffe-4930-49d8-9b2c-a1c5af5be865",
+  "userId" : "test-agen-001",
+  "userRoleAtReporting" : "AGEN_LAPANGAN",
+  "waktuLapor" : [ 2025, 6, 8, 11, 0, 21, 697701700 ],
+  "isi" : "SEGALANYA LANCAR",
+  "lampiran" : [ "simulated_path/05a37ffe-4930-49d8-9b2c-a1c5af5be865/test-agen-001/WhatsApp Image 2025-04-15 at 19.54.45_9341c584.jpg", "simulated_path/05a37ffe-4930-49d8-9b2c-a1c5af5be865/test-agen-001/H071241011_Muhammad Fadhil Mulyadi_23H07110203 (PBT 203).pdf" ],
+  "lokasi" : null
+}, {
+  "reportId" : "6690a83d-55d1-4561-9288-7e83de82e8f1",
+  "missionId" : "d437092f-193d-424c-88e9-9854273e44d4",
+  "userId" : "test-agen-001",
+  "userRoleAtReporting" : "AGEN_LAPANGAN",
+  "waktuLapor" : [ 2025, 6, 8, 12, 14, 10, 180010100 ],
+  "isi" : "PROJEK SUDAH SELESAI",
+  "lampiran" : [ "simulated_path/d437092f-193d-424c-88e9-9854273e44d4/test-agen-001/Screenshot (487).png" ],
+  "lokasi" : null
+}, {
+  "reportId" : "6f8e7eee-99a3-4278-8083-b4ce80c8690f",
+  "missionId" : "50f03c07-352f-4be0-8ebd-059a6c46afd6",
+  "userId" : "test-agen-001",
+  "userRoleAtReporting" : "AGEN_LAPANGAN",
+  "waktuLapor" : [ 2025, 6, 8, 12, 14, 43, 495049800 ],
+  "isi" : "ALHAMDULILLAH DAPAT TICKET",
+  "lampiran" : [ "simulated_path/50f03c07-352f-4be0-8ebd-059a6c46afd6/test-agen-001/Screenshot 2025-05-18 154206.png" ],
+  "lokasi" : null
+}, {
+  "reportId" : "27a90f9e-978b-44fe-9e73-4544191008bd",
+  "missionId" : "5313df4e-cd01-4d11-986f-a78103c4dde8",
+  "userId" : "test-agen-001",
+  "userRoleAtReporting" : "AGEN_LAPANGAN",
+  "waktuLapor" : [ 2025, 6, 9, 21, 21, 56, 861914400 ],
+  "isi" : "BERJAYA COII",
+  "lampiran" : [ "simulated_path/5313df4e-cd01-4d11-986f-a78103c4dde8/test-agen-001/Ge2m6npagAEXzmF.jpg", "simulated_path/5313df4e-cd01-4d11-986f-a78103c4dde8/test-agen-001/Gg22u2naMAQtQei.jpg", "simulated_path/5313df4e-cd01-4d11-986f-a78103c4dde8/test-agen-001/GgDOHOfaoAA2mhe.jpg", "simulated_path/5313df4e-cd01-4d11-986f-a78103c4dde8/test-agen-001/Gj0-qYEbUAAmXbq.jpg", "simulated_path/5313df4e-cd01-4d11-986f-a78103c4dde8/test-agen-001/GrJpZlhWMAAKU3m.jpg", "simulated_path/5313df4e-cd01-4d11-986f-a78103c4dde8/test-agen-001/GsCZ20VbgAAyqgT.jpg" ],
+  "lokasi" : null
+}, {
+  "reportId" : "5f574f66-65b9-4226-91ed-2f2a8115b5ea",
+  "missionId" : "5313df4e-cd01-4d11-986f-a78103c4dde8",
+  "userId" : "test-agen-001",
+  "userRoleAtReporting" : "AGEN_LAPANGAN",
+  "waktuLapor" : [ 2025, 6, 10, 9, 24, 29, 131819700 ],
+  "isi" : "Telah terdeteksi peningkatan aktivitas komunikasi terenkripsi di wilayah sektor Delta-7 (Kecamatan Manggala, Makassar). Analisis awal mengindikasikan adanya koordinasi kelompok tidak dikenal yang diduga mempersiapkan aktivitas sabotase infrastruktur digital lokal.",
+  "lampiran" : [ "simulated_path/5313df4e-cd01-4d11-986f-a78103c4dde8/test-agen-001/Gg22u2naMAQtQei.jpg", "simulated_path/5313df4e-cd01-4d11-986f-a78103c4dde8/test-agen-001/Proposal_Kelompok 5_Kelas I1_Balance 2024.pdf", "simulated_path/5313df4e-cd01-4d11-986f-a78103c4dde8/test-agen-001/welcome_komandan_operasi.mp3" ],
+  "lokasi" : "Universitas Hasanuddin, Makassar"
+}, {
+  "reportId" : "8bd3432a-5908-40fd-8344-f955f43923ba",
+  "missionId" : "5313df4e-cd01-4d11-986f-a78103c4dde8",
+  "userId" : "test-agen-001",
+  "userRoleAtReporting" : "AGEN_LAPANGAN",
+  "waktuLapor" : [ 2025, 6, 10, 9, 53, 17, 444986800 ],
+  "isi" : "SAYA SEDANG MEMPERBAIKI PROJECT SAYA DAN SEBUAH MANUSIA BERKULIT HITAM DATANG MENHAMPIRI DAN MENGERJAKAN SEMUA TUGAS SAJA",
+  "lampiran" : [ "data\\attachments\\8bd3432a-5908-40fd-8344-f955f43923ba\\● LIMIT.py - Algoritma dan Pemograman - Visual Studio Code 05_10_2024 19_38_10.png", "data\\attachments\\8bd3432a-5908-40fd-8344-f955f43923ba\\Ge2m6npagAEXzmF.jpg", "data\\attachments\\8bd3432a-5908-40fd-8344-f955f43923ba\\Gg22u2naMAQtQei.jpg", "data\\attachments\\8bd3432a-5908-40fd-8344-f955f43923ba\\GgDOHOfaoAA2mhe.jpg", "data\\attachments\\8bd3432a-5908-40fd-8344-f955f43923ba\\GrJpZlhWMAAKU3m.jpg", "data\\attachments\\8bd3432a-5908-40fd-8344-f955f43923ba\\GsCZ20VbgAAyqgT.jpg", "data\\attachments\\8bd3432a-5908-40fd-8344-f955f43923ba\\welcome_direktur_intelijen.mp3", "data\\attachments\\8bd3432a-5908-40fd-8344-f955f43923ba\\T2_LogKom A_H071241011_Muhammad Fadhil Mulyadi.pdf" ],
+  "lokasi" : "JALAN TODDOPULI X, MAKASSAR"
+}, {
+  "reportId" : "736c087a-e63f-49db-9aa6-9947f71fad89",
+  "missionId" : "4049a96e-df5e-41d7-9667-2c34e50d9f63",
+  "userId" : "e7c6e053-c294-412a-b4be-e86272f47bb7",
+  "userRoleAtReporting" : "AGEN_LAPANGAN",
+  "waktuLapor" : [ 2025, 6, 10, 11, 39, 21, 679475600 ],
+  "isi" : "SAPI",
+  "lampiran" : [ "data\\attachments\\736c087a-e63f-49db-9aa6-9947f71fad89\\Ge2m6npagAEXzmF.jpg", "data\\attachments\\736c087a-e63f-49db-9aa6-9947f71fad89\\Gg22u2naMAQtQei.jpg", "data\\attachments\\736c087a-e63f-49db-9aa6-9947f71fad89\\GgDOHOfaoAA2mhe.jpg", "data\\attachments\\736c087a-e63f-49db-9aa6-9947f71fad89\\GrJpZlhWMAAKU3m.jpg", "data\\attachments\\736c087a-e63f-49db-9aa6-9947f71fad89\\GsCZ20VbgAAyqgT.jpg" ],
+  "lokasi" : "UNHAS"
+} ]
