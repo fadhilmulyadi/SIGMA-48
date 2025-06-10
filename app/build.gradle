@@ -24,16 +24,21 @@ application {
 // Konfigurasi JavaFX
 javafx {
     version = "21" // Versi JavaFX yang kita gunakan
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.media' ] // Modul JavaFX yang dibutuhkan
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.media', 'javafx.swing' ] // Modul JavaFX yang dibutuhkan
 }
 
 dependencies {
     // Dependensi untuk JSON processing (Jackson)
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
+    
+    implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
 
     // Dependensi untuk Password Hashing (jBcrypt)
     implementation 'org.mindrot:jbcrypt:0.4'
+
+    // Dependensi untuk Render PDF
+    implementation 'org.apache.pdfbox:pdfbox:2.0.30'
 
     // Dependensi untuk testing (Contoh: JUnit 5)
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
