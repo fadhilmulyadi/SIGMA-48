@@ -1,0 +1,840 @@
+package com.sigma48.ui.controller;
+
+import com.sigma48.Main;
+import com.sigma48.manager.*;
+import com.sigma48.model.*;
+import com.sigma48.ui.dto.MissionDisplayData;
+import com.sigma48.util.SoundUtils;
+
+import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Callback;
+import javafx.util.Duration;
+import javafx.util.StringConverter;
+
+import java.io.IOException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+public class MissionPlanningViewController {
+
+    @FXML ScrollPane scrollPane;
+    @FXML Label missionTitleLabel;
+    @FXML Label missionStatusLabel;
+    @FXML Label missionIdText;
+    @FXML Label tujuanText;
+    @FXML Label deskripsiText;
+    @FXML Label targetNameText;
+    @FXML Label initialRiskAnalysisText;
+    @FXML Label initialOperationTypeText;
+    @FXML Label initialLocationText;
+
+    @FXML ComboBox<User> komandanComboBox;
+    @FXML Label komandanNameLabel;
+    @FXML TextField jenisOperasiField;
+    @FXML TextField lokasiField;
+    @FXML TextArea analisisRisikoArea;
+    @FXML TextArea strategiArea;
+    @FXML TextArea protokolArea;
+
+    @FXML ComboBox<Agent> availableAgentsComboBox;
+    @FXML Button addAgentButton;
+    @FXML TableView<AssignedAgentTableData> assignedAgentsTableView;
+    @FXML TableColumn<AssignedAgentTableData, String> agentNameColumn;
+    @FXML TableColumn<AssignedAgentTableData, String> agentSpesialisasiColumn;
+    @FXML TableColumn<AssignedAgentTableData, String> agentCoverNameColumn;
+    @FXML TableColumn<AssignedAgentTableData, String> agentCoverRoleColumn;
+    @FXML TableColumn<AssignedAgentTableData, Void> agentActionsColumn;
+
+    @FXML TableView<ReportTableData> reportsTableView;
+    @FXML TableColumn<ReportTableData, String> reportTimestampColumn;
+    @FXML TableColumn<ReportTableData, String> reportAgentIdColumn;
+    @FXML TableColumn<ReportTableData, String> reportIsiColumn;
+    @FXML TableColumn<ReportTableData, Integer> reportLampiranCountColumn;
+    @FXML TableColumn<ReportTableData, Void> reportAksiColumn;
+    @FXML Button refreshReportsButton;
+    
+    @FXML TableView<EvaluationTableData> evaluationsTableView;
+    @FXML TableColumn<EvaluationTableData, String> evalTimestampColumn;
+    @FXML TableColumn<EvaluationTableData, String> evaluatorColumn;
+    @FXML TableColumn<EvaluationTableData, String> evaluatedAgentColumn;
+    @FXML TableColumn<EvaluationTableData, String> evalEffectivenessColumn;
+    @FXML TableColumn<EvaluationTableData, String> evalNotesColumn;
+    @FXML TableColumn<EvaluationTableData, Void> evalAksiColumn;
+    @FXML Button refreshEvaluationsButton;
+    @FXML Button addEvaluationButton;
+
+    @FXML Label statusPlanLabel;
+    @FXML Button cancelPlanButton;
+    @FXML Button savePlanButton;
+    @FXML Button finalizePlanButton;
+    @FXML Button markCompletedButton;
+    @FXML Button markFailedButton;
+    
+    private MissionManager missionManager;
+    private TargetManager targetManager;
+    private AgentManager agentManager;
+    private UserManager userManager;
+    private ReportManager reportManager;
+    private EvaluationManager evaluationManager;
+
+    private Mission currentMission;
+    private User currentUser;
+    private ObservableList<AssignedAgentTableData> assignedAgentsData = FXCollections.observableArrayList();
+    private ObservableList<ReportTableData> reportsData = FXCollections.observableArrayList();
+    private ObservableList<EvaluationTableData> evaluationsData = FXCollections.observableArrayList();
+    private Runnable onCancelAction;
+    private MainDashboardController mainDashboardController;
+    
+    public void setMainDashboardController(MainDashboardController mainDashboardController) {
+        this.mainDashboardController = mainDashboardController;
+    }
+    
+    public void setExternalManagers(MissionManager mManager, TargetManager tManager, 
+                                    AgentManager aManager, UserManager uManager,
+                                    ReportManager rManager, EvaluationManager eManager) {
+        this.missionManager = mManager;
+        this.targetManager = tManager;
+        this.agentManager = aManager;
+        this.userManager = uManager;
+        this.reportManager = rManager;
+        this.evaluationManager = eManager;
+    }
+
+    public void setOnCancelAction(Runnable onCancelAction) {
+        this.onCancelAction = onCancelAction;
+    }
+
+    @FXML
+    public void initialize() {
+        this.currentUser = Main.authManager.getCurrentUser();
+        setupAssignedAgentsTable();
+        setupReportsTable();
+        setupEvaluationsTable();
+        statusPlanLabel.setManaged(false);
+        statusPlanLabel.setVisible(false);
+        setButtonsInitialDisabledState(true);
+    }
+    
+    private void setButtonsInitialDisabledState(boolean disabled) {
+        savePlanButton.setDisable(disabled);
+        finalizePlanButton.setDisable(disabled);
+        markCompletedButton.setDisable(disabled);
+        markFailedButton.setDisable(disabled);
+        addEvaluationButton.setDisable(disabled);
+        addAgentButton.setDisable(disabled);
+    }
+
+    public void loadMissionData(Mission mission) {
+        this.currentMission = mission;
+        if (currentMission == null) {
+            showStatus("Error: Tidak ada data misi yang dimuat untuk perencanaan.", true);
+            setButtonsInitialDisabledState(true);
+            return;
+        }
+        if (userManager == null || targetManager == null || agentManager == null || 
+            reportManager == null || evaluationManager == null || missionManager == null) {
+            showStatus("Error: Satu atau lebih manager belum diinisialisasi dengan benar.", true);
+            setButtonsInitialDisabledState(true);
+            return;
+        }
+
+        missionTitleLabel.setText("DETAIL & PERENCANAAN MISI: " + defaultIfNull(currentMission.getJudul()));
+        missionStatusLabel.setText("Status: " + (currentMission.getStatus() != null ? currentMission.getStatus().getDisplayName() : "N/A"));
+        missionIdText.setText(defaultIfNull(currentMission.getId()));
+        tujuanText.setText(defaultIfNull(currentMission.getTujuan()));
+        deskripsiText.setText(defaultIfNull(currentMission.getDeskripsi()));
+        
+        initialRiskAnalysisText.setText("Analisis Risiko Awal: " + defaultIfNull(currentMission.getAnalisisRisiko()));
+        initialOperationTypeText.setText("Jenis Operasi Usulan: " + defaultIfNull(currentMission.getJenisOperasi()));
+        initialLocationText.setText("Lokasi Perkiraan: " + defaultIfNull(currentMission.getLokasi()));
+
+        if (currentMission.getTargetId() != null) {
+            targetManager.getTargetById(currentMission.getTargetId())
+                .ifPresent(target -> targetNameText.setText(defaultIfNull(target.getNama()) + " (Tipe: " + (target.getTipe() != null ? target.getTipe().getDisplayName() : "N/A") + ")"));
+        } else {
+            targetNameText.setText("N/A");
+        }
+
+        jenisOperasiField.setText(defaultIfNull(currentMission.getJenisOperasi()));
+        lokasiField.setText(defaultIfNull(currentMission.getLokasi()));
+        analisisRisikoArea.setText(defaultIfNull(currentMission.getAnalisisRisiko()));
+        strategiArea.setText(defaultIfNull(currentMission.getStrategi()));
+        protokolArea.setText(defaultIfNull(currentMission.getProtokol()));
+
+        setupKomandanSelection();
+        loadAvailableAgents();
+        loadAssignedAgentsData();
+        loadMissionReports();
+        loadMissionEvaluations();
+        updateAllButtonStates();
+    }
+
+    private void setupKomandanSelection() {
+        if (currentUser == null) return;
+        boolean isDirektur = currentUser.getRole() == Role.DIREKTUR_INTELIJEN;
+        boolean isEditableByCurrentRole = (isDirektur && currentMission.getStatus() == MissionStatus.DRAFT_ANALIS) ||
+                                           (isDirektur && currentMission.getStatus() == MissionStatus.MENUNGGU_PERENCANAAN_KOMANDAN);
+
+        komandanComboBox.setManaged(isEditableByCurrentRole);
+        komandanComboBox.setVisible(isEditableByCurrentRole);
+        komandanNameLabel.setManaged(!isEditableByCurrentRole);
+        komandanNameLabel.setVisible(!isEditableByCurrentRole);
+
+        if (isEditableByCurrentRole) {
+            komandanComboBox.setDisable(false);
+            loadKomandanOptions();
+            if (currentMission.getKomandanId() != null && !currentMission.getKomandanId().isEmpty()) {
+                userManager.findUserById(currentMission.getKomandanId()).ifPresent(komandanComboBox::setValue);
+            } else {
+                komandanComboBox.getSelectionModel().clearSelection();
+                komandanComboBox.setPromptText("Pilih Komandan Operasi...");
+            }
+        } else { 
+            if (currentMission.getKomandanId() != null && !currentMission.getKomandanId().isEmpty()) {
+                userManager.findUserById(currentMission.getKomandanId()).ifPresent(assignedCmdr -> 
+                    komandanNameLabel.setText(defaultIfNull(assignedCmdr.getUsername())));
+            } else {
+                komandanNameLabel.setText("Komandan Belum Ditugaskan");
+            }
+        }
+    }
+
+    private void loadKomandanOptions() {
+        if (userManager == null) return;
+        List<User> komandanList = userManager.getUsersByRole(Role.KOMANDAN_OPERASI);
+        komandanComboBox.setItems(FXCollections.observableArrayList(komandanList));
+        komandanComboBox.setConverter(new StringConverter<User>() {
+            @Override
+            public String toString(User user) {
+                return user != null ? user.getUsername() + " (ID: " + user.getId() + ")" : "";
+            }
+            
+            @Override
+            public User fromString(String string) {
+                return null; 
+            }
+        });
+    }
+
+    private void loadAvailableAgents() {
+        if (agentManager == null) return;
+        List<Agent> agents = agentManager.getAvailableAgents();
+        availableAgentsComboBox.setItems(FXCollections.observableArrayList(agents));
+        availableAgentsComboBox.setConverter(new StringConverter<Agent>() {
+            @Override
+            public String toString(Agent agent) {
+                return agent != null ? agent.getUsername() + " (Spes: " + (agent.getSpesialisasi() != null && !agent.getSpesialisasi().isEmpty() ? String.join(", ", agent.getSpesialisasi()) : "N/A") + ")" : "";
+            }
+
+            @Override
+            public Agent fromString(String string) {
+                return null;
+            }
+        });
+        availableAgentsComboBox.setPromptText("Pilih agen...");
+    }
+
+    private void setupAssignedAgentsTable() {
+        agentNameColumn.setCellValueFactory(new PropertyValueFactory<>("agentName"));
+        agentSpesialisasiColumn.setCellValueFactory(new PropertyValueFactory<>("agentSpesialisasi"));
+        agentCoverNameColumn.setCellValueFactory(new PropertyValueFactory<>("agentCoverName"));
+        agentCoverRoleColumn.setCellValueFactory(new PropertyValueFactory<>("agentCoverRole"));
+        
+        Callback<TableColumn<AssignedAgentTableData, Void>, TableCell<AssignedAgentTableData, Void>> cellFactory = param -> {
+            return new TableCell<>() {
+                private final Button btnEditCover = new Button("Identitas");
+                private final Button btnRemoveAgent = new Button("Hapus");
+                {
+                    btnEditCover.getStyleClass().add("action-button-xs");
+                    btnRemoveAgent.getStyleClass().add("cancel-button-xs");
+
+                    btnEditCover.setOnAction(event -> {
+                        AssignedAgentTableData data = getTableView().getItems().get(getIndex());
+                        if (data != null) {
+                            showCoverIdentityDialog(data.getCoverIdentity(), data.getAgent())
+                                .ifPresent(updatedCi -> {
+                                    data.setCoverIdentity(updatedCi);
+                                    getTableView().refresh();
+                                    showStatus("Identitas samaran untuk " + data.getAgentName() + " diperbarui.", false);
+                                });
+                        }
+                    });
+                    btnRemoveAgent.setOnAction(event -> {
+                        AssignedAgentTableData data = getTableView().getItems().get(getIndex());
+                        assignedAgentsData.remove(data);
+                        showStatus("Agen " + data.getAgentName() + " dihapus dari tim.", false);
+                    });
+                }
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        boolean missionIsFinal = currentMission != null && 
+                                                 (currentMission.getStatus() == MissionStatus.COMPLETED || 
+                                                  currentMission.getStatus() == MissionStatus.FAILED || 
+                                                  currentMission.getStatus() == MissionStatus.CANCELLED);
+                        boolean canEdit = (currentUser.getRole() == Role.DIREKTUR_INTELIJEN || 
+                                           (currentUser.getRole() == Role.KOMANDAN_OPERASI && currentUser.getId().equals(currentMission.getKomandanId()))) 
+                                          && !missionIsFinal;
+                        
+                        btnEditCover.setDisable(!canEdit);
+                        btnRemoveAgent.setDisable(!canEdit);
+
+                        HBox buttonsBox = new HBox(5, btnEditCover, btnRemoveAgent);
+                        setGraphic(buttonsBox);
+                    }
+                }
+            };
+        };
+        agentActionsColumn.setCellFactory(cellFactory);
+        assignedAgentsTableView.setItems(assignedAgentsData);
+    }
+
+    private void loadAssignedAgentsData() {
+        assignedAgentsData.clear();
+        if (currentMission != null && currentMission.getAssignedAgents() != null && userManager != null) {
+            for (String agentId : currentMission.getAssignedAgents()) {
+                userManager.findUserById(agentId).ifPresent(user -> {
+                    if (user instanceof Agent) {
+                        Agent agent = (Agent) user;
+                        CoverIdentity ci = currentMission.getCoverIdentities() != null ? currentMission.getCoverIdentities().get(agentId) : null;
+                        assignedAgentsData.add(new AssignedAgentTableData(agent, ci));
+                    }
+                });
+            }
+        }
+    }
+
+    private void setupReportsTable() {
+        reportTimestampColumn.setCellValueFactory(new PropertyValueFactory<>("waktuLapor"));
+        reportAgentIdColumn.setCellValueFactory(new PropertyValueFactory<>("userIdPelapor"));
+        reportIsiColumn.setCellValueFactory(new PropertyValueFactory<>("isiSingkat"));
+        reportLampiranCountColumn.setCellValueFactory(new PropertyValueFactory<>("jumlahLampiran"));
+        
+        Callback<TableColumn<ReportTableData, Void>, TableCell<ReportTableData, Void>> cellFactory = param -> {
+            return new TableCell<>() {
+                private final Button btnViewReport = new Button("Detail");
+                {
+                    btnViewReport.getStyleClass().add("action-button-xs");
+                    btnViewReport.setOnAction(event -> {
+                        ReportTableData data = getTableView().getItems().get(getIndex());
+                        if (data != null && mainDashboardController != null) {
+                            mainDashboardController.showReportDetailView(data.getOriginalReport());
+                        }
+                    });
+                }
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : btnViewReport);
+                }
+            };
+        };
+        reportAksiColumn.setCellFactory(cellFactory);
+        reportsTableView.setItems(reportsData);
+    }
+
+    private void loadMissionReports() {
+        reportsData.clear();
+        if (currentMission != null && currentMission.getId() != null && reportManager != null) {
+            List<Report> missionReports = reportManager.getReportsForMission(currentMission.getId());
+            missionReports.forEach(report -> reportsData.add(new ReportTableData(report, this.userManager)));
+        }
+    }
+
+    private void setupEvaluationsTable() {
+        evalTimestampColumn.setCellValueFactory(new PropertyValueFactory<>("timestampEvaluasi"));
+        evaluatorColumn.setCellValueFactory(new PropertyValueFactory<>("evaluatorName"));
+        evaluatedAgentColumn.setCellValueFactory(new PropertyValueFactory<>("agentName"));
+        evalEffectivenessColumn.setCellValueFactory(new PropertyValueFactory<>("efektivitasOperasi"));
+        evalNotesColumn.setCellValueFactory(new PropertyValueFactory<>("catatanSingkat"));
+        
+        Callback<TableColumn<EvaluationTableData, Void>, TableCell<EvaluationTableData, Void>> cellFactory = param -> {
+            return new TableCell<>() {
+                private final Button btnViewEval = new Button("Detail");
+                {
+                    btnViewEval.getStyleClass().add("action-button-xs");
+                    btnViewEval.setOnAction(event -> {
+                        EvaluationTableData data = getTableView().getItems().get(getIndex());
+                        if (data != null) showEvaluationDetails(data.getOriginalEvaluation());
+                    });
+                }
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : btnViewEval);
+                }
+            };
+        };
+        evalAksiColumn.setCellFactory(cellFactory);
+        evaluationsTableView.setItems(evaluationsData);
+    }
+
+    private void loadMissionEvaluations() {
+        evaluationsData.clear();
+        if (currentMission != null && currentMission.getId() != null && evaluationManager != null) {
+            List<Evaluation> missionEvals = evaluationManager.getEvaluationsForMission(currentMission.getId());
+            missionEvals.forEach(eval -> evaluationsData.add(new EvaluationTableData(eval, this.userManager)));
+        }
+    }
+
+    @FXML
+    private void handleSavePlanButton(ActionEvent event) {
+        if (currentMission == null || currentUser == null || missionManager == null) {
+            showStatus("Sistem belum siap atau tidak ada misi dipilih.", true);
+            return;
+        }
+
+        currentMission.setJenisOperasi(jenisOperasiField.getText());
+        currentMission.setLokasi(lokasiField.getText());
+        currentMission.setAnalisisRisiko(analisisRisikoArea.getText());
+        currentMission.setStrategi(strategiArea.getText());
+        currentMission.setProtokol(protokolArea.getText());
+
+        boolean saveSuccess = false;
+        String successMessage = "";
+
+        if (currentUser.getRole() == Role.DIREKTUR_INTELIJEN) {
+            User selectedKomandan = komandanComboBox.getValue();
+            if (selectedKomandan != null) {
+                currentMission.setKomandanId(selectedKomandan.getId());
+            } else if (currentMission.getStatus() == MissionStatus.DRAFT_ANALIS) {
+                showStatus("Pilih Komandan Operasi untuk menyetujui draft.", true);
+                return;
+            }
+
+            if (currentMission.getStatus() == MissionStatus.DRAFT_ANALIS && currentMission.getKomandanId() != null) {
+                saveSuccess = missionManager.approveDraftAndAssignCommander(
+                    currentMission.getId(), 
+                    currentMission.getKomandanId(), 
+                    currentUser.getId()
+                );
+                if (saveSuccess) successMessage = "Draft misi disetujui & Komandan ditugaskan!";
+            } else {
+                updateAgentsAndCoverIdentitiesFromTableToCurrentMission();
+                currentMission.setUpdatedAt(LocalDateTime.now());
+                saveSuccess = missionManager.updateFullMissionDetails(currentMission);
+                if (saveSuccess) successMessage = "Perubahan detail misi berhasil disimpan!";
+            }
+        } else if (currentUser.getRole() == Role.KOMANDAN_OPERASI) {
+            if (!currentUser.getId().equals(currentMission.getKomandanId())) {
+                showStatus("Anda bukan Komandan yang ditugaskan untuk misi ini.", true); return;
+            }
+            updateAgentsAndCoverIdentitiesFromTableToCurrentMission();
+            currentMission.setUpdatedAt(LocalDateTime.now());
+            saveSuccess = missionManager.updateFullMissionDetails(currentMission);
+            if (saveSuccess) successMessage = "Rencana operasional & penugasan agen berhasil disimpan!";
+        } else {
+            showStatus("Peran Anda tidak memiliki wewenang untuk menyimpan.", true); return;
+        }
+
+        if (saveSuccess) {
+            showStatus(successMessage, false);
+            missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
+        } else {
+            showStatus("Gagal menyimpan perubahan pada misi.", true);
+        }
+    }
+    
+    private void updateAgentsAndCoverIdentitiesFromTableToCurrentMission() {
+        if (currentMission == null) return;
+        List<String> agentIds = new ArrayList<>();
+        Map<String, CoverIdentity> covers = new HashMap<>();
+        for (AssignedAgentTableData data : assignedAgentsData) {
+            agentIds.add(data.getAgentId());
+            if (data.getCoverIdentity() != null && data.getCoverIdentity().getCoverName() != null && !data.getCoverIdentity().getCoverName().isEmpty()) {
+                covers.put(data.getAgentId(), data.getCoverIdentity());
+            }
+        }
+        currentMission.setAssignedAgents(agentIds);
+        currentMission.setCoverIdentities(covers);
+    }
+
+    @FXML
+    private void handleAddAgentButton(ActionEvent event) {
+        Agent selectedAgent = availableAgentsComboBox.getValue();
+        if (selectedAgent == null || currentMission == null) {
+            showStatus("Pilih agen dari daftar terlebih dahulu.", true); return;
+        }
+        boolean alreadyAssigned = assignedAgentsData.stream().anyMatch(data -> data.getAgentId().equals(selectedAgent.getId()));
+        if (alreadyAssigned) {
+            showStatus("Agen " + selectedAgent.getUsername() + " sudah ada dalam tim.", true); return;
+        }
+
+        Optional<CoverIdentity> coverIdentityOpt = showCoverIdentityDialog(null, selectedAgent);
+        assignedAgentsData.add(new AssignedAgentTableData(selectedAgent, coverIdentityOpt.orElse(new CoverIdentity("Belum Diatur", "-", "-"))));
+        availableAgentsComboBox.getSelectionModel().clearSelection();
+        showStatus("Agen " + selectedAgent.getUsername() + " ditambahkan ke tim. Atur identitas samaran jika perlu.", false);
+    }
+    
+     private Optional<CoverIdentity> showCoverIdentityDialog(CoverIdentity existingCoverIdentity, Agent forAgent) {
+        try {
+            Dialog<CoverIdentity> dialog = new Dialog<>();
+            dialog.setTitle("Pengaturan Identitas Samaran");
+            dialog.setHeaderText("Atur identitas samaran untuk Agen: " + forAgent.getUsername());
+
+            dialog.initOwner(assignedAgentsTableView.getScene().getWindow());
+            dialog.initStyle(StageStyle.UNDECORATED); // Hapus title bar standar
+            DialogPane dialogPane = dialog.getDialogPane();
+            dialogPane.getStylesheets().add(getClass().getResource("/com/sigma48/css/theme.css").toExternalForm());
+            dialogPane.getStyleClass().add("custom-dialog");
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sigma48/fxml/CoverIdentityDialog.fxml"));
+            dialogPane.setContent(loader.load());
+
+            CoverIdentityDialogController controller = loader.getController();
+            if (existingCoverIdentity != null) {
+                controller.setIdentity(existingCoverIdentity);
+            }
+
+            dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            dialog.getDialogPane().lookupButton(ButtonType.OK).setStyle("-fx-background-color: #FFC107; -fx-text-fill: black;");
+
+
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    return controller.getUpdatedIdentity();
+                }
+                return null;
+            });
+
+            // Tampilkan dialog dan tunggu hasilnya
+            return dialog.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showStatus("Gagal memuat dialog identitas samaran.", true);
+            return Optional.empty();
+        }
+    }
+
+    @FXML
+    private void handleFinalizePlanButton(ActionEvent event) {
+        if (currentMission == null || currentUser == null || missionManager == null) {
+             showStatus("Sistem belum siap atau tidak ada misi.", true); return;
+        }
+        if (!currentUser.getId().equals(currentMission.getKomandanId())) {
+            showStatus("Hanya Komandan yang ditugaskan yang dapat memfinalkan rencana.", true); return;
+        }
+        boolean success = missionManager.finalizePlanningAndSetReadyForBriefing(currentMission.getId(), currentUser.getId());
+        if (success) {
+            showStatus("Rencana misi telah difinalkan dan SIAP BRIEFING!", false);
+            missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
+        } else {
+            showStatus("Gagal memfinalkan rencana. Pastikan semua data inti (strategi, protokol, agen) sudah terisi.", true);
+        }
+    }
+    
+    @FXML
+    private void handleMarkCompletedButton(ActionEvent event) {
+        if (currentMission == null || currentUser == null || missionManager == null) return;
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "Yakin tandai misi '" + currentMission.getJudul() + "' sebagai SELESAI?", ButtonType.YES, ButtonType.NO);
+        confirmation.setHeaderText("Konfirmasi Misi Selesai");
+        confirmation.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
+            TextInputDialog notesDialog = new TextInputDialog("Misi berhasil diselesaikan sesuai tujuan.");
+            notesDialog.setTitle("Catatan Akhir Misi Selesai");
+            notesDialog.setHeaderText("Berikan catatan akhir (opsional):");
+            notesDialog.setContentText("Catatan:");
+            String notes = notesDialog.showAndWait().orElse("Misi berhasil diselesaikan.");
+
+            boolean success = missionManager.concludeMission(currentMission.getId(), MissionStatus.COMPLETED, notes, currentUser.getId());
+            if (success) {
+                showStatus("Misi '" + currentMission.getJudul() + "' ditandai SELESAI.", false);
+                missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
+            } else {
+                showStatus("Gagal menandai misi selesai.", true);
+            }
+        });
+    }
+
+    @FXML
+    private void handleMarkFailedButton(ActionEvent event) {
+        if (currentMission == null || currentUser == null || missionManager == null) return;
+        TextInputDialog reasonDialog = new TextInputDialog();
+        reasonDialog.setTitle("Misi Gagal");
+        reasonDialog.setHeaderText("Konfirmasi Misi Gagal: " + currentMission.getJudul());
+        reasonDialog.setContentText("Masukkan alasan kegagalan (WAJIB):");
+        Optional<String> reasonOpt = reasonDialog.showAndWait();
+        if (reasonOpt.isPresent() && !reasonOpt.get().trim().isEmpty()) {
+            boolean success = missionManager.concludeMission(currentMission.getId(), MissionStatus.FAILED, reasonOpt.get(), currentUser.getId());
+            if (success) {
+                showStatus("Misi '" + currentMission.getJudul() + "' ditandai GAGAL.", false);
+                missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
+            } else {
+                showStatus("Gagal menandai misi gagal.", true);
+            }
+        } else if (reasonOpt.isPresent()) {
+            showStatus("Alasan kegagalan wajib diisi.", true);
+        }
+    }
+    
+    @FXML
+    private void handleAddEvaluationButton(ActionEvent event) {
+        if (mainDashboardController != null && currentMission != null) {
+            mainDashboardController.showEvaluationForm(currentMission);
+        } else {
+            showStatus("Tidak bisa membuka form evaluasi.", true);
+        }
+    }
+
+    @FXML
+    private void handleRefreshEvaluationsButton(ActionEvent event) {
+         if (currentMission != null && evaluationManager != null) {
+            loadMissionEvaluations();
+            showStatus("Daftar evaluasi diperbarui.", false);
+        } else {
+            showStatus("Pilih misi atau EvaluationManager belum siap.", true);
+        }
+    }
+
+    @FXML
+    private void handleCancelPlanButton(ActionEvent event) {
+        if (onCancelAction != null) {
+            onCancelAction.run();
+        } else {
+            showStatus("Aksi dibatalkan.", false);
+            if (currentMission != null) loadMissionData(currentMission);
+        }
+    }
+
+    private void showReportDetails(Report report) { 
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Detail Laporan");
+        alert.setHeaderText("Laporan oleh: " + userManager.findUserById(report.getUserId()).map(User::getUsername).orElse("N/A") + 
+                          "\nPada: " + report.getWaktuLapor().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        TextArea area = new TextArea(report.getIsi());
+        area.setWrapText(true);
+        area.setEditable(false);
+        alert.getDialogPane().setContent(area);
+        alert.showAndWait();
+    }
+    
+    private void showEvaluationDetails(Evaluation evaluation) { 
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Detail Evaluasi");
+        alert.setHeaderText("Evaluasi oleh: " + userManager.findUserById(evaluation.getEvaluatorId()).map(User::getUsername).orElse("N/A") +
+                          "\nPada: " + evaluation.getTimestampEvaluasi().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        VBox vbox = new VBox(10);
+        vbox.getChildren().add(new Label("Efektivitas: " + evaluation.getEfektivitasOperasi().getDisplayName()));
+        if (evaluation.getAgentId() != null) {
+             vbox.getChildren().add(new Label("Agen dievaluasi: " + userManager.findUserById(evaluation.getAgentId()).map(User::getUsername).orElse("N/A")));
+        }
+        TextArea area = new TextArea(evaluation.getCatatanUmumEvaluator());
+        area.setWrapText(true);
+        area.setEditable(false);
+        vbox.getChildren().add(area);
+        alert.getDialogPane().setContent(vbox);
+        alert.showAndWait();
+    }
+    
+    private void showStatus(String message, boolean isError) {
+        statusPlanLabel.setText(message);
+        statusPlanLabel.setTextFill(isError ? Color.RED : Color.GREEN);
+        statusPlanLabel.setManaged(true);
+        statusPlanLabel.setVisible(true);
+        PauseTransition visiblePause = new PauseTransition(Duration.seconds(4));
+        visiblePause.setOnFinished(ev -> {
+            statusPlanLabel.setManaged(false);
+            statusPlanLabel.setVisible(false);
+        });
+        visiblePause.play();
+    }
+
+    private void updateAllButtonStates() {
+        if (currentMission == null || currentUser == null) {
+            savePlanButton.setDisable(true);
+            finalizePlanButton.setDisable(true);
+            markCompletedButton.setManaged(false); markCompletedButton.setVisible(false);
+            markFailedButton.setManaged(false); markFailedButton.setVisible(false);
+            addEvaluationButton.setManaged(false); addEvaluationButton.setVisible(false);
+            addAgentButton.setDisable(true);
+            assignedAgentsTableView.setEditable(false);
+            return;
+        }
+
+        boolean isDirektur = currentUser.getRole() == Role.DIREKTUR_INTELIJEN;
+        boolean isKomandanThisMission = currentUser.getRole() == Role.KOMANDAN_OPERASI &&
+                                    currentUser.getId().equals(currentMission.getKomandanId());
+        MissionStatus status = currentMission.getStatus();
+
+        boolean canSavePlan = false;
+        if (isDirektur) {
+            canSavePlan = (status != MissionStatus.COMPLETED && status != MissionStatus.FAILED && status != MissionStatus.CANCELLED);
+            savePlanButton.setText(status == MissionStatus.DRAFT_ANALIS ? "Setujui & Tugaskan KO" : "Simpan Perubahan Detail");
+        } else if (isKomandanThisMission) {
+            canSavePlan = (status == MissionStatus.MENUNGGU_PERENCANAAN_KOMANDAN || status == MissionStatus.PLANNED);
+            savePlanButton.setText("Simpan Rencana & Penugasan");
+        }
+        savePlanButton.setDisable(!canSavePlan);
+
+        boolean canFinalize = isKomandanThisMission &&
+                            (status == MissionStatus.MENUNGGU_PERENCANAAN_KOMANDAN || status == MissionStatus.PLANNED) &&
+                            (currentMission.getStrategi() != null && !currentMission.getStrategi().isEmpty()) &&
+                            (currentMission.getProtokol() != null && !currentMission.getProtokol().isEmpty()) &&
+                            (currentMission.getAssignedAgents() != null && !currentMission.getAssignedAgents().isEmpty());
+        finalizePlanButton.setDisable(!canFinalize);
+        finalizePlanButton.setManaged(isKomandanThisMission || isDirektur);
+        finalizePlanButton.setVisible(isKomandanThisMission || isDirektur);
+
+        boolean canConcludeMission = isDirektur &&
+                                    (status == MissionStatus.ACTIVE || status == MissionStatus.READY_FOR_BRIEFING || status == MissionStatus.PLANNED);
+        markCompletedButton.setManaged(canConcludeMission); markCompletedButton.setVisible(canConcludeMission); markCompletedButton.setDisable(!canConcludeMission);
+        markFailedButton.setManaged(canConcludeMission); markFailedButton.setVisible(canConcludeMission); markFailedButton.setDisable(!canConcludeMission);
+        
+        boolean canEvaluate = (isDirektur || isKomandanThisMission) &&
+                            (status == MissionStatus.ACTIVE || status == MissionStatus.COMPLETED || status == MissionStatus.FAILED || status == MissionStatus.READY_FOR_BRIEFING);
+        addEvaluationButton.setManaged(canEvaluate); addEvaluationButton.setVisible(canEvaluate); addEvaluationButton.setDisable(!canEvaluate);
+
+        boolean canAddAgent = (isDirektur || isKomandanThisMission) &&
+                            (status == MissionStatus.DRAFT_ANALIS || status == MissionStatus.MENUNGGU_PERENCANAAN_KOMANDAN || status == MissionStatus.PLANNED);
+        addAgentButton.setDisable(!canAddAgent);
+        assignedAgentsTableView.setEditable(canAddAgent);
+
+        if (status == MissionStatus.COMPLETED || status == MissionStatus.FAILED || status == MissionStatus.CANCELLED) {
+            savePlanButton.setDisable(true);
+            finalizePlanButton.setDisable(true);
+            addAgentButton.setDisable(true);
+            assignedAgentsTableView.setEditable(false);
+            markCompletedButton.setDisable(true);
+            markFailedButton.setDisable(true);
+        }
+    }
+
+    private String defaultIfNull(String value) {
+        return value != null ? value : "";
+    }
+
+    public static class AssignedAgentTableData {
+        private final Agent agent;
+        private CoverIdentity coverIdentity;
+
+        public AssignedAgentTableData(Agent agent, CoverIdentity ci) {
+            this.agent = agent; this.coverIdentity = ci;
+        }
+
+        public String getAgentName() {
+            return agent.getUsername();
+        }
+
+        public String getAgentId() {
+            return agent.getId();
+        }
+
+        public String getAgentSpesialisasi() {
+            return agent.getSpesialisasi() != null ? String.join(", ", agent.getSpesialisasi()) : "N/A";
+        }
+
+        public String getAgentCoverName() {
+            return coverIdentity != null ? defaultIfNull(coverIdentity.getCoverName()) : "Belum Diatur";
+        }
+
+        public String getAgentCoverRole() {
+            return coverIdentity != null ? defaultIfNull(coverIdentity.getCoverRole()) : "-";
+        }
+
+        public Agent getAgent() {
+            return agent;
+        }
+
+        public CoverIdentity getCoverIdentity() {
+            return coverIdentity;
+        }
+
+        public void setCoverIdentity(CoverIdentity ci) {
+            this.coverIdentity = ci;
+        }
+
+        private static String defaultIfNull(String val) {
+            return val == null ? "" : val;
+        }
+    }
+
+    public static class ReportTableData {
+        private final SimpleStringProperty reportId;
+        private final SimpleStringProperty waktuLapor;
+        private final SimpleStringProperty userIdPelapor;
+        private final SimpleStringProperty isiSingkat;
+        private final SimpleIntegerProperty jumlahLampiran;
+        private final Report originalReport;
+        public ReportTableData(Report report, UserManager userManager) {
+            this.originalReport = report;
+            this.reportId = new SimpleStringProperty(report.getReportId());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            this.waktuLapor = new SimpleStringProperty(report.getWaktuLapor() != null ? report.getWaktuLapor().format(formatter) : "N/A");
+            String pelapor = report.getUserId();
+            if(userManager != null) pelapor = userManager.findUserById(report.getUserId()).map(User::getUsername).orElse(report.getUserId());
+            this.userIdPelapor = new SimpleStringProperty(pelapor);
+            String isi = report.getIsi();
+            this.isiSingkat = new SimpleStringProperty(isi != null && isi.length() > 70 ? isi.substring(0, 70) + "..." : isi);
+            this.jumlahLampiran = new SimpleIntegerProperty(report.getLampiran() != null ? report.getLampiran().size() : 0);
+        }
+        public String getReportId() { return reportId.get(); }
+        public String getWaktuLapor() { return waktuLapor.get(); }
+        public String getUserIdPelapor() { return userIdPelapor.get(); }
+        public String getIsiSingkat() { return isiSingkat.get(); }
+        public Integer getJumlahLampiran() { return jumlahLampiran.get(); }
+        public Report getOriginalReport() { return originalReport; }
+    }
+
+    public static class EvaluationTableData {
+        private final SimpleStringProperty id;
+        private final SimpleStringProperty timestampEvaluasi;
+        private final SimpleStringProperty evaluatorName;
+        private final SimpleStringProperty agentName;
+        private final SimpleStringProperty efektivitasOperasi;
+        private final SimpleStringProperty catatanSingkat;
+        private final Evaluation originalEvaluation;
+        public EvaluationTableData(Evaluation eval, UserManager userManager) {
+            this.originalEvaluation = eval;
+            this.id = new SimpleStringProperty(eval.getId());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            this.timestampEvaluasi = new SimpleStringProperty(eval.getTimestampEvaluasi()!=null ? eval.getTimestampEvaluasi().format(formatter) : "N/A");
+            String evaluator = eval.getEvaluatorId();
+            if(userManager!=null) evaluator = userManager.findUserById(eval.getEvaluatorId()).map(User::getUsername).orElse(eval.getEvaluatorId());
+            this.evaluatorName = new SimpleStringProperty(evaluator);
+            String agent = "Misi Keseluruhan";
+            if (eval.getAgentId() != null && !eval.getAgentId().isEmpty() && userManager != null) {
+                agent = userManager.findUserById(eval.getAgentId()).map(User::getUsername).orElse(eval.getAgentId());
+            } else if (eval.getAgentId() != null && !eval.getAgentId().isEmpty()) agent = eval.getAgentId();
+            this.agentName = new SimpleStringProperty(agent);
+            this.efektivitasOperasi = new SimpleStringProperty(eval.getEfektivitasOperasi()!=null ? eval.getEfektivitasOperasi().getDisplayName() : "N/A");
+            String catatan = eval.getCatatanUmumEvaluator();
+            this.catatanSingkat = new SimpleStringProperty(catatan != null && catatan.length() > 50 ? catatan.substring(0, 50) + "..." : catatan);
+        }
+        public String getId() { return id.get(); }
+        public String getTimestampEvaluasi() { return timestampEvaluasi.get(); }
+        public String getEvaluatorName() { return evaluatorName.get(); }
+        public String getAgentName() { return agentName.get(); }
+        public String getEfektivitasOperasi() { return efektivitasOperasi.get(); }
+        public String getCatatanSingkat() { return catatanSingkat.get(); }
+        public Evaluation getOriginalEvaluation() { return originalEvaluation; }
+    }
+    //</editor-fold>
+}

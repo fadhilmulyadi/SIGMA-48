@@ -25,7 +25,6 @@ public class AuthManager {
             return false;
         }
 
-        // Mencari user berdasarkan username
         Optional<User> userOptional = userDao.findByUsername(username);
         
         // Jika user ditemukan dan password cocok, set currentUser
