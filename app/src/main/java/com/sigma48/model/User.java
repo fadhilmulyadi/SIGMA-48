@@ -1,7 +1,29 @@
 package com.sigma48.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "role", // Gunakan field "role" di JSON untuk menentukan tipe Java Class
+    visible = true    // Pastikan field "role" tetap bisa di-deserialize ke objek
+)
+@JsonSubTypes({
+    // Jika nilai "role" di JSON adalah "AGEN_LAPANGAN", buat instance dari kelas Agent.java
+    @JsonSubTypes.Type(value = Agent.class, name = "AGEN_LAPANGAN"),
+
+    // Untuk semua peran lain, tetap buat instance dari kelas User.java
+    @JsonSubTypes.Type(value = User.class, name = "DIREKTUR_INTELIJEN"),
+    @JsonSubTypes.Type(value = User.class, name = "ANALIS_INTELIJEN"),
+    @JsonSubTypes.Type(value = User.class, name = "KOMANDAN_OPERASI"),
+    @JsonSubTypes.Type(value = User.class, name = "ADMIN")
+})
 
 public class User {
     private String id;
@@ -57,6 +79,7 @@ public class User {
         this.role = role;
     }
 
+    @JsonProperty("isActive")
     public boolean isActive() {
         return isActive;
     }

@@ -5,7 +5,7 @@ public enum Role {
     ANALIS_INTELIJEN("Analis Intelijen"),
     KOMANDAN_OPERASI("Komandan Operasi"),
     AGEN_LAPANGAN("Agen Lapangan"),
-    TEKNISI_DUKUNGAN("Teknisi Dukungan");
+    ADMIN("Admin");
 
     private final String displayName;
 

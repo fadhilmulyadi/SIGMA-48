@@ -14,6 +14,7 @@ public class Report {
     private LocalDateTime waktuLapor;
     private String isi;
     private List<String> lampiran;
+    private String lokasi;
 
     public Report() {
         this.reportId = UUID.randomUUID().toString();
@@ -109,6 +110,14 @@ public class Report {
         if (pathFile != null && this.lampiran != null) {
             this.lampiran.remove(pathFile);
         }
+    }
+
+    public String getLokasi() {
+        return lokasi;
+    }
+
+    public void setLokasi(String lokasi) {
+        this.lokasi = lokasi;
     }
 
     @Override

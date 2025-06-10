@@ -1,32 +1,68 @@
-[
-  {
-    "id": "test-direktur-001",
-    "username": "4801",
-    "passwordHash": "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
-    "role": "DIREKTUR_INTELIJEN"
-  },
-  {
-    "id": "test-analis-001",
-    "username": "4802",
-    "passwordHash": "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
-    "role": "ANALIS_INTELIJEN"
-  },
-  {
-    "id": "test-komandan-001",
-    "username": "4803",
-    "passwordHash": "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
-    "role": "KOMANDAN_OPERASI"
-  },
-  {
-    "id": "test-agen-001",
-    "username": "4804",
-    "passwordHash": "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
-    "role": "AGEN_LAPANGAN"
-  },
-  {
-    "id": "test-teknisi-001",
-    "username": "4805",
-    "passwordHash": "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
-    "role": "TEKNISI_DUKUNGAN"
-  }
-]
+[ {
+  "id" : "abd2a7e3-0b19-4e60-9b58-f157bd52d42c",
+  "username" : "480302",
+  "passwordHash" : "$2a$10$TF1qHENX7Y7Qn2kaJX39n.HD.9w1UtNGYsTkK0dpg1pF2jDhU71ca",
+  "role" : "AGEN_LAPANGAN",
+  "createdAt" : [ 2025, 6, 9, 7, 4, 12, 201617900 ],
+  "lastLogin" : null,
+  "spesialisasi" : [ ],
+  "isActive" : true
+}, {
+  "id" : "f55e2755-b476-4732-9b2a-4d6887f95327",
+  "username" : "480201",
+  "passwordHash" : "$2a$10$6s8cR9Z6iviT.DbjNFTXwenFxMsmcH5ohcpKzoo2NrQk8Y4huHYOm",
+  "role" : "ANALIS_INTELIJEN",
+  "createdAt" : null,
+  "lastLogin" : [ 2025, 6, 9, 7, 41, 37, 177252100 ],
+  "isActive" : false
+}, {
+  "id" : "admin-001",
+  "username" : "4899",
+  "passwordHash" : "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
+  "role" : "ADMIN",
+  "createdAt" : [ 2025, 6, 1, 0, 0 ],
+  "lastLogin" : [ 2025, 6, 10, 11, 30, 6, 496727400 ],
+  "isActive" : true
+}, {
+  "id" : "test-analis-001",
+  "username" : "4802",
+  "passwordHash" : "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
+  "role" : "ANALIS_INTELIJEN",
+  "createdAt" : [ 2025, 6, 1, 0, 0 ],
+  "lastLogin" : [ 2025, 6, 10, 11, 31, 0, 244088100 ],
+  "isActive" : true
+}, {
+  "id" : "test-agen-001",
+  "username" : "4804",
+  "passwordHash" : "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
+  "role" : "AGEN_LAPANGAN",
+  "createdAt" : [ 2025, 6, 1, 0, 0 ],
+  "lastLogin" : [ 2025, 6, 10, 11, 37, 20, 763583800 ],
+  "spesialisasi" : [ "Infiltrasi", "Pengawasan" ],
+  "isActive" : true
+}, {
+  "id" : "test-komandan-001",
+  "username" : "4803",
+  "passwordHash" : "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
+  "role" : "KOMANDAN_OPERASI",
+  "createdAt" : [ 2025, 6, 1, 0, 0 ],
+  "lastLogin" : [ 2025, 6, 10, 11, 39, 36, 160212700 ],
+  "isActive" : true
+}, {
+  "id" : "test-direktur-001",
+  "username" : "4801",
+  "passwordHash" : "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
+  "role" : "DIREKTUR_INTELIJEN",
+  "createdAt" : [ 2025, 6, 1, 0, 0 ],
+  "lastLogin" : [ 2025, 6, 10, 11, 40, 57, 900273700 ],
+  "isActive" : true
+}, {
+  "id" : "e7c6e053-c294-412a-b4be-e86272f47bb7",
+  "username" : "480403",
+  "passwordHash" : "$2a$10$4yx62x3jw8WWLW.QH218OuCl2e/X.AOYmFiQTPLJvm44hrLnJA3ie",
+  "role" : "AGEN_LAPANGAN",
+  "createdAt" : [ 2025, 6, 10, 11, 30, 27, 262548600 ],
+  "lastLogin" : [ 2025, 6, 10, 11, 43, 52, 405097500 ],
+  "spesialisasi" : [ "Makan", "Minum" ],
+  "isActive" : true
+} ]
