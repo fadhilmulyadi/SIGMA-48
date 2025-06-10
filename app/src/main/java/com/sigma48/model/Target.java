@@ -1,25 +1,26 @@
 package com.sigma48.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Data
+@NoArgsConstructor
+@ToString(exclude = {"evidencePaths", "profileImagePath", "deskripsi", "lokasi", "ancaman"})
 public class Target {
-    private String id;
-    private String nama;
-    private TargetType tipe;
-    private String lokasi, deskripsi;
-    private ThreatLevel ancaman;
-    private List<String> evidencePaths;
-    private String profileImagePath;
 
-    public Target() {
-        this.id = UUID.randomUUID().toString();
-        this.tipe = TargetType.LAINNYA;
-        this.ancaman = ThreatLevel.TIDAK_DIKETAHUI;
-        this.evidencePaths = new ArrayList<>();
-        this.profileImagePath = null;
-    }
+    private String id = UUID.randomUUID().toString();
+    private String nama;
+    private TargetType tipe = TargetType.LAINNYA;
+    private String lokasi;
+    private String deskripsi;
+    private ThreatLevel ancaman = ThreatLevel.TIDAK_DIKETAHUI;
+    private List<String> evidencePaths = new ArrayList<>();
+    private String profileImagePath;
 
     public Target(String nama, TargetType tipe, String lokasi, ThreatLevel ancaman, String deskripsi) {
         this();
@@ -30,71 +31,11 @@ public class Target {
         this.deskripsi = deskripsi;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getNama() {
-        return nama;
-    }
-
-    public void setNama(String nama) {
-        this.nama = nama; 
-    }
-
-    public TargetType getTipe() {
-        return tipe; 
-    }
-
-    public void setTipe(TargetType tipe) {
-        this.tipe = tipe;
-    }
-
-    public String getLokasi() {
-        return lokasi;
-    }
-    
-    public void setLokasi(String lokasi) {
-        this.lokasi = lokasi;
-    }
-
-    public String getDeskripsi() {
-        return deskripsi;
-    }
-    
-    public void setDeskripsi(String deskripsi) {
-        this.deskripsi = deskripsi;
-    }
-
-    public ThreatLevel getAncaman() {
-        return ancaman;
-    }
-
-    public void setAncaman(ThreatLevel ancaman) {
-        this.ancaman = ancaman;
-    }
-
     public List<String> getEvidencePaths() {
-            if (this.evidencePaths == null) {
-                this.evidencePaths = new ArrayList<>();
-            }
-            return evidencePaths;
+        if (evidencePaths == null) {
+            evidencePaths = new ArrayList<>();
         }
-
-    public void setEvidencePaths(List<String> evidencePaths) {
-        this.evidencePaths = evidencePaths;
-    }
-
-    public String getProfileImagePath() {
-        return profileImagePath;
-    }
-
-    public void setProfileImagePath(String profileImagePath) {
-        this.profileImagePath = profileImagePath;
+        return evidencePaths;
     }
 
     @Override

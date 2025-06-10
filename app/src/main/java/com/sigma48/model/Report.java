@@ -1,29 +1,30 @@
 package com.sigma48.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Data
+@NoArgsConstructor
+@ToString(exclude = "isi") // custom toString nanti akan ditulis ulang
 public class Report {
 
-    private String reportId;
+    private String reportId = UUID.randomUUID().toString();
     private String missionId;
     private String userId;
     private Role userRoleAtReporting;
-    private LocalDateTime waktuLapor;
+    private LocalDateTime waktuLapor = LocalDateTime.now();
     private String isi;
-    private List<String> lampiran;
+    private List<String> lampiran = new ArrayList<>();
     private String lokasi;
 
-    public Report() {
-        this.reportId = UUID.randomUUID().toString();
-        this.waktuLapor = LocalDateTime.now();
-        this.lampiran = new ArrayList<>();
-    }
-
+    // Constructor tambahan
     public Report(String missionId, String userId, Role userRoleAtReporting, String isi) {
-        this();
         this.missionId = missionId;
         this.userId = userId;
         this.userRoleAtReporting = userRoleAtReporting;
@@ -37,87 +38,24 @@ public class Report {
         }
     }
 
-    public String getReportId() {
-        return reportId;
-    }
-    
-    public void setReportId(String reportId) {
-        this.reportId = reportId;
-    }
-
-    public String getMissionId() {
-        return missionId;
-    }
-
-    public void setMissionId(String missionId) {
-        this.missionId = missionId;
-    }
-    
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public Role getUserRoleAtReporting() {
-        return userRoleAtReporting;
-    }
-
-    public void setUserRoleAtReporting(Role userRoleAtReporting) {
-        this.userRoleAtReporting = userRoleAtReporting;
-    }
-
-    public LocalDateTime getWaktuLapor() {
-        return waktuLapor;
-    }
-
-    public void setWaktuLapor(LocalDateTime waktuLapor) {
-        this.waktuLapor = waktuLapor;
-    }
-
-    public String getIsi() {
-        return isi;
-    }
-
-    public void setIsi(String isi) {
-        this.isi = isi;
-    }
-
     public List<String> getLampiran() {
         return lampiran == null ? new ArrayList<>() : lampiran;
     }
 
     public void setLampiran(List<String> lampiran) {
-        if (lampiran != null) {
-            this.lampiran = new ArrayList<>(lampiran);
-        } else {
-            this.lampiran = new ArrayList<>();
-        }
+        this.lampiran = lampiran != null ? new ArrayList<>(lampiran) : new ArrayList<>();
     }
 
     public void tambahLampiran(String pathFile) {
         if (pathFile != null && !pathFile.trim().isEmpty()) {
-            if (this.lampiran == null) {
-                this.lampiran = new ArrayList<>();
-            }
             this.lampiran.add(pathFile);
         }
     }
 
     public void hapusLampiran(String pathFile) {
-        if (pathFile != null && this.lampiran != null) {
+        if (pathFile != null) {
             this.lampiran.remove(pathFile);
         }
-    }
-
-    public String getLokasi() {
-        return lokasi;
-    }
-
-    public void setLokasi(String lokasi) {
-        this.lokasi = lokasi;
     }
 
     @Override
