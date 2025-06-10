@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.media.MediaView?>
+
+<BorderPane fx:id="rootPane" 
+            styleClass="media-viewer-content-pane" 
+            stylesheets="@../css/theme.css" 
+            xmlns="http://javafx.com/javafx/8.0.171" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.sigma48.ui.controller.MediaViewerController">
+   
+   <top>
+      <HBox fx:id="headerBar" alignment="CENTER_RIGHT" styleClass="media-viewer-header">
+         <children>
+            <Label fx:id="fileNameLabel" styleClass="media-viewer-filename" text="NAMA_FILE.JPG" />
+            <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleClose" styleClass="media-viewer-close-button" text="TUTUP" />
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <StackPane fx:id="viewerStackPane" style="-fx-background-color: #0a0b0d;">
+         <children>
+            <ImageView fx:id="imageView" pickOnBounds="true" preserveRatio="true" />
+            <MediaView fx:id="mediaView" />
+            <Button fx:id="prevButton" mnemonicParsing="false" onAction="#handlePrev" styleClass="media-viewer-nav-button" text="&lt;" StackPane.alignment="CENTER_LEFT">
+               <StackPane.margin>
+                  <Insets left="20.0" />
+               </StackPane.margin>
+            </Button>
+            <Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNext" styleClass="media-viewer-nav-button" text="&gt;" StackPane.alignment="CENTER_RIGHT">
+               <StackPane.margin>
+                  <Insets right="20.0" />
+               </StackPane.margin>
+            </Button>
+         </children>
+      </StackPane>
+   </center>
+   <bottom>
+      <StackPane alignment="CENTER" styleClass="media-viewer-footer">
+         <children>
+            <HBox fx:id="mediaControls" alignment="CENTER" managed="false" spacing="10.0" visible="false">
+               <children>
+                  <Button fx:id="playButton" mnemonicParsing="false" onAction="#handlePlay" styleClass="action-button-primary" text="PLAY" />
+                  <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#handlePause" text="PAUSE" />
+                  <Button fx:id="stopButton" mnemonicParsing="false" onAction="#handleStop" styleClass="cancel-button" text="STOP" />
+               </children>
+            </HBox>
+            <HBox fx:id="zoomControls" alignment="CENTER" managed="false" spacing="0.0" styleClass="zoom-control-group" visible="false">
+               <children>
+                  <Button fx:id="zoomOutButton" mnemonicParsing="false" onAction="#handleZoomOut" styleClass="zoom-button" text="-" />
+                  <Button fx:id="resetZoomButton" mnemonicParsing="false" onAction="#handleResetZoom" styleClass="zoom-button, zoom-center-button" text="RESET" />
+                  <Button fx:id="zoomInButton" mnemonicParsing="false" onAction="#handleZoomIn" styleClass="zoom-button" text="+" />
+               </children>
+            </HBox>
+         </children>
+      </StackPane>
+   </bottom>
+</BorderPane>

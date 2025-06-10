@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="overview-container" stylesheets="@../css/theme.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigma48.ui.controller.DirekturOverviewController">
+   <center>
+      <ScrollPane fitToWidth="true" styleClass="overview-scroll-pane">
+         <content>
+            <VBox spacing="25.0" styleClass="content-area" VBox.vgrow="ALWAYS">
+               
+               <!-- Header Section -->
+               <VBox styleClass="overview-header">
+                  <children>
+                     <Label styleClass="header-title" text="DIREKTORAT INTELIJEN" />
+                     <Label styleClass="header-subtitle" text="Global Operations Overview" />
+                  </children>
+               </VBox>
+               
+               <!-- Statistics Cards Grid - Fixed Height -->
+               <GridPane hgap="20.0" vgap="10.0" styleClass="stats-grid" minHeight="120.0" prefHeight="120.0" maxHeight="120.0">
+                 <columnConstraints>
+                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                 </columnConstraints>
+                 <rowConstraints>
+                   <RowConstraints minHeight="120.0" prefHeight="120.0" maxHeight="120.0" vgrow="NEVER" />
+                 </rowConstraints>
+                  <children>
+                     <!-- Active Missions Card -->
+                     <VBox styleClass="stat-card" GridPane.columnIndex="0" minHeight="100.0" prefHeight="100.0" maxHeight="100.0">
+                        <children>
+                           <Label styleClass="stat-title" text="MISI AKTIF" />
+                           <Label fx:id="aktifMissionsCountLabel" styleClass="stat-value" text="0" />
+                           <Label styleClass="stat-subtitle" text="OPERASI BERLANGSUNG" />
+                        </children>
+                     </VBox>
+                     
+                     <!-- Planned Missions Card -->
+                     <VBox styleClass="stat-card" GridPane.columnIndex="1" minHeight="100.0" prefHeight="100.0" maxHeight="100.0">
+                        <children>
+                           <Label styleClass="stat-title" text="MISI TERENCANA" />
+                           <Label fx:id="plannedMissionsCountLabel" styleClass="stat-value" text="0" />
+                           <Label styleClass="stat-subtitle" text="MENUNGGU PERSETUJUAN" />
+                        </children>
+                     </VBox>
+                     
+                     <!-- Draft Missions Card -->
+                     <VBox styleClass="stat-card" GridPane.columnIndex="2" minHeight="100.0" prefHeight="100.0" maxHeight="100.0">
+                        <children>
+                           <Label styleClass="stat-title" text="DRAFT PERLU REVIEW" />
+                           <Label fx:id="draftMissionsCountLabel" styleClass="stat-value" text="0" />
+                           <Label styleClass="stat-subtitle" text="REVISI DIPERLUKAN" />
+                        </children>
+                     </VBox>
+                     
+                     <!-- Evaluation Missions Card -->
+                     <VBox styleClass="stat-card" GridPane.columnIndex="3" minHeight="100.0" prefHeight="100.0" maxHeight="100.0">
+                        <children>
+                           <Label styleClass="stat-title" text="MENUNGGU EVALUASI" />
+                           <Label fx:id="evalMissionsCountLabel" styleClass="stat-value" text="0" />
+                           <Label styleClass="stat-subtitle" text="LAPORAN MASUK" />
+                        </children>
+                     </VBox>
+                  </children>
+               </GridPane>
+
+               <!-- Main Content Grid with Proper Spacing -->
+               <GridPane hgap="20.0" vgap="20.0" VBox.vgrow="ALWAYS">
+                 <columnConstraints>
+                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                 </columnConstraints>
+                 <rowConstraints>
+                   <RowConstraints minHeight="400.0" vgrow="ALWAYS" />
+                 </rowConstraints>
+                  <children>
+                     <!-- Operations Control Panel -->
+                     <VBox styleClass="dashboard-panel" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <children>
+                           <Label styleClass="section-title" text="PANEL KONTROL OPERASI" />
+                           <VBox spacing="15.0" VBox.vgrow="ALWAYS">
+                              <padding><Insets top="15.0" /></padding>
+                              <children>
+                                 <Button fx:id="buatMisiBaruButton" maxWidth="1.7976931348623157E308" styleClass="secondary-button-dr" text="BUAT ARAHAN MISI BARU" />
+                                 <Button fx:id="lihatSemuaMisiButton" maxWidth="1.7976931348623157E308" styleClass="secondary-button-dr" text="LIHAT SEMUA MISI" />
+                                 <Button fx:id="reviewDraftButton" maxWidth="1.7976931348623157E308" styleClass="secondary-button-dr" text="REVIEW DRAFT MISI" />
+                                 <Button fx:id="bukaAntrianEvaluasiButton" maxWidth="1.7976931348623157E308" styleClass="secondary-button-dr" text="BUKA ANTRIAN EVALUASI" />
+                                 <Button fx:id="manajemenTargetButton" maxWidth="1.7976931348623157E308" styleClass="secondary-button-dr" text="MANAJEMEN TARGET" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </VBox>
+
+                     <!-- Intelligence Feed Panel -->
+                     <VBox styleClass="dashboard-panel" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <children>
+                           <Label styleClass="section-title" text="🔴 LIVE INTELLIGENCE FEED" />
+                           <ListView fx:id="notificationsListView" styleClass="data-list-view" VBox.vgrow="ALWAYS" />
+                        </children>
+                     </VBox>
+                  </children>
+               </GridPane>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </center>
+</BorderPane>
