@@ -42,6 +42,9 @@ public class MissionDao {
     //Method Membaca dan Menulis File
     private List<Mission> readAllMissionsFromFile() throws IOException {
         File file = new File(MISSIONS_FILE_PATH);
+        if (file.length() == 0) {
+            return new ArrayList<>();
+        }
         return objectMapper.readValue(file, new TypeReference<List<Mission>>(){});
     }
 
@@ -80,46 +83,49 @@ public class MissionDao {
 
     // Menyimpan misi baru atau memperbarui misi yang sudah ada
     public boolean saveMission(Mission missionToSave) {
-    if (missionToSave == null) {
-        return false;
-    }
-    try {
-        List<Mission> missions = readAllMissionsFromFile();
-        Optional<Mission> existingMission = findMissionById(missionToSave.getId());
-
-        if (existingMission.isPresent()) {
-            missions.remove(existingMission.get());
+        if (missionToSave == null) {
+            return false;
         }
-        missions.add(missionToSave);
-        saveAllMissionsToFile(missions);
-        return true;
-    } catch (IOException e) {
-        e.printStackTrace();
-        return false;
+        try {
+            List<Mission> missions = readAllMissionsFromFile();
+            missions.removeIf(m -> m.getId().equals(missionToSave.getId()));
+            missions.add(missionToSave);
+            saveAll(missions);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-}
 
 
     //Menghapus misi berdasarkan ID
     public boolean deleteMission(String missionId) {
-    if (missionId == null || missionId.trim().isEmpty()) {
-        return false;
-    }
-    try {
-        List<Mission> missions = readAllMissionsFromFile();
-        Optional<Mission> missionToRemove = findMissionById(missionId);
-
-        if (missionToRemove.isPresent()) {
-            missions.remove(missionToRemove.get());
-            saveAllMissionsToFile(missions);
-            return true;
-        } else {
-            return false; // Misi dengan ID yang diberikan tidak ditemukan
+        if (missionId == null || missionId.trim().isEmpty()) {
+            return false;
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-        return false;
-    }
-}
+        try {
+            List<Mission> missions = readAllMissionsFromFile();
+            Optional<Mission> missionToRemove = findMissionById(missionId);
 
+            if (missionToRemove.isPresent()) {
+                missions.remove(missionToRemove.get());
+                saveAll(missions);
+                return true;
+            } else {
+                return false; // Misi dengan ID yang diberikan tidak ditemukan
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void saveAll(List<Mission> missions) {
+        try {
+            saveAllMissionsToFile(missions);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
