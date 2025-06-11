@@ -57,7 +57,6 @@ public class AdminUserManagementViewController {
     private User currentUserToEdit;
     private MainDashboardController mainDashboardController;
 
-    // ... (sisa method setter dan initialize tetap sama) ...
     public void setMainDashboardController(MainDashboardController mainDashboardController) {
         this.mainDashboardController = mainDashboardController;
     }
@@ -81,7 +80,7 @@ public class AdminUserManagementViewController {
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().isActive() ? "Aktif" : "Non-Aktif"));
         actionsColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button manageBtn = new Button("Kelola");
+            private final Button manageBtn = new Button("KELOLA");
             private final HBox pane = new HBox(manageBtn);
             {
                 pane.setAlignment(Pos.CENTER);
@@ -116,13 +115,12 @@ public class AdminUserManagementViewController {
     @FXML
     private void handleTambahUser() {
         currentUserToEdit = null;
-        formTitleLabel.setText("Tambah Pengguna Baru");
+        formTitleLabel.setText("TAMBAH PENGGUNA BARU");
         clearFormFields();
         passwordField.setVisible(true);
         passwordField.setManaged(true);
         passwordLabel.setVisible(true);
         passwordLabel.setManaged(true);
-        passwordField.setPromptText("Wajib diisi untuk pengguna baru");
         otherActionsBox.setVisible(false);
         otherActionsBox.setManaged(false);
         dangerZoneBox.setVisible(false);
@@ -132,7 +130,7 @@ public class AdminUserManagementViewController {
 
     private void showFormForEdit(User user) {
         currentUserToEdit = user;
-        formTitleLabel.setText("Edit Pengguna: " + user.getUsername());
+        formTitleLabel.setText("EDIT PENGGUNA: " + user.getUsername());
         populateFormFields(user);
         passwordField.setVisible(false);
         passwordField.setManaged(false);
@@ -143,10 +141,10 @@ public class AdminUserManagementViewController {
         dangerZoneBox.setVisible(true);
         dangerZoneBox.setManaged(true);
         if (user.isActive()) {
-            toggleStatusInFormBtn.setText("Non-aktifkan Akun");
+            toggleStatusInFormBtn.setText("NON-AKTIFKAN AKUN");
             toggleStatusInFormBtn.getStyleClass().setAll("button", "cancel-button");
         } else {
-            toggleStatusInFormBtn.setText("Aktifkan Akun");
+            toggleStatusInFormBtn.setText("AKTIFKAN AKUN");
             toggleStatusInFormBtn.getStyleClass().setAll("button");
         }
         boolean isMainAdmin = user.getUsername().equals("4899");

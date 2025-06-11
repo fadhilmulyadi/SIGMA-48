@@ -11,6 +11,8 @@ import com.sigma48.model.User;
 import com.sigma48.model.MissionStatus;
 import com.sigma48.ui.dto.MissionDisplayData;
 import com.sigma48.ui.controller.listitems.MissionListItemController;
+import com.sigma48.ui.controller.base.BaseController;
+import com.sigma48.ServiceLocator;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,9 +25,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
 import javafx.util.Callback;
 
 import java.io.IOException;
@@ -35,7 +34,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class MissionListViewController {
+public class MissionListViewController extends BaseController {
 
     @FXML private Label viewTitleLabel;
     @FXML private ListView<MissionDisplayData> missionListView;
@@ -45,20 +44,9 @@ public class MissionListViewController {
     private TargetManager targetManager;
     private UserManager userManager;
     private User currentUser;
-    private MainDashboardController mainDashboardController;
 
     private ObservableList<MissionDisplayData> missionDisplayDataList = FXCollections.observableArrayList();
     private String currentListContext = "ALL_MISSIONS";
-
-    public void setMainDashboardController(MainDashboardController mainDashboardController) {
-        this.mainDashboardController = mainDashboardController;
-    }
-
-    public void setManagers(MissionManager missionManager, TargetManager targetManager, UserManager userManager) {
-        this.missionManager = missionManager;
-        this.targetManager = targetManager;
-        this.userManager = userManager;
-    }
 
     public void setListContext(String context) {
         this.currentListContext = context;
@@ -82,9 +70,12 @@ public class MissionListViewController {
         }
     }
 
-
     @FXML
     public void initialize() {
+        // Get managers from ServiceLocator
+        this.missionManager = ServiceLocator.getMissionManager();
+        this.targetManager = ServiceLocator.getTargetManager();
+        this.userManager = ServiceLocator.getUserManager();
         this.currentUser = Main.authManager.getCurrentUser();
         
         missionListView.setItems(missionDisplayDataList);
@@ -106,7 +97,7 @@ public class MissionListViewController {
         updateViewTitle(); // Set judul awal berdasarkan konteks default
     }
     
-    // Panggil ini dari MainDashboardController setelah manager dan konteks di-set
+    // Panggil ini dari MainDashboardController setelah konteks di-set
     public void loadData() {
         if (missionManager == null || targetManager == null || userManager == null || currentUser == null) {
             System.err.println("MissionListViewController: Managers or currentUser not initialized!");
@@ -149,7 +140,7 @@ public class MissionListViewController {
                 break;
             default: // ALL_MISSIONS
                 if (currentUser.getRole() == Role.DIREKTUR_INTELIJEN || currentUser.getRole() == Role.ADMIN) {
-                     missionsFromManager = missionManager.getAllMissions();
+                     missionsFromManager = missionManager.getAll();
                 } else if (currentUser.getRole() == Role.ANALIS_INTELIJEN) {
                     missionsFromManager = missionManager.getMissionsByStatus(MissionStatus.DRAFT_ANALIS); // Atau filter lain
                 } else if (currentUser.getRole() == Role.KOMANDAN_OPERASI) {

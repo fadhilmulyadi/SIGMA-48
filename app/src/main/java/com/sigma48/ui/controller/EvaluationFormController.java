@@ -1,6 +1,7 @@
 package com.sigma48.ui.controller;
 
 import com.sigma48.Main;
+import com.sigma48.ServiceLocator;
 import com.sigma48.manager.EvaluationManager;
 import com.sigma48.manager.MissionManager;
 import com.sigma48.manager.UserManager;
@@ -9,6 +10,7 @@ import com.sigma48.model.Mission;
 import com.sigma48.model.MissionStatus;
 import com.sigma48.model.OperationEffectiveness;
 import com.sigma48.model.User; // Termasuk Agent
+import com.sigma48.ui.controller.base.BaseController;
 import com.sigma48.model.Role; // Untuk validasi peran evaluator
 
 import javafx.collections.FXCollections;
@@ -30,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class EvaluationFormController {
+public class EvaluationFormController extends BaseController{
 
     @FXML private Label evaluatorInfoLabel;
     @FXML private ComboBox<Mission> missionComboBox;
@@ -56,22 +58,15 @@ public class EvaluationFormController {
         this.mainDashboardController = mainDashboardController;
     }
 
-    public void setManagers(EvaluationManager evalManager, MissionManager missManager, UserManager uManager) {
-        this.evaluationManager = evalManager;
-        this.missionManager = missManager;
-        this.userManager = uManager;
-    }
-
-    /**
-     * Dipanggil oleh MainDashboardController jika form ini dibuka untuk misi tertentu.
-     * @param mission Misi yang akan dievaluasi.
-     */
     public void setSelectedMission(Mission mission) {
         this.preselectedMission = mission;
     }
 
     // Panggil ini dari MainDashboardController setelah semua dependensi di-set
     public void loadInitialData() {
+        this.evaluationManager = ServiceLocator.getEvaluationManager();
+        this.missionManager = ServiceLocator.getMissionManager();
+        this.userManager = ServiceLocator.getUserManager();
         this.currentUser = Main.authManager.getCurrentUser();
         if (currentUser != null) {
             evaluatorInfoLabel.setText(currentUser.getUsername() + " (" + currentUser.getRole().getDisplayName() + ")");
@@ -136,7 +131,7 @@ public class EvaluationFormController {
 
     private void loadMissionsToComboBox() {
         // Hanya tampilkan misi yang sudah selesai atau sedang aktif untuk dievaluasi
-        List<Mission> evaluableMissions = missionManager.getAllMissions().stream()
+        List<Mission> evaluableMissions = missionManager.getAll().stream()
                 .filter(m -> m.getStatus() == MissionStatus.ACTIVE || 
                              m.getStatus() == MissionStatus.COMPLETED ||
                              m.getStatus() == MissionStatus.FAILED ||

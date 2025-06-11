@@ -11,7 +11,7 @@
       <VBox spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label styleClass="view-title-xl" text="MISI DITUGASKAN PADA SAYA" />
-            <Label styleClass="form-label" text="Berikut adalah daftar misi yang sedang aktif atau siap untuk briefing. Klik ganda pada misi untuk menyerahkan laporan." />
+            <Label styleClass="form-label" text="BERIKUT ADALAH DAFTAR MISI YANG SEDANG AKTIF ATAU SIAP UNTUK BRIEFING. KLIK GANDA PADA MISI UNTUK MENYERAHKAN LAPORAN." />
             <ListView fx:id="missionsListView" styleClass="mission-list-view-custom" VBox.vgrow="ALWAYS" />
          </children>
          <padding>

@@ -1,6 +1,7 @@
 package com.sigma48.ui.controller;
 
 import com.sigma48.Main;
+import com.sigma48.ServiceLocator;
 import com.sigma48.manager.MissionManager;
 import com.sigma48.manager.TargetManager;
 import com.sigma48.manager.UserManager;
@@ -9,6 +10,7 @@ import com.sigma48.model.Target;
 import com.sigma48.model.User;
 import com.sigma48.ui.controller.listitems.MissionListItemController;
 import com.sigma48.ui.dto.MissionDisplayData;
+import com.sigma48.ui.controller.base.BaseController;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-public class AgentMissionsViewController {
+public class AgentMissionsViewController extends BaseController {
 
     @FXML private ListView<MissionDisplayData> missionsListView;
 
@@ -32,37 +34,34 @@ public class AgentMissionsViewController {
     private TargetManager targetManager;
     private UserManager userManager;
     private User currentUser;
-    private MainDashboardController mainDashboardController;
 
     private ObservableList<MissionDisplayData> missionDisplayDataList = FXCollections.observableArrayList();
 
-    public void setMainDashboardController(MainDashboardController mainDashboardController) {
-        this.mainDashboardController = mainDashboardController;
-    }
-
-    public void setManagers(MissionManager missionManager, TargetManager targetManager, UserManager userManager) {
-        this.missionManager = missionManager;
-        this.targetManager = targetManager;
-        this.userManager = userManager;
-        loadMissions();
-    }
-
     @FXML
     public void initialize() {
+        this.missionManager = ServiceLocator.getMissionManager();
+        this.targetManager = ServiceLocator.getTargetManager();
+        this.userManager = ServiceLocator.getUserManager();
+        this.currentUser = Main.authManager.getCurrentUser();
         this.currentUser = Main.authManager.getCurrentUser();
         missionsListView.setItems(missionDisplayDataList);
-        missionsListView.setPlaceholder(new Label("Memuat data misi..."));
-
+        missionsListView.setPlaceholder(new Label("MEMUAT DATA MISI..."));
         missionsListView.setCellFactory(listView -> new MissionListCell());
 
         missionsListView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 MissionDisplayData selectedData = missionsListView.getSelectionModel().getSelectedItem();
-                if (selectedData != null) {
-                    mainDashboardController.showReportSubmissionForm(selectedData.getId());
+                if (selectedData != null && mainDashboardController != null) {
+                    // Cari objek Mission lengkap berdasarkan ID
+                    missionManager.getMissionById(selectedData.getId()).ifPresent(mission -> {
+                        // Panggil metode baru di MainDashboardController untuk menampilkan detail
+                        mainDashboardController.showAgentMissionDetailView(mission);
+                    });
                 }
             }
         });
+        
+        loadMissions();
     }
 
     private void loadMissions() {

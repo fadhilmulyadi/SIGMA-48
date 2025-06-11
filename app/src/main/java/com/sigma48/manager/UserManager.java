@@ -18,7 +18,7 @@ public class UserManager {
     }
 
     public List<User> getAllUsers() {
-        return userDao.getAllUsers();
+        return userDao.getAll();
     }
 
     public Optional<User> findUserById(String userId) {

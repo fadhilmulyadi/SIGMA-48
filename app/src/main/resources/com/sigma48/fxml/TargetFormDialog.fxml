@@ -29,10 +29,10 @@
                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label styleClass="form-label-bold" text="Nama Target" />
-                  <Label styleClass="form-label-bold" text="Tipe Target" GridPane.rowIndex="1" />
-                  <Label styleClass="form-label" text="Lokasi" GridPane.rowIndex="2" />
-                  <Label styleClass="form-label-bold" text="Level Ancaman" GridPane.rowIndex="3" />
+                  <Label styleClass="form-label-bold" text="NAMA TARGET" />
+                  <Label styleClass="form-label-bold" text="TIPE TARGET" GridPane.rowIndex="1" />
+                  <Label styleClass="form-label" text="LOKASI" GridPane.rowIndex="2" />
+                  <Label styleClass="form-label-bold" text="LEVEL ANCAMAN" GridPane.rowIndex="3" />
                   <TextField fx:id="namaTargetField" styleClass="form-input-text" GridPane.columnIndex="1" />
                   <ComboBox fx:id="tipeTargetComboBox" maxWidth="1.7976931348623157E308" styleClass="form-input-combo-box" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <TextField fx:id="lokasiTargetField" styleClass="form-input-text" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -42,8 +42,8 @@
             <Label fx:id="statusDialogLabel" managed="false" visible="false" />
             <HBox alignment="CENTER_RIGHT" spacing="10.0">
                <children>
-                  <Button onAction="#handleCancel" styleClass="cancel-button" text="Batal" />
-                  <Button fx:id="saveButton" onAction="#handleSave" styleClass="action-button-primary" text="Simpan" />
+                  <Button onAction="#handleCancel" styleClass="cancel-button" text="BATAL" />
+                  <Button fx:id="saveButton" onAction="#handleSave" styleClass="action-button-primary" text="SIMPAN" />
                </children>
             </HBox>
          </children>

@@ -1,13 +1,13 @@
 package com.sigma48.model;
 
 public enum ThreatLevel {
-    TIDAK_DIKETAHUI("Tidak Diketahui"),
-    SANGAT_RENDAH("Sangat Rendah"),
-    RENDAH("Rendah"),
-    SEDANG("Sedang"),
-    TINGGI("Tinggi"),
-    SANGAT_TINGGI("Sangat Tinggi"),
-    KRITIS("Kritis");
+    TIDAK_DIKETAHUI("TIDAK DIKETAHUI"),
+    SANGAT_RENDAH("SANGAT RENDAH"),
+    RENDAH("RENDAH"),
+    SEDANG("SEDANG"),
+    TINGGI("TINGGI"),
+    SANGAT_TINGGI("SANGAT TINGGI"),
+    KRITIS("KRITIS");
 
     private final String displayName;
 

@@ -16,29 +16,14 @@ public class AgentManager {
     }
 
     public List<Agent> getAvailableAgents() {
-        List<User> allUsers = userDao.getAllUsers();
+        List<User> allUsers = userDao.getAll(); 
         if (allUsers == null) {
             return new ArrayList<>();
         }
 
         return allUsers.stream()
-                .filter(user -> user.getRole() == Role.AGEN_LAPANGAN)
-                .filter(user -> user instanceof Agent)
+                .filter(user -> user.getRole() == Role.AGEN_LAPANGAN && user instanceof Agent)
                 .map(user -> (Agent) user)
-                .collect(Collectors.toList());
-    }
-
-    public List<Agent> getAvailableAgentsBySpecialization(String specializationKeyword) {
-        List<Agent> allAgents = getAvailableAgents();
-        if (specializationKeyword == null || specializationKeyword.trim().isEmpty()) {
-            return allAgents;
-        }
-
-        String lowerCaseKeyword = specializationKeyword.toLowerCase();
-        return allAgents.stream()
-                .filter(agent -> agent.getSpesialisasi() != null &&
-                                 agent.getSpesialisasi().stream()
-                                      .anyMatch(spec -> spec.toLowerCase().contains(lowerCaseKeyword)))
                 .collect(Collectors.toList());
     }
 }

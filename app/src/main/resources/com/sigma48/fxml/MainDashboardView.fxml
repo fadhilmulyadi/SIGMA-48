@@ -19,10 +19,18 @@
             <HBox alignment="CENTER_LEFT" spacing="15.0">
                <children>
                   <ImageView fitHeight="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@../images/logo.png" /></image>
+                  </ImageView>
+                  <Label text="SIGMA 48" style="-fx-font-family: 'Agency FB'; -fx-font-weight: bold; -fx-text-fill: white;" />
+                  <ImageView fitHeight="24.0" pickOnBounds="true" preserveRatio="true">
                      <image><Image url="@../images/agency_logo_white.png" /></image>
                   </ImageView>
-                  <Label styleClass="header-label" text="USER ID" />
-                  <Label fx:id="headerUserIdLabel" styleClass="header-value" text="[USER_ID]" />
+                  <VBox alignment="CENTER_LEFT" spacing="2.0">
+                     <children>
+                        <Label styleClass="header-label" text="USER ID" style="-fx-font-family: 'Agency FB'; -fx-font-weight: bold;" />
+                        <Label fx:id="headerUserIdLabel" styleClass="header-value" text="[USER_ID]" style="-fx-font-family: 'Agency FB'; -fx-font-weight: bold;" />
+                     </children>
+                  </VBox>
                </children>
             </HBox>
             
@@ -31,7 +39,7 @@
                   <VBox alignment="CENTER_RIGHT" style="-fx-line-spacing: -2;">
                      <children>
                         <Label styleClass="header-label-small" text="MILITARY INTELLIGENCE" />
-                        <Label fx:id="headerLevelLabel" styleClass="header-value-large" text="LEVEL [XX]" />
+                        <Label fx:id="headerLevelLabel" styleClass="header-value-large" text="LEVEL [XX]" style="-fx-font-family: 'Agency FB'; -fx-font-weight: bold;" />
                      </children>
                   </VBox>
                   <Button fx:id="logoutButton" onAction="#handleLogoutButtonAction" styleClass="icon-button-danger">
@@ -52,14 +60,27 @@
       <StackPane fx:id="contentAreaPane" styleClass="content-area" />
    </center>
    <bottom>
-      <HBox fx:id="footerBox" alignment="CENTER" spacing="40.0" styleClass="footer-box">
+      <VBox>
          <children>
-            <Label fx:id="pageInfoLabel" text="PAGE: 01" />
-            <Label fx:id="sectionInfoLabel" text="SEC: 01" />
-            <Label fx:id="itemInfoLabel" text="1/1" />
-            <Label fx:id="lineInfoLabel" text="LINE: 01" />
-            <Label fx:id="colInfoLabel" text="COL: 01" />
+            <HBox fx:id="footerBox" alignment="CENTER" spacing="40.0" styleClass="footer-box">
+               <children>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Label text="WE LIVE AND DIE IN THE SHADOWS FOR THOSE WE HOLD CLOSE AND FOR THOSE WE NEVER MEET" 
+                         style="-fx-font-family: 'Agency FB'; -fx-font-weight: bold; -fx-text-fill: white;" />
+                  <Region HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <!-- Hidden labels for controller compatibility -->
+            <HBox visible="false" managed="false">
+               <children>
+                  <Label fx:id="pageInfoLabel" text="PAGE: 01" />
+                  <Label fx:id="sectionInfoLabel" text="SEC: 01" />
+                  <Label fx:id="itemInfoLabel" text="1/1" />
+                  <Label fx:id="lineInfoLabel" text="LINE: 01" />
+                  <Label fx:id="colInfoLabel" text="COL: 01" />
+               </children>
+            </HBox>
          </children>
-      </HBox>
+      </VBox>
    </bottom>
 </BorderPane>

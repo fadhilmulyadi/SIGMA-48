@@ -59,9 +59,9 @@ public class MissionManager {
         }
     }
 
-    //Method getAllMissions
-    public List<Mission> getAllMissions() {
-        return missionDao.getAllMissions(); // Mendapatkan seluruh misi dari MissionDao
+    //Method getAll
+    public List<Mission> getAll() {
+        return missionDao.getAll(); // Mendapatkan seluruh misi dari MissionDao
     }
 
     //Method getMissionById
@@ -185,7 +185,7 @@ public class MissionManager {
         if (agentId == null || agentId.trim().isEmpty()) {
             return new ArrayList<>();
         }
-        List<Mission> allMissions = missionDao.getAllMissions(); // Mengambil semua misi
+        List<Mission> allMissions = missionDao.getAll(); // Mengambil semua misi
         return allMissions.stream()
                 .filter(mission -> mission.getAssignedAgents() != null && 
                                 mission.getAssignedAgents().contains(agentId))
@@ -196,7 +196,7 @@ public class MissionManager {
     }
 
     public List<Mission> getActiveMissions() {
-        List<Mission> allMissions = missionDao.getAllMissions(); // Mengambil semua misi
+        List<Mission> allMissions = missionDao.getAll(); // Mengambil semua misi
         return allMissions.stream()
                 .filter(mission -> mission.getStatus() == MissionStatus.ACTIVE)
                 .sorted(Comparator.comparing(Mission::getUpdatedAt, Comparator.nullsLast(Comparator.reverseOrder()))) // Urutkan dari yang terbaru diupdate
@@ -219,7 +219,7 @@ public class MissionManager {
         if (commanderId == null || commanderId.trim().isEmpty()) {
             return new ArrayList<>();
         }
-        List<Mission> allMissions = missionDao.getAllMissions();
+        List<Mission> allMissions = missionDao.getAll();
         return allMissions.stream()
                 .filter(mission -> commanderId.equals(mission.getKomandanId())) // Misi milik Komandan ini
                 .filter(mission -> mission.getStatus() == MissionStatus.MENUNGGU_PERENCANAAN_KOMANDAN ||
@@ -232,7 +232,7 @@ public class MissionManager {
         if (status == null) {
             return new ArrayList<>();
         }
-        List<Mission> allMissions = missionDao.getAllMissions();
+        List<Mission> allMissions = missionDao.getAll();
         return allMissions.stream()
                 .filter(mission -> mission.getStatus() == status)
                 .sorted(Comparator.comparing(Mission::getUpdatedAt, Comparator.nullsLast(Comparator.reverseOrder()))) // Urutkan dari yang terbaru diupdate
@@ -287,14 +287,14 @@ public class MissionManager {
         if (commanderId == null || commanderId.trim().isEmpty()) {
             return new ArrayList<>();
         }
-        return missionDao.getAllMissions().stream()
+        return missionDao.getAll().stream()
                 .filter(mission -> commanderId.equals(mission.getKomandanId()))
                 .collect(Collectors.toList());
     }
 
     // public void updateMission(Mission updatedMission) {
     //     // 1. Ambil semua misi yang ada dari file.
-    //     List<Mission> allMissions = missionDao.getAllMissions();
+    //     List<Mission> allMissions = missionDao.getAll();
 
     //     // 2. Cari misi yang akan di-update berdasarkan ID, lalu ganti dengan data baru.
     //     for (int i = 0; i < allMissions.size(); i++) {

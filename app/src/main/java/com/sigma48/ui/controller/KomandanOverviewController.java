@@ -10,8 +10,10 @@ import com.sigma48.model.MissionStatus;
 import com.sigma48.model.Report;
 import com.sigma48.model.Target;
 import com.sigma48.model.User;
+import com.sigma48.ui.controller.base.BaseController;
 import com.sigma48.ui.dto.MissionDisplayData;
 import com.sigma48.ui.dto.ReportDisplayData;
+import com.sigma48.ServiceLocator;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -24,24 +26,17 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Alert;
-import javafx.scene.control.DialogPane;
-import javafx.stage.StageStyle;
-import javafx.scene.control.ButtonType;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-public class KomandanOverviewController {
+public class KomandanOverviewController extends BaseController {
 
-    // FXML Fields untuk Ringkasan Tim
     @FXML private Label activeMissionsLedCountLabel;
     @FXML private Label assignedAgentsCountLabel;
     @FXML private Label readyForBriefingCountLabel;
 
-    // FXML Fields untuk Misi & Laporan
     @FXML private ListView<MissionDisplayData> pendingActionMissionsListView;
     @FXML private ListView<ReportDisplayData> recentReportsListView;
     @FXML private TableView<Mission> missionsTableView; 
@@ -51,30 +46,26 @@ public class KomandanOverviewController {
     private MissionManager missionManager;
     private ReportManager reportManager;
     private UserManager userManager;
-    private User currentUser;
-    private MainDashboardController mainDashboardController;
     private TargetManager targetManager;
+    private User currentUser;
 
     private ObservableList<MissionDisplayData> pendingMissionsData = FXCollections.observableArrayList();
     private ObservableList<ReportDisplayData> recentReportsData = FXCollections.observableArrayList();
 
-    public void setMainDashboardController(MainDashboardController mainDashboardController) {
-        this.mainDashboardController = mainDashboardController;
-    }
-    
-    public void setManagers(MissionManager missionManager, ReportManager reportManager, UserManager userManager, TargetManager targetManager) {
-        this.missionManager = missionManager;
-        this.reportManager = reportManager;
-        this.userManager = userManager;
-        this.targetManager = targetManager; 
-        loadDashboardData();
-    }
-
     @FXML
     public void initialize() {
+        // Get managers from ServiceLocator
+        this.missionManager = ServiceLocator.getMissionManager();
+        this.reportManager = ServiceLocator.getReportManager();
+        this.userManager = ServiceLocator.getUserManager();
+        this.targetManager = ServiceLocator.getTargetManager();
+        
+        // Get current user
         this.currentUser = Main.authManager.getCurrentUser();
+        
         setupListViews();
         setupActionButtons();
+        loadDashboardData();
     }
 
     private void setupListViews() {

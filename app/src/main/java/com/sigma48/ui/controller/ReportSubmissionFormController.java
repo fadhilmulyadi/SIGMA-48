@@ -1,10 +1,12 @@
 package com.sigma48.ui.controller;
 
 import com.sigma48.Main;
+import com.sigma48.ServiceLocator; // <-- PERUBAHAN: Import ServiceLocator
 import com.sigma48.manager.ReportManager;
+import com.sigma48.model.Report;
 import com.sigma48.model.Role;
 import com.sigma48.model.User;
-import com.sigma48.model.Report; // Untuk tipe data Optional dari submitReport
+import com.sigma48.ui.controller.base.BaseController; // <-- PERUBAHAN: Import BaseController
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +17,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
-import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,9 +27,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-public class ReportSubmissionFormController {
+public class ReportSubmissionFormController extends BaseController {
 
     @FXML private Label missionIdLabel;
     @FXML private Label missionJudulLabel;
@@ -44,17 +44,8 @@ public class ReportSubmissionFormController {
     private ReportManager reportManager;
     private User currentUser;
     private String currentMissionId;
-    private ObservableList<File> attachedFilesObjectList = FXCollections.observableArrayList();
-    private ObservableList<String> attachedFileNamesList = FXCollections.observableArrayList();
-    private MainDashboardController mainDashboardController;
-
-    public void setMainDashboardController(MainDashboardController mainDashboardController) {
-        this.mainDashboardController = mainDashboardController;
-    }
-
-    public void setReportManager(ReportManager reportManager) {
-        this.reportManager = reportManager;
-    }
+    private final ObservableList<File> attachedFilesObjectList = FXCollections.observableArrayList();
+    private final ObservableList<String> attachedFileNamesList = FXCollections.observableArrayList();
 
     public void setMissionToReport(String missionId, String missionJudul) {
         this.currentMissionId = missionId;
@@ -65,8 +56,9 @@ public class ReportSubmissionFormController {
     @FXML
     public void initialize() {
         this.currentUser = Main.authManager.getCurrentUser();
-        lampiranListView.setItems(attachedFileNamesList);
+        this.reportManager = ServiceLocator.getReportManager();
 
+        lampiranListView.setItems(attachedFileNamesList);
         hapusLampiranButton.disableProperty().bind(
             lampiranListView.getSelectionModel().selectedItemProperty().isNull()
         );
@@ -85,12 +77,11 @@ public class ReportSubmissionFormController {
 
         if (selectedFiles != null && !selectedFiles.isEmpty()) {
             for (File file : selectedFiles) {
-                // Cek duplikasi berdasarkan path absolut untuk menghindari file yang sama ditambahkan berkali-kali
                 if (attachedFilesObjectList.stream().noneMatch(existingFile -> existingFile.getAbsolutePath().equals(file.getAbsolutePath()))) {
                     attachedFilesObjectList.add(file);
                     attachedFileNamesList.add(file.getName() + " (" + String.format("%.2f KB", file.length() / 1024.0) + ")");
                 } else {
-                    showStatus("File '" + file.getName() + "' sudah ada di daftar lampiran.", true);
+                    super.showStatus(statusSubmitLabel, "File '" + file.getName() + "' sudah ada di daftar lampiran.", true);
                 }
             }
         }
@@ -111,7 +102,7 @@ public class ReportSubmissionFormController {
         String lokasi = locationTextField.getText().trim();
 
         if (isi.isEmpty() || lokasi.isEmpty()) {
-            showStatus("Isi laporan dan lokasi tidak boleh kosong.", true);
+            super.showStatus(statusSubmitLabel, "Isi laporan dan lokasi tidak boleh kosong.", true);
             return;
         }
                 
@@ -120,22 +111,21 @@ public class ReportSubmissionFormController {
                 currentUser.getId(),
                 currentUser.getRole(),
                 isi,
-                new ArrayList<>(), // Kirim list kosong dulu
+                new ArrayList<>(),
                 lokasi
         );
 
         if (!submittedReportOpt.isPresent()) {
-            showStatus("Gagal membuat entri laporan awal. Periksa konsol.", true);
+            super.showStatus(statusSubmitLabel, "Gagal membuat entri laporan awal. Periksa konsol.", true);
             return;
         }
 
         Report submittedReport = submittedReportOpt.get();
-        List<String> realAttachmentPaths = new ArrayList<>();
-
         if (!attachedFilesObjectList.isEmpty()) {
             try {
                 Path destDir = Paths.get("data", "attachments", submittedReport.getReportId());
                 Files.createDirectories(destDir);
+                List<String> realAttachmentPaths = new ArrayList<>();
 
                 for (File sourceFile : attachedFilesObjectList) {
                     Path destPath = destDir.resolve(sourceFile.getName());
@@ -145,20 +135,18 @@ public class ReportSubmissionFormController {
 
                 submittedReport.setLampiran(realAttachmentPaths);
                 
-                boolean finalSaveSuccess = reportManager.saveReport(submittedReport);
-                if (!finalSaveSuccess) {
-                     showStatus("Gagal menyimpan path lampiran. Laporan tersimpan tanpa lampiran.", true);
+                if (!reportManager.saveReport(submittedReport)) {
+                     super.showStatus(statusSubmitLabel, "Gagal menyimpan path lampiran.", true);
                      return;
                 }
-
             } catch (IOException e) {
-                showStatus("Error saat menyalin file lampiran: " + e.getMessage(), true);
+                super.showStatus(statusSubmitLabel, "Error saat menyalin file lampiran: " + e.getMessage(), true);
                 e.printStackTrace();
                 return;
             }
         }
 
-        showStatus("Laporan berhasil dikirim!", false);
+        super.showStatus(statusSubmitLabel, "Laporan berhasil dikirim!", false);
         clearForm();
 
         PauseTransition delay = new PauseTransition(Duration.seconds(2));
@@ -173,7 +161,7 @@ public class ReportSubmissionFormController {
     @FXML
     private void handleCancelButtonAction(ActionEvent event) {
         clearForm();
-        showStatus("Pengiriman laporan dibatalkan.", false);
+        super.showStatus(statusSubmitLabel, "Pengiriman laporan dibatalkan.", false);
         if (mainDashboardController != null && currentUser != null) {
             if (currentUser.getRole() == Role.AGEN_LAPANGAN) {
                 mainDashboardController.loadView("/com/sigma48/fxml/AgentMissionView.fxml", null);
@@ -188,19 +176,5 @@ public class ReportSubmissionFormController {
         locationTextField.clear();
         attachedFilesObjectList.clear();
         attachedFileNamesList.clear();
-    }
-
-    private void showStatus(String message, boolean isError) {
-        statusSubmitLabel.setText(message);
-        statusSubmitLabel.setTextFill(isError ? Color.RED : Color.GREEN);
-        statusSubmitLabel.setManaged(true);
-        statusSubmitLabel.setVisible(true);
-
-        PauseTransition visiblePause = new PauseTransition(Duration.seconds(4));
-        visiblePause.setOnFinished(ev -> {
-            statusSubmitLabel.setManaged(false);
-            statusSubmitLabel.setVisible(false);
-        });
-        visiblePause.play();
     }
 }

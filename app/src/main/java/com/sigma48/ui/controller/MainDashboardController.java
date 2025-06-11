@@ -1,11 +1,9 @@
 package com.sigma48.ui.controller;
 
 import com.sigma48.Main;
-import com.sigma48.dao.*; // Import semua DAO
-import com.sigma48.manager.*; // Import semua Manager
+import com.sigma48.ServiceLocator;
 import com.sigma48.model.*;
-// import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-// import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import com.sigma48.ui.controller.base.BaseController;
 import com.sigma48.util.SoundUtils;
 
 import javafx.event.ActionEvent;
@@ -16,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -26,7 +23,6 @@ import javafx.scene.image.Image;
 import javafx.scene.control.Tooltip;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Optional;
 
 public class MainDashboardController {
@@ -48,19 +44,6 @@ public class MainDashboardController {
 
     private User currentUser;
     private Stage primaryStage;
-
-    private final UserDao userDao = new UserDao();
-    private final TargetDao targetDao = new TargetDao();
-    private final MissionDao missionDao = new MissionDao();
-    private final ReportDao reportDao = new ReportDao();
-    private final EvaluationDao evaluationDao = new EvaluationDao();
-
-    private final UserManager userManager = new UserManager(userDao);
-    private final AgentManager agentManager = new AgentManager(userDao);
-    private final TargetManager targetManager = new TargetManager(targetDao);
-    private final MissionManager missionManager = new MissionManager(missionDao, targetDao, userDao);
-    private final ReportManager reportManager = new ReportManager(reportDao, missionManager);
-    private final EvaluationManager evaluationManager = new EvaluationManager(evaluationDao, missionManager, userManager);
 
     @FXML
     public void initialize() {
@@ -91,26 +74,6 @@ public class MainDashboardController {
         colInfoLabel.setText("COL: 01");
     }
 
-    // UNTUK PAKAI FONT AWESOME
-    // private void setupNavigationIcons(Role role) {
-    //     navigationIconBar.getChildren().clear();
-    //     // Menggunakan enum dari FontAwesomeIcon, bukan path string
-    //     addNavIconButton(FontAwesomeIcon.HOME, "Dashboard Utama", () -> loadDefaultRoleDashboard(role));
-
-    //     if (role == Role.DIREKTUR_INTELIJEN || role == Role.ANALIS_INTELIJEN || role == Role.KOMANDAN_OPERASI) {
-    //         addNavIconButton(FontAwesomeIcon.LIST, "Daftar Misi", () -> loadView("/com/sigma48/fxml/MissionListView.fxml", "ALL_MISSIONS"));
-    //     }
-    //     if (role == Role.DIREKTUR_INTELIJEN || role == Role.ANALIS_INTELIJEN) {
-    //          addNavIconButton(FontAwesomeIcon.PENCIL_SQUARE_ALT, "Buat Draft Misi", () -> loadView("/com/sigma48/fxml/MissionCreateForm.fxml", null));
-    //     }
-    //     if (role == Role.AGEN_LAPANGAN) {
-    //         addNavIconButton(FontAwesomeIcon.USER_SECRET, "Misi Saya", () -> loadView("/com/sigma48/fxml/AgentMissionsView.fxml", null));
-    //     }
-    //     if (role == Role.ADMIN) {
-    //         //  addNavIconButton(FontAwesomeIcon.USERS_COG, "Manajemen Pengguna", () -> loadDefaultRoleDashboard(role));
-    //     }
-    // }
-
     private void setupNavigationIcons(Role role) {
         navigationIconBar.getChildren().clear();
         if (role != Role.AGEN_LAPANGAN || role != Role.ADMIN) {
@@ -124,10 +87,10 @@ public class MainDashboardController {
              addNavIconButton("icons/pen.png", "Buat Draft Misi", () -> loadView("/com/sigma48/fxml/MissionCreateForm.fxml", null));
         }
         if (role == Role.AGEN_LAPANGAN) {
-            addNavIconButton("icons/user-secret.png", "Misi Saya", () -> loadView("/com/sigma48/fxml/AgentMissionView.fxml", null));
+            addNavIconButton("icons/home", "Misi Saya", () -> loadView("/com/sigma48/fxml/AgentMissionView.fxml", null));
         }
         if (role == Role.ADMIN) {
-             addNavIconButton("icons/users-cog.png", "Manajemen Pengguna", () -> loadDefaultRoleDashboard(role));
+             addNavIconButton("icons/home", "Manajemen Pengguna", () -> loadDefaultRoleDashboard(role));
         }
     }
 
@@ -150,21 +113,6 @@ public class MainDashboardController {
         navigationIconBar.getChildren().add(button);
     }
 
-    // UNTUK PAKAI FONT AWESOME
-    // private void addNavIconButton(FontAwesomeIcon icon, String tooltipText, Runnable action) {
-    //     // Buat ikon dari FontAwesome
-    //     FontAwesomeIconView iconView = new FontAwesomeIconView(icon);
-    //     iconView.setSize("24px"); // Atur ukuran ikon
-    //     iconView.getStyleClass().add("nav-icon"); // Tambahkan style class untuk styling via CSS
-
-    //     Button button = new Button();
-    //     button.setGraphic(iconView);
-    //     button.setTooltip(new Tooltip(tooltipText));
-    //     button.setOnAction(event -> action.run());
-    //     button.getStyleClass().add("nav-icon-button"); // Style untuk tombolnya
-    //     navigationIconBar.getChildren().add(button);
-    // }
-    
     // Metode helper untuk mendapatkan teks Level (bisa diperluas)
     private String getClearanceLevel(Role role) {
         switch(role) {
@@ -262,47 +210,21 @@ public class MainDashboardController {
             Parent viewRoot = loader.load();
             Object loadedController = loader.getController();
 
-            if (loadedController instanceof DirekturOverviewController) {
-                ((DirekturOverviewController) loadedController).setMainDashboardController(this);
-                ((DirekturOverviewController) loadedController).setManagers(this.missionManager, this.evaluationManager);
-            } else if (loadedController instanceof KomandanOverviewController) {
-                KomandanOverviewController controller = (KomandanOverviewController) loadedController;
-                controller.setMainDashboardController(this);
-               controller.setManagers(this.missionManager, this.reportManager, this.userManager, this.targetManager);
-            } else if (loadedController instanceof MissionListViewController) {
-                MissionListViewController controller = (MissionListViewController) loadedController;
-                controller.setMainDashboardController(this);
-                controller.setManagers(this.missionManager, this.targetManager, this.userManager);
-                if (context instanceof String) controller.setListContext((String) context);
-                controller.loadData();
-            } else if (loadedController instanceof AnalisOverviewController) {
-                AnalisOverviewController controller = (AnalisOverviewController) loadedController;
-                controller.setMainDashboardController(this);
-                controller.setManagers(this.missionManager, this.targetManager);
-            } else if (loadedController instanceof AgentMissionsViewController) {
-                AgentMissionsViewController controller = (AgentMissionsViewController) loadedController;
-                controller.setMainDashboardController(this);
-                controller.setManagers(this.missionManager, this.targetManager, this.userManager);
-            } else if (loadedController instanceof TargetManagementViewController) {
-                TargetManagementViewController controller = (TargetManagementViewController) loadedController;
-                controller.setMainDashboardController(this);
-                controller.setManagers(this.targetManager);
+            if (loadedController instanceof BaseController) {
+                ((BaseController) loadedController).setMainDashboardController(this);
+            }
+
+            if (loadedController instanceof MissionListViewController && context instanceof String) {
+                ((MissionListViewController) loadedController).setListContext((String) context);
+                ((MissionListViewController) loadedController).loadData();
+            } else if (loadedController instanceof MissionCreateFormController) {
+                ((MissionCreateFormController) loadedController).loadInitialData();
             } else if (loadedController instanceof AdminUserManagementViewController) {
                 AdminUserManagementViewController controller = (AdminUserManagementViewController) loadedController;
                 controller.setMainDashboardController(this);
-                controller.setManagers(this.userManager);
-            } else if (loadedController instanceof MissionCreateFormController) {
-                MissionCreateFormController controller = (MissionCreateFormController) loadedController;
-                controller.setMainDashboardController(this);
-                controller.setManagers(this.missionManager, this.targetManager);
-                controller.loadInitialData();
-            } else if (loadedController instanceof DossierViewController) {
-                DossierViewController controller = (DossierViewController) loadedController;
-                controller.setup(this, this.targetManager); // Inisialisasi controller
-                if (context instanceof Target) {
-                    controller.loadDossierData((Target) context); // Kirim data target
-                }
+                controller.setManagers(ServiceLocator.getUserManager());
             }
+
 
             contentAreaPane.getChildren().setAll(viewRoot);
         } catch (IOException | NullPointerException e) {
@@ -316,8 +238,11 @@ public class MainDashboardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sigma48/fxml/MissionPlanningView.fxml"));
             Parent planningViewRoot = loader.load();
             MissionPlanningViewController controller = loader.getController();
-            controller.setMainDashboardController(this); // Pass this instance
-            controller.setExternalManagers(this.missionManager, this.targetManager, this.agentManager, this.userManager, this.reportManager, this.evaluationManager);
+            
+            if (controller instanceof BaseController) {
+                ((BaseController) controller).setMainDashboardController(this);
+            }
+            
             controller.setOnCancelAction(() -> loadView("/com/sigma48/fxml/MissionListView.fxml", "ALL_MISSIONS"));
             controller.loadMissionData(missionToPlan);
             contentAreaPane.getChildren().setAll(planningViewRoot);
@@ -332,9 +257,12 @@ public class MainDashboardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sigma48/fxml/ReportSubmissionForm.fxml"));
             Parent reportFormRoot = loader.load();
             ReportSubmissionFormController controller = loader.getController();
-            controller.setMainDashboardController(this);
-            controller.setReportManager(this.reportManager); // Gunakan instance reportManager yang sudah ada
-            String missionJudul = this.missionManager.getMissionById(missionId).map(Mission::getJudul).orElse("ID: " + missionId);
+            
+            if (controller instanceof BaseController) {
+                ((BaseController) controller).setMainDashboardController(this);
+            }
+            
+            String missionJudul = ServiceLocator.getMissionManager().getMissionById(missionId).map(Mission::getJudul).orElse("ID: " + missionId);
             controller.setMissionToReport(missionId, missionJudul);
             contentAreaPane.getChildren().setAll(reportFormRoot);
         } catch (IOException e) {
@@ -348,8 +276,11 @@ public class MainDashboardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sigma48/fxml/EvaluationForm.fxml"));
             Parent evalFormRoot = loader.load();
             EvaluationFormController controller = loader.getController();
-            controller.setMainDashboardController(this);
-            controller.setManagers(this.evaluationManager, this.missionManager, this.userManager);
+            
+            if (controller instanceof BaseController) {
+                ((BaseController) controller).setMainDashboardController(this);
+            }
+            
             if (missionToEvaluate != null) {
                 controller.setSelectedMission(missionToEvaluate);
             }
@@ -358,7 +289,6 @@ public class MainDashboardController {
         } catch (IOException e) {
             e.printStackTrace();
             contentAreaPane.getChildren().setAll(new Label("Error: Gagal memuat tampilan Evaluation Form."));
-
         }
     }
     
@@ -401,7 +331,6 @@ public class MainDashboardController {
             dialogStage.setScene(scene);
 
             UserFormDialogController controller = loader.getController();
-            controller.setUserManager(this.userManager);
             controller.setUserToEdit(userToEdit);
             
             dialogStage.showAndWait();
@@ -412,8 +341,46 @@ public class MainDashboardController {
         }
     }
 
-    public void showDossierView(Target target) {
-        loadView("/com/sigma48/fxml/DossierView.fxml", target);
+    public void showDossierView(Target target, Mission missionToReturnTo) {
+        showDossierView(target, missionToReturnTo, "planning"); 
+    }
+
+    public void showDossierView(Target target, Mission missionToReturnTo, String returnView) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sigma48/fxml/DossierView.fxml"));
+            Parent viewRoot = loader.load();
+            DossierViewController controller = loader.getController();
+
+            if (controller instanceof BaseController) {
+                ((BaseController) controller).setMainDashboardController(this);
+            }
+            
+            controller.loadDossierData(target, missionToReturnTo, returnView);
+            contentAreaPane.getChildren().setAll(viewRoot);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            contentAreaPane.getChildren().setAll(new Label("Error Kritis: Gagal memuat tampilan Dossier."));
+        }
+    }
+
+    public void showAgentMissionDetailView(Mission mission) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sigma48/fxml/AgentMissionDetailView.fxml"));
+            Parent viewRoot = loader.load();
+            AgentMissionDetailViewController controller = loader.getController();
+
+            if (controller instanceof BaseController) {
+                ((BaseController) controller).setMainDashboardController(this);
+            }
+            
+            controller.loadMissionDetails(mission);
+
+            contentAreaPane.getChildren().setAll(viewRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+            contentAreaPane.getChildren().setAll(new Label("Error: Gagal memuat detail misi."));
+        }
     }
 
     @FXML
@@ -439,12 +406,17 @@ public class MainDashboardController {
         }
     }
 
-    // Helper
+    // Helper methods
     public void showKomandanOverview() {
         loadDefaultRoleDashboard(Role.KOMANDAN_OPERASI);
     }
 
-    public TargetManager getTargetManager() {
-        return this.targetManager;
+    // Getter methods untuk backward compatibility jika diperlukan
+    public User getCurrentUser() {
+        return this.currentUser;
+    }
+
+    public Stage getPrimaryStage() {
+        return this.primaryStage;
     }
 }

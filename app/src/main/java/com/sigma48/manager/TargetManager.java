@@ -14,7 +14,7 @@ public class TargetManager {
     }
 
     public List<Target> getAllTargets() {
-        return targetDao.getAllTargets();
+        return targetDao.getAll();
     }
 
     public Optional<Target> getTargetById(String targetId) {

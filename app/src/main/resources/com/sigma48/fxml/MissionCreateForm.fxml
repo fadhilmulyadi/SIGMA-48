@@ -33,13 +33,13 @@
                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label styleClass="form-label-bold" text="Judul Misi" />
-                  <Label styleClass="form-label-bold" text="Tujuan Utama" GridPane.rowIndex="1" />
-                  <Label styleClass="form-label" text="Deskripsi Tambahan" GridPane.rowIndex="2" />
-                  <Label styleClass="form-label-bold" text="Target Utama" GridPane.rowIndex="3" />
-                  <Label styleClass="form-label" text="Analisis Risiko Awal" GridPane.rowIndex="4" />
-                  <Label styleClass="form-label" text="Jenis Operasi (Usulan)" GridPane.rowIndex="5" />
-                  <Label styleClass="form-label" text="Lokasi (Perkiraan)" GridPane.rowIndex="6" />
+                  <Label styleClass="form-label-bold" text="JUDUL MISI" />
+                  <Label styleClass="form-label-bold" text="TUJUAN UTAMA" GridPane.rowIndex="1" />
+                  <Label styleClass="form-label" text="DESKRIPSI TAMBAHAN" GridPane.rowIndex="2" />
+                  <Label styleClass="form-label-bold" text="TARGET UTAMA" GridPane.rowIndex="3" />
+                  <Label styleClass="form-label" text="ANALISIS RISIKO AWAL" GridPane.rowIndex="4" />
+                  <Label styleClass="form-label" text="JENIS OPERASI USULAN" GridPane.rowIndex="5" />
+                  <Label styleClass="form-label" text="PERKIRAAN LOKASI" GridPane.rowIndex="6" />
                   <TextField fx:id="judulField" styleClass="form-input-text" GridPane.columnIndex="1" />
                   <TextArea fx:id="tujuanArea" prefHeight="200.0" prefWidth="200.0" styleClass="form-input-textarea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <TextArea fx:id="deskripsiArea" prefHeight="200.0" prefWidth="200.0" styleClass="form-input-textarea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -57,8 +57,8 @@
             <HBox alignment="CENTER_RIGHT" spacing="10.0">
                <children>
                   <Label fx:id="statusMessageLabel" managed="false" visible="false" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="batalButton" mnemonicParsing="false" onAction="#handleBatalButton" styleClass="cancel-button" text="Batal" />
-                  <Button fx:id="simpanDraftButton" mnemonicParsing="false" onAction="#handleSimpanDraftButton" styleClass="action-button-primary" text="Simpan Draft" />
+                  <Button fx:id="batalButton" mnemonicParsing="false" onAction="#handleBatalButton" styleClass="cancel-button" text="BATAL" />
+                  <Button fx:id="simpanDraftButton" mnemonicParsing="false" onAction="#handleSimpanDraftButton" styleClass="action-button-primary" text="SIMPAN DRAFT" />
                </children>
             </HBox>
          </children>

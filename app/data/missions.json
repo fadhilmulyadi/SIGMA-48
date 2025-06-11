@@ -1,76 +1,51 @@
 [ {
-  "id" : "8367e226-0169-4c55-8271-074228121dff",
-  "judul" : "HIDUP BARU",
-  "tujuan" : "MENJADI FANS JKT48",
-  "deskripsi" : "JADILAH FANS BERAT JKT48",
-  "targetId" : "2d06daeb-1303-4426-b3f4-e8736510adc9",
-  "analisisRisiko" : "LUPA WAKTU",
-  "jenisOperasi" : "INFILTRASI",
-  "lokasi" : "JAKARTA",
-  "strategi" : "HABISKAN UANG UNTUK JKT48",
-  "protokol" : "WHATSAPP GRUP",
-  "komandanId" : "test-komandan-001",
-  "conclusionNotes" : null,
-  "status" : "READY_FOR_BRIEFING",
-  "assignedAgents" : [ "test-agen-001" ],
-  "coverIdentities" : {
-    "test-agen-001" : {
-      "coverName" : "FAREL",
-      "coverPassport" : "DOC-S48-5107",
-      "coverRole" : "MAHASISWA"
-    }
-  },
-  "dokBriefingPath" : "data\\briefings\\brief_8367e226-0169-4c55-8271-074228121dff.txt",
-  "createdAt" : [ 2025, 6, 9, 18, 57, 33, 222837100 ],
-  "updatedAt" : [ 2025, 6, 9, 19, 57, 45, 485370300 ]
-}, {
-  "id" : "4049a96e-df5e-41d7-9667-2c34e50d9f63",
-  "judul" : "MAKAN",
-  "tujuan" : "MINUM",
-  "deskripsi" : "BELAJAR",
-  "targetId" : "1bd27ef7-c8a0-4343-802c-6dba21662603",
-  "analisisRisiko" : "KELAPARAN",
-  "jenisOperasi" : "ANJAY",
-  "lokasi" : "MAKASSAR",
-  "strategi" : "GASS SAJA",
-  "protokol" : "WHATSAPP",
-  "komandanId" : "test-komandan-001",
-  "conclusionNotes" : "Misi berhasil diselesaikan sesuai tujuan.",
-  "status" : "COMPLETED",
-  "assignedAgents" : [ "e7c6e053-c294-412a-b4be-e86272f47bb7" ],
-  "coverIdentities" : {
-    "e7c6e053-c294-412a-b4be-e86272f47bb7" : {
-      "coverName" : "FAREL",
-      "coverPassport" : "DOC-S48-8601",
-      "coverRole" : "MAHASISWA"
-    }
-  },
-  "dokBriefingPath" : null,
-  "createdAt" : [ 2025, 6, 10, 11, 33, 5, 498497800 ],
-  "updatedAt" : [ 2025, 6, 10, 11, 41, 30, 486768000 ]
-}, {
-  "id" : "5313df4e-cd01-4d11-986f-a78103c4dde8",
-  "judul" : "PASANGAN HIDUP",
-  "tujuan" : "MENIKAH DENGAN MEMBER JKT48",
-  "deskripsi" : "MENIHKAHI SALAH SATU MEMBER JKT48 YANG BERNAMA LENGKAP MARSHA LENATHEA",
-  "targetId" : "1bd27ef7-c8a0-4343-802c-6dba21662603",
-  "analisisRisiko" : "ASING DENGAN MARSHA",
+  "id" : "0eadb31c-a02e-40ac-a68f-b303803e543d",
+  "judul" : "SOUL MATE",
+  "tujuan" : "MENCARI PASANGAN HIDUP UNTUK DITEMANI BERJUANG BERSAMA BAIK DALAM SUKA MAUPUN DUKU",
+  "deskripsi" : "MENJADIKAN TARGET YAKNI MARSHA JTK48 A.K.A MARSHA LENATHEA SEBAGAI PASANGAN HIDUP MU",
+  "targetId" : "cf0883b5-4001-4665-b546-23755cba7bc8",
+  "analisisRisiko" : "KEMUNGKINAN UNTUK ASING DENGAN MARSHA SETELAH KAMU MENYATAKAN PERASAANMU",
   "jenisOperasi" : "CYBER",
   "lokasi" : "JAKARTA",
-  "strategi" : "LAKUKAN PDKT SELAMA 5 BULAN, LALU LAMAR DIA DI JEPANG, DAN HIDUP BAHAGIA",
-  "protokol" : "GRUP WHATSAPP",
+  "strategi" : "LAKUKAN PDKT SELAMA 5 BULAN, LALU LAMAR DIA DI TEMPAT FAVORITNYA",
+  "protokol" : "GUNAKAN EMAIL FADHILBOSQUE@GMAIL.COM UNTUK BERKOMUNIKASI",
   "komandanId" : "test-komandan-001",
-  "conclusionNotes" : "Misi berhasil diselesaikan.",
-  "status" : "COMPLETED",
+  "conclusionNotes" : null,
+  "status" : "ACTIVE",
   "assignedAgents" : [ "test-agen-001" ],
   "coverIdentities" : {
     "test-agen-001" : {
       "coverName" : "FADHIL",
-      "coverPassport" : "DOC-S48-1639",
+      "coverPassport" : "DOC-S48-2006",
       "coverRole" : "FANS JKT48"
     }
   },
-  "dokBriefingPath" : "data\\briefings\\brief_5313df4e-cd01-4d11-986f-a78103c4dde8.txt",
-  "createdAt" : [ 2025, 6, 9, 17, 56, 45, 6991500 ],
-  "updatedAt" : [ 2025, 6, 10, 11, 42, 35, 530357100 ]
+  "dokBriefingPath" : null,
+  "createdAt" : [ 2025, 6, 10, 18, 49, 10, 875496900 ],
+  "updatedAt" : [ 2025, 6, 10, 19, 29, 14, 501612100 ]
+}, {
+  "id" : "96157b92-ebfe-4cb8-8102-89572074b37c",
+  "judul" : "PBO",
+  "tujuan" : "PBO",
+  "deskripsi" : "PBO",
+  "targetId" : "1b2d3b85-afb4-424c-a81b-f9b9cf42a0bc",
+  "analisisRisiko" : "PBO",
+  "jenisOperasi" : "PBO",
+  "lokasi" : "PBO",
+  "strategi" : "PBO",
+  "protokol" : "PBO",
+  "komandanId" : "test-komandan-001",
+  "conclusionNotes" : "Misi berhasil diselesaikan sesuai tujuan.",
+  "status" : "COMPLETED",
+  "assignedAgents" : [ "test-agen-001" ],
+  "coverIdentities" : {
+    "test-agen-001" : {
+      "coverName" : "FAREL",
+      "coverPassport" : "DOC-S48-2379",
+      "coverRole" : "MAHASISWA"
+    }
+  },
+  "dokBriefingPath" : null,
+  "createdAt" : [ 2025, 6, 11, 16, 37, 43, 302453000 ],
+  "updatedAt" : [ 2025, 6, 11, 16, 47, 41, 840669400 ]
 } ]

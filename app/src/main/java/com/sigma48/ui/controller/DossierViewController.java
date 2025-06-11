@@ -1,13 +1,15 @@
 package com.sigma48.ui.controller;
 
 import com.sigma48.Main;
+import com.sigma48.ServiceLocator;
 import com.sigma48.manager.TargetManager;
+import com.sigma48.model.Mission;
 import com.sigma48.model.Role;
 import com.sigma48.model.Target;
 import com.sigma48.model.User;
+import com.sigma48.ui.controller.base.BaseController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -15,13 +17,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.PDFRenderer;
-
-import java.awt.image.BufferedImage;
+import javafx.stage.StageStyle;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,77 +30,49 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class DossierViewController {
+public class DossierViewController extends BaseController {
 
-    // --- FXML Components (Variabel yang terhubung ke FXML) ---
-    @FXML private GridPane dossierContainer;
+    // --- FXML Components ---
     @FXML private Button backButton;
     @FXML private Label targetIdLabel;
-    
-    // Sidebar Kiri
     @FXML private ListView<File> evidenceListView;
     @FXML private Button addEvidenceButton;
-    
-    // Panel Detail Kanan
+    @FXML private Button deleteEvidenceButton;
     @FXML private ImageView targetPhotoImageView;
     @FXML private Label targetNameLabel;
     @FXML private Label targetStatusLabel;
     @FXML private Label targetTipeLabel;
     @FXML private Label targetLokasiLabel;
     @FXML private TextArea intelTextArea;
-
-    // Panel Konten Tengah
     @FXML private Label contentTitleLabel;
     @FXML private Label contentSubtitleLabel;
-    @FXML private ScrollPane viewerScrollPane; // ScrollPane untuk menampung viewer
-
-    // Viewer Gambar
+    @FXML private ScrollPane viewerScrollPane;
     @FXML private VBox imageViewerPane;
     @FXML private ImageView dossierImageView;
     @FXML private HBox imageNavBox;
     @FXML private Button prevImageButton;
     @FXML private Button nextImageButton;
     @FXML private Label imageCounterLabel;
-
-    // Viewer PDF
-    @FXML private VBox pdfViewerPane;
-    @FXML private ImageView pdfImageView;
-    @FXML private HBox pdfNavBox;
-    @FXML private Button prevPdfPageButton;
-    @FXML private Button nextPdfPageButton;
-    @FXML private Label pdfPageCounterLabel;
-    
-    // Tombol Zoom (Baru)
     @FXML private Button zoomInButton;
     @FXML private Button zoomOutButton;
     @FXML private Button zoomResetButton;
 
-    // --- Class Members (Variabel internal) ---
-    private MainDashboardController mainDashboardController;
     private TargetManager targetManager;
+    private Mission missionToReturnTo;
+    private String returnView;
     private Target currentTarget;
     private User currentUser;
-
     private final ObservableList<File> evidenceFiles = FXCollections.observableArrayList();
     private List<File> imageFiles;
     private int currentImageIndex = 0;
-    
-    private PDDocument currentPdfDocument;
-    private PDFRenderer pdfRenderer;
-    private int currentPdfPage = 0;
-    private int totalPdfPages = 0;
     private double currentZoomFactor = 1.0;
 
-    // --- Inisialisasi & Setup ---
-    public void setup(MainDashboardController mainController, TargetManager targetMgr) {
-        this.mainDashboardController = mainController;
-        this.targetManager = targetMgr;
-        this.currentUser = Main.authManager.getCurrentUser();
-    }
-    
     @FXML
     public void initialize() {
-        // Setup ListView bukti
+        // Inisialisasi manager dan user dari sumber yang benar
+        this.targetManager = ServiceLocator.getTargetManager();
+        this.currentUser = Main.authManager.getCurrentUser();
+
         evidenceListView.setItems(evidenceFiles);
         evidenceListView.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -112,26 +82,39 @@ public class DossierViewController {
             }
         });
 
-        // Listener untuk menampilkan bukti saat dipilih
         evidenceListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 displayEvidence(newVal);
             }
         });
         
-        // Atur agar viewer bisa di-scroll jika kontennya besar
+        // Disable tombol hapus jika tidak ada item yang dipilih
+        if (deleteEvidenceButton != null) {
+            deleteEvidenceButton.disableProperty().bind(evidenceListView.getSelectionModel().selectedItemProperty().isNull());
+        }
+
         viewerScrollPane.setFitToWidth(true);
         viewerScrollPane.setFitToHeight(true);
+
+        // BARU: Tambahkan event handler untuk zoom dengan mouse wheel/pad
+        viewerScrollPane.setOnScroll(event -> {
+            if (dossierImageView.getImage() != null) {
+                if (event.getDeltaY() > 0) {
+                    handleZoomIn();
+                } else if (event.getDeltaY() < 0) {
+                    handleZoomOut();
+                }
+                event.consume(); // Konsumsi event agar tidak ada scrolling lain yang terjadi
+            }
+        });
     }
 
-    // --- Logika Utama ---
-    public void loadDossierData(Target target) {
+    public void loadDossierData(Target target, Mission missionToReturnTo, String returnView) {
         this.currentTarget = target;
+        this.missionToReturnTo = missionToReturnTo;
+        this.returnView = returnView;
         if (target == null) return;
-
-        cleanupResources(); // Bersihkan resource dari data sebelumnya
         
-        // 1. Isi UI dengan data dari objek Target
         targetIdLabel.setText("TARGET: " + target.getNama().toUpperCase());
         targetNameLabel.setText(target.getNama().toUpperCase());
         targetStatusLabel.setText("ANCAMAN: " + target.getAncaman().getDisplayName().toUpperCase());
@@ -139,7 +122,6 @@ public class DossierViewController {
         targetLokasiLabel.setText(target.getLokasi() != null ? target.getLokasi() : "N/A");
         intelTextArea.setText("ANALISIS AWAL:\n" + (target.getDeskripsi() != null ? target.getDeskripsi() : "-") + "\n\nCATATAN TAMBAHAN:\n-");
 
-        // 2. Load daftar bukti
         evidenceFiles.clear();
         if (target.getEvidencePaths() != null) {
             target.getEvidencePaths().stream()
@@ -148,27 +130,25 @@ public class DossierViewController {
                 .forEach(evidenceFiles::add);
         }
 
-        // 3. Load foto profil
         loadProfileImage(target);
         
-        // Filter file gambar untuk navigasi
         imageFiles = evidenceFiles.stream()
             .filter(f -> f.getName().toLowerCase().matches(".*\\.(png|jpg|jpeg|gif|bmp)$"))
             .collect(Collectors.toList());
 
-        // Tampilkan bukti pertama jika ada
         if (!evidenceFiles.isEmpty()) {
             evidenceListView.getSelectionModel().selectFirst();
         } else {
             showPlaceholder();
         }
+        
+        // Panggil metode untuk mengatur akses UI berdasarkan peran
         updateUIAccess();
     }
 
     private void displayEvidence(File file) {
         currentZoomFactor = 1.0;
         zoomResetButton.setText("100%");
-        updateZoomButtonState();
         
         String fileName = file.getName().toLowerCase();
         contentTitleLabel.setText(file.getName().toUpperCase());
@@ -177,33 +157,78 @@ public class DossierViewController {
             contentSubtitleLabel.setText("Visual Evidence / Image File");
             currentImageIndex = imageFiles.indexOf(file);
             showImageViewer(file);
-        } else if (fileName.endsWith(".pdf")) {
-            contentSubtitleLabel.setText("Document / PDF File");
-            loadAndDisplayPdf(file);
         } else {
             showPlaceholder();
             contentTitleLabel.setText("Tipe File Tidak Didukung");
         }
     }
+    
+    @FXML
+    private void handleBack() {
+        if (mainDashboardController != null) {
+            if (missionToReturnTo != null) {
+                if ("agentDetail".equals(returnView)) {
+                    mainDashboardController.showAgentMissionDetailView(missionToReturnTo);
+                } else { 
+                    mainDashboardController.showMissionPlanningView(missionToReturnTo);
+                }
+            } else {
+                mainDashboardController.loadDefaultRoleDashboard(currentUser.getRole());
+            }
+        }
+    }
 
+    @FXML
+    private void handleDeleteEvidence() {
+        File selectedFile = evidenceListView.getSelectionModel().getSelectedItem();
+        if (selectedFile == null) return;
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initStyle(StageStyle.UNDECORATED);
+        alert.setHeaderText("HAPUS BUKTI INI?");
+        alert.setContentText("Anda yakin ingin menghapus file '" + selectedFile.getName() + "' secara permanen?");
+        styleAlertDialog(alert);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                currentTarget.getEvidencePaths().remove(selectedFile.getPath());
+                targetManager.saveTarget(currentTarget);
+                Files.deleteIfExists(selectedFile.toPath());
+                loadDossierData(currentTarget, missionToReturnTo, returnView);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.initStyle(StageStyle.UNDECORATED);
+                errorAlert.setHeaderText("GAGAL MENGHAPUS FILE");
+                errorAlert.setContentText("Terjadi error saat menghapus file bukti dari disk.");
+                styleAlertDialog(errorAlert);
+                errorAlert.showAndWait();
+            }
+        }
+    }
+
+    private void updateUIAccess() {
+        // Visibilitas tombol hanya untuk Analis Intelijen
+        boolean canEditEvidence = (currentUser != null && currentUser.getRole() == Role.ANALIS_INTELIJEN);
+        
+        addEvidenceButton.setVisible(canEditEvidence);
+        addEvidenceButton.setManaged(canEditEvidence);
+        
+        deleteEvidenceButton.setVisible(canEditEvidence);
+        deleteEvidenceButton.setManaged(canEditEvidence);
+    }
+    
+    // Sisa metode lain (tidak berubah signifikan)
     private void showImageViewer(File imageFile) {
-        pdfViewerPane.setVisible(false);
-        pdfViewerPane.setManaged(false);
         imageViewerPane.setVisible(true);
-        imageViewerPane.setManaged(true);
-
-        pdfNavBox.setVisible(false);
-        pdfNavBox.setManaged(false);
         imageNavBox.setVisible(true);
-        imageNavBox.setManaged(true);
-
         if (imageFile != null) {
             try {
                 Image image = new Image(imageFile.toURI().toString());
                 dossierImageView.setImage(image);
-                dossierImageView.setPreserveRatio(true);
                 resetZoom(dossierImageView);
-                updateImageNavUI(); // Panggil update UI navigasi
+                updateImageNavUI();
             } catch (Exception e) {
                 showPlaceholder();
             }
@@ -211,76 +236,15 @@ public class DossierViewController {
             showPlaceholder();
         }
     }
-    
-    private void loadAndDisplayPdf(File pdfFile) {
-        cleanupResources();
-        try {
-            currentPdfDocument = PDDocument.load(pdfFile);
-            pdfRenderer = new PDFRenderer(currentPdfDocument);
-            totalPdfPages = currentPdfDocument.getNumberOfPages();
-            currentPdfPage = 0;
-            
-            imageViewerPane.setVisible(false);
-            imageViewerPane.setManaged(false);
-            pdfViewerPane.setVisible(true);
-            pdfViewerPane.setManaged(true);
-
-            imageNavBox.setVisible(false);
-            imageNavBox.setManaged(false);
-            pdfNavBox.setVisible(true);
-            pdfNavBox.setManaged(true);
-            
-            renderPdfPage(currentPdfPage);
-        } catch (IOException e) {
-            e.printStackTrace();
-            showPlaceholder();
-        }
-    }
-
-    private void renderPdfPage(int pageIndex) {
-        if (pdfRenderer == null || pageIndex < 0 || pageIndex >= totalPdfPages) return;
-        try {
-            BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(pageIndex, 150);
-            Image fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
-            pdfImageView.setImage(fxImage);
-            pdfImageView.setPreserveRatio(true);
-            resetZoom(pdfImageView);
-            
-            updatePdfNavUI(); // Panggil update UI navigasi
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void showPlaceholder() {
-        // Tampilkan viewer gambar sebagai placeholder
-        pdfViewerPane.setVisible(false);
-        pdfViewerPane.setManaged(false);
         imageViewerPane.setVisible(true);
-        imageViewerPane.setManaged(true);
         dossierImageView.setImage(new Image(getClass().getResourceAsStream("/com/sigma48/images/placeholder.png")));
-        
-        // Sembunyikan SEMUA kontrol navigasi
         imageNavBox.setVisible(false);
-        imageNavBox.setManaged(false);
-        pdfNavBox.setVisible(false);
-        pdfNavBox.setManaged(false);
-        
         contentTitleLabel.setText("TIDAK ADA BUKTI");
         contentSubtitleLabel.setText("Pilih atau tambahkan file bukti.");
     }
-
-    private void updateZoomButtonState() {
-        zoomOutButton.setDisable(currentZoomFactor <= 1.0);
-    }
     
-    // --- Event Handlers ---
-
-    @FXML private void handleBack() {
-        cleanupResources();
-        if (mainDashboardController != null) mainDashboardController.showTargetManagementView();
-    }
-
     @FXML private void handlePrevImage() {
         if (currentImageIndex > 0) displayEvidence(imageFiles.get(--currentImageIndex));
     }
@@ -289,35 +253,26 @@ public class DossierViewController {
         if (currentImageIndex < imageFiles.size() - 1) displayEvidence(imageFiles.get(++currentImageIndex));
     }
 
-    @FXML private void handlePrevPdfPage() {
-        if (currentPdfPage > 0) renderPdfPage(--currentPdfPage);
-    }
-    
-    @FXML private void handleNextPdfPage() {
-        if (currentPdfPage < totalPdfPages - 1) renderPdfPage(++currentPdfPage);
-    }
-
+    // MODIFIKASI: Mengubah akses menjadi private karena dipanggil dari dalam
     @FXML private void handleZoomIn() {
         currentZoomFactor += 0.2;
         applyZoom();
     }
 
+    // MODIFIKASI: Mengubah akses menjadi private karena dipanggil dari dalam
     @FXML private void handleZoomOut() {
-        if (currentZoomFactor > 0.3) { // Batas zoom out
+        if (currentZoomFactor > 0.3) {
             currentZoomFactor -= 0.2;
             applyZoom();
         }
     }
 
     @FXML private void handleZoomReset() {
-        ImageView activeView = pdfViewerPane.isVisible() ? pdfImageView : dossierImageView;
-        resetZoom(activeView);
+        resetZoom(dossierImageView);
     }
     
-    @FXML
-    private void handleSetProfilePhoto(MouseEvent event) {
+    @FXML private void handleSetProfilePhoto(MouseEvent event) {
         if (currentUser.getRole() != Role.ANALIS_INTELIJEN && currentUser.getRole() != Role.DIREKTUR_INTELIJEN) return;
-
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Pilih Foto Profil Baru");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File Gambar", "*.png", "*.jpg", "*.jpeg"));
@@ -329,18 +284,14 @@ public class DossierViewController {
                 Files.createDirectories(evidenceDir);
                 Path destPath = evidenceDir.resolve(selectedFile.getName());
                 Files.copy(selectedFile.toPath(), destPath, StandardCopyOption.REPLACE_EXISTING);
-                
                 String newProfilePath = destPath.toString();
                 currentTarget.setProfileImagePath(newProfilePath);
                 
-                // Jika file ini belum ada di daftar bukti, tambahkan
                 if (!currentTarget.getEvidencePaths().contains(newProfilePath)) {
                     currentTarget.getEvidencePaths().add(newProfilePath);
                 }
-                
                 if(targetManager.saveTarget(currentTarget)) {
-                    loadProfileImage(currentTarget); // Muat ulang gambar profil
-                    // Muat ulang daftar file jika ada file baru
+                    loadProfileImage(currentTarget);
                     if (!evidenceFiles.contains(destPath.toFile())) {
                         evidenceFiles.add(destPath.toFile());
                     }
@@ -351,8 +302,7 @@ public class DossierViewController {
         }
     }
 
-    @FXML
-    private void handleAddEvidence() {
+    @FXML private void handleAddEvidence() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Pilih File Bukti");
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(addEvidenceButton.getScene().getWindow());
@@ -370,33 +320,29 @@ public class DossierViewController {
                     }
                 }
                 targetManager.saveTarget(currentTarget);
-                loadDossierData(currentTarget); // Muat ulang semua data
+                loadDossierData(currentTarget, missionToReturnTo, returnView);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-    
-    // --- UI & Logic Helpers ---
 
     private void applyZoom() {
-        ImageView activeView = pdfViewerPane.isVisible() ? pdfImageView : dossierImageView;
-        if(activeView.getImage() == null) return;
-        
-        activeView.setFitWidth(activeView.getImage().getWidth() * currentZoomFactor);
-        activeView.setFitHeight(activeView.getImage().getHeight() * currentZoomFactor);
-
+        if(dossierImageView.getImage() == null) return;
+        dossierImageView.setFitWidth(dossierImageView.getImage().getWidth() * currentZoomFactor);
+        dossierImageView.setFitHeight(dossierImageView.getImage().getHeight() * currentZoomFactor);
         zoomResetButton.setText(String.format("%.0f%%", currentZoomFactor * 100));
-        updateZoomButtonState();
     }
     
     private void resetZoom(ImageView imageView) {
         currentZoomFactor = 1.0;
-        imageView.setFitWidth(viewerScrollPane.getWidth());
-        imageView.setFitHeight(viewerScrollPane.getHeight());
-        
-        zoomResetButton.setText("100%");
-        updateZoomButtonState();
+        if(imageView != null && viewerScrollPane != null) {
+            imageView.setFitWidth(viewerScrollPane.getWidth());
+            imageView.setFitHeight(viewerScrollPane.getHeight());
+        }
+        if(zoomResetButton != null) {
+            zoomResetButton.setText("100%");
+        }
     }
 
     private void updateImageNavUI() {
@@ -410,17 +356,6 @@ public class DossierViewController {
         nextImageButton.setDisable(currentImageIndex >= imageFiles.size() - 1);
     }
     
-    private void updatePdfNavUI() {
-        if (totalPdfPages > 0) {
-            pdfNavBox.setVisible(true);
-            pdfPageCounterLabel.setText("Halaman " + (currentPdfPage + 1) + " / " + totalPdfPages);
-            prevPdfPageButton.setDisable(currentPdfPage <= 0);
-            nextPdfPageButton.setDisable(currentPdfPage >= totalPdfPages - 1);
-        } else {
-            pdfNavBox.setVisible(false);
-        }
-    }
-    
     private void loadProfileImage(Target target) {
         Image img = null;
         if (target.getProfileImagePath() != null && !target.getProfileImagePath().isEmpty()) {
@@ -430,32 +365,13 @@ public class DossierViewController {
             }
         }
         
-        if (img == null) { // Jika path profil tidak ada atau file tidak ditemukan, cari gambar pertama
+        if (img == null) {
             Optional<File> firstImage = evidenceFiles.stream()
                 .filter(f -> f.getName().toLowerCase().matches(".*\\.(png|jpg|jpeg)$")).findFirst();
             if(firstImage.isPresent()) {
                 img = new Image(firstImage.get().toURI().toString());
             }
         }
-        
-        targetPhotoImageView.setImage(img); // Akan menampilkan null (kosong) jika img tetap null
-    }
-
-    private void updateUIAccess() {
-        boolean canEdit = (currentUser != null && (currentUser.getRole() == Role.ANALIS_INTELIJEN || currentUser.getRole() == Role.DIREKTUR_INTELIJEN));
-        addEvidenceButton.setManaged(canEdit);
-        addEvidenceButton.setVisible(canEdit);
-    }
-    
-    private void cleanupResources() {
-        if (currentPdfDocument != null) {
-            try {
-                currentPdfDocument.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            currentPdfDocument = null;
-            pdfRenderer = null;
-        }
+        targetPhotoImageView.setImage(img);
     }
 }

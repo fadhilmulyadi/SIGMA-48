@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?> <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?> <BorderPane styleClass="view-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigma48.ui.controller.MissionListViewController">
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="view-header">
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+         <children>
+            <Label fx:id="viewTitleLabel" text="DAFTAR SEMUA MISI" styleClass="view-title" /> <Button fx:id="refreshButton" onAction="#handleRefreshButton" text="Refresh" styleClass="action-button" />
+            </children>
+      </HBox>
+   </top>
+   <center>
+      <ListView fx:id="missionListView" styleClass="mission-list-view-custom">
+         <BorderPane.margin>
+            <Insets top="10.0" />
+         </BorderPane.margin>
+         <placeholder>
+            <Label text="Tidak ada misi untuk ditampilkan."/>
+         </placeholder>
+      </ListView>
+   </center>
+</BorderPane>

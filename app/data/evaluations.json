@@ -1,51 +1,11 @@
 [ {
-  "id" : "dc153ea9-c91c-4158-9000-7f495a34250d",
-  "missionId" : "05a37ffe-4930-49d8-9b2c-a1c5af5be865",
+  "id" : "958553e9-8a6a-4631-9686-3cada756fab6",
+  "missionId" : "96157b92-ebfe-4cb8-8102-89572074b37c",
   "agentId" : "test-agen-001",
   "evaluatorId" : "test-direktur-001",
-  "timestampEvaluasi" : [ 2025, 6, 8, 11, 23, 13, 373151300 ],
+  "timestampEvaluasi" : [ 2025, 6, 11, 16, 46, 18, 251807200 ],
   "efektivitasOperasi" : "SANGAT_MEMUASKAN",
-  "catatanMentalAgen" : "BAIK",
-  "kondisiFisikAgen" : "BAIK",
-  "catatanUmumEvaluator" : "KERJA BAGUS AGEN"
-}, {
-  "id" : "24c7dced-9fc4-417f-bb9c-530206751675",
-  "missionId" : "05a37ffe-4930-49d8-9b2c-a1c5af5be865",
-  "agentId" : "test-agen-001",
-  "evaluatorId" : "test-direktur-001",
-  "timestampEvaluasi" : [ 2025, 6, 8, 11, 24, 25, 374872100 ],
-  "efektivitasOperasi" : "MEMUASKAN",
-  "catatanMentalAgen" : "BAIK",
-  "kondisiFisikAgen" : "BAIK",
-  "catatanUmumEvaluator" : "MAINNYA HEBAT"
-}, {
-  "id" : "c4230a87-c45d-4ce0-823e-9b93165e2d26",
-  "missionId" : "d437092f-193d-424c-88e9-9854273e44d4",
-  "agentId" : "test-agen-001",
-  "evaluatorId" : "test-direktur-001",
-  "timestampEvaluasi" : [ 2025, 6, 8, 12, 15, 53, 367898000 ],
-  "efektivitasOperasi" : "SANGAT_MEMUASKAN",
-  "catatanMentalAgen" : "-",
-  "kondisiFisikAgen" : "-",
-  "catatanUmumEvaluator" : "-"
-}, {
-  "id" : "d8c27739-1ea7-4fad-88ba-ecb809d1acae",
-  "missionId" : "4049a96e-df5e-41d7-9667-2c34e50d9f63",
-  "agentId" : "e7c6e053-c294-412a-b4be-e86272f47bb7",
-  "evaluatorId" : "test-direktur-001",
-  "timestampEvaluasi" : [ 2025, 6, 10, 11, 42, 18, 45017600 ],
-  "efektivitasOperasi" : "KURANG_MEMUASKAN",
-  "catatanMentalAgen" : "KENA MENTAL",
-  "kondisiFisikAgen" : "KURUS KERING",
-  "catatanUmumEvaluator" : "MAINNYA HEBAT"
-}, {
-  "id" : "cce2ec16-c931-4fb6-8020-5804e4658124",
-  "missionId" : "5313df4e-cd01-4d11-986f-a78103c4dde8",
-  "agentId" : "test-agen-001",
-  "evaluatorId" : "test-direktur-001",
-  "timestampEvaluasi" : [ 2025, 6, 10, 11, 42, 46, 169581600 ],
-  "efektivitasOperasi" : "MEMUASKAN",
-  "catatanMentalAgen" : "WFDWEFW",
-  "kondisiFisikAgen" : "WEEFWEF",
-  "catatanUmumEvaluator" : "EWFWE"
+  "catatanMentalAgen" : "PBO",
+  "kondisiFisikAgen" : "PBO",
+  "catatanUmumEvaluator" : "PBO"
 } ]

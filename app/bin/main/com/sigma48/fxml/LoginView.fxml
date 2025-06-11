@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<StackPane fx:id="backgroundPane" prefHeight="768.0" prefWidth="1366.0" styleClass="login-root-pane"
+           xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.sigma48.ui.controller.LoginViewController">
+
+   <children>
+
+      <!-- LOGIN CARD -->
+      <VBox fx:id="loginCard" alignment="CENTER" spacing="15.0" prefWidth="400.0" maxWidth="400.0" prefHeight="400.0" maxHeight="400.0"
+            StackPane.alignment="CENTER" styleClass="login-card">
+         <padding>
+            <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+         </padding>
+         <children>
+            <ImageView fx:id="agencyLogoView" fitHeight="100.0" pickOnBounds="true" preserveRatio="true">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </ImageView>
+
+            <VBox alignment="CENTER_LEFT" spacing="5.0" style="-fx-padding: 20 0 0 0;">
+               <children>
+                  <Label styleClass="input-label" text="ID AGEN:" />
+                  <TextField fx:id="idAgenField" alignment="CENTER" styleClass="login-input" />
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </VBox>
+
+            <VBox alignment="CENTER_LEFT" spacing="5.0">
+               <children>
+                  <Label styleClass="input-label" text="KODE AKSES:" />
+                  <PasswordField fx:id="kodeAksesField" alignment="CENTER" styleClass="login-input" />
+               </children>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </VBox>
+
+            <Button fx:id="loginButton" onAction="#handleLoginButtonAction" styleClass="login-button" text="MASUK"
+                    HBox.hgrow="ALWAYS" maxWidth="Infinity" prefHeight="50.0">
+               <VBox.margin>
+                  <Insets top="25.0" />
+               </VBox.margin>
+            </Button>
+
+            <HBox alignment="CENTER" spacing="8.0">
+               <children>
+                  <Label styleClass="footer-text" text="Sistem Aman | Dilarang akses tanpa izin" />
+               </children>
+               <VBox.margin>
+                  <Insets top="40.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+
+      <!-- ACCESS DENIED DI LUAR LOGIN CARD -->
+      <HBox fx:id="accessDeniedBox" alignment="CENTER" spacing="5.0" managed="false" visible="false"
+            StackPane.alignment="TOP_CENTER" style="-fx-padding: 30;">
+         <children>
+            <Label fx:id="accessDeniedLabel" text="ACCESS DENIED" styleClass="access-denied-text"/>
+         </children>
+      </HBox>
+
+   </children>
+</StackPane>

@@ -7,22 +7,20 @@ import com.sigma48.model.Mission;
 import com.sigma48.model.MissionStatus;
 import com.sigma48.model.Target;
 import com.sigma48.model.User;
+import com.sigma48.ui.controller.base.BaseController;
+import com.sigma48.ServiceLocator;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*; // Import semua control jika banyak
-import javafx.stage.Stage;
-import javafx.animation.PauseTransition;
-import javafx.util.Duration;
-import javafx.scene.paint.Color;
+import javafx.scene.control.*;
 import javafx.util.StringConverter;
 
 import java.util.List;
 import java.util.Optional;
 
-public class MissionCreateFormController {
+public class MissionCreateFormController extends BaseController {
 
     @FXML private TextField judulField;
     @FXML private TextArea tujuanArea;
@@ -38,27 +36,15 @@ public class MissionCreateFormController {
 
     private MissionManager missionManager;
     private TargetManager targetManager;
-    private MainDashboardController mainDashboardController; // Untuk memanggil dialog target
     private User currentUser;
 
-    // Dipanggil oleh MainDashboardController setelah FXML dimuat
-    public void setMainDashboardController(MainDashboardController mainDashboardController) {
-        this.mainDashboardController = mainDashboardController;
-    }
-
-    public void setManagers(MissionManager missionManager, TargetManager targetManager) {
-        this.missionManager = missionManager;
-        this.targetManager = targetManager;
-    }
-
-    // Dipanggil oleh MainDashboardController setelah manager di-set
     public void loadInitialData() {
         this.currentUser = Main.authManager.getCurrentUser();
         if (this.targetManager != null) {
             loadTargetsToComboBox();
         } else {
             System.err.println("MissionCreateFormController: TargetManager null. Tidak bisa memuat daftar target.");
-            showStatusMessage("Error: Tidak bisa memuat daftar target.", true);
+            showStatus(statusMessageLabel, "Error: Tidak bisa memuat daftar target.", true);
             targetComboBox.setDisable(true);
             tambahTargetButton.setDisable(true);
         }
@@ -68,7 +54,9 @@ public class MissionCreateFormController {
 
     @FXML
     public void initialize() {
-        // Konfigurasi ComboBox Target
+        this.missionManager = ServiceLocator.getMissionManager();
+        this.targetManager = ServiceLocator.getTargetManager();
+        
         targetComboBox.setConverter(new StringConverter<Target>() {
             @Override
             public String toString(Target target) {
@@ -78,6 +66,9 @@ public class MissionCreateFormController {
             public Target fromString(String string) { return null; } // Tidak diperlukan untuk pemilihan
         });
         targetComboBox.setPlaceholder(new Label("Memuat daftar target..."));
+        
+        // Initialize data
+        loadInitialData();
     }
 
     private void loadTargetsToComboBox() {
@@ -93,7 +84,7 @@ public class MissionCreateFormController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            showStatusMessage("Gagal memuat daftar target: " + e.getMessage(), true);
+            showStatus(statusMessageLabel, "Gagal memuat daftar target: " + e.getMessage(), true);
             targetComboBox.setPromptText("Error memuat target!");
         }
     }
@@ -104,9 +95,9 @@ public class MissionCreateFormController {
             // Langsung panggil metode untuk menampilkan view Manajemen Target
             mainDashboardController.showTargetManagementView();
         } else {
-            showStatusMessage("Error internal: MainDashboardController tidak tersedia.", true);
+            showStatus(statusMessageLabel, "Error internal: MainDashboardController tidak tersedia.", true);
         }
-}
+    }
 
     @FXML
     private void handleSimpanDraftButton(ActionEvent event) {
@@ -120,26 +111,26 @@ public class MissionCreateFormController {
 
         // Validasi input
         if (judul.isEmpty()) {
-            showStatusMessage("Judul Misi wajib diisi!", true);
+            showStatus(statusMessageLabel, "Judul Misi wajib diisi!", true);
             judulField.requestFocus(); return;
         }
         if (tujuan.isEmpty()) {
-            showStatusMessage("Tujuan Utama Misi wajib diisi!", true);
+            showStatus(statusMessageLabel, "Tujuan Utama Misi wajib diisi!", true);
             tujuanArea.requestFocus(); return;
         }
         if (selectedTarget == null) {
-            showStatusMessage("Target Utama Misi wajib dipilih atau dibuat!", true);
+            showStatus(statusMessageLabel, "Target Utama Misi wajib dipilih atau dibuat!", true);
             targetComboBox.requestFocus(); return;
         }
 
         if (currentUser == null) {
-            showStatusMessage("Error: Sesi pengguna tidak valid. Silakan login ulang.", true); return;
+            showStatus(statusMessageLabel, "Error: Sesi pengguna tidak valid. Silakan login ulang.", true); return;
         }
         if (missionManager == null) {
-             showStatusMessage("Error: MissionManager belum siap untuk menyimpan.", true); return;
+             showStatus(statusMessageLabel, "Error: MissionManager belum siap untuk menyimpan.", true); return;
         }
 
-        Mission newMission = new Mission(); // ID dan createdAt di-generate otomatis
+        Mission newMission = new Mission();
         newMission.setJudul(judul);
         newMission.setTujuan(tujuan);
         newMission.setDeskripsi(deskripsi);
@@ -147,32 +138,28 @@ public class MissionCreateFormController {
         newMission.setAnalisisRisiko(analisisRisiko);
         newMission.setJenisOperasi(jenisOperasi);
         newMission.setLokasi(lokasi);
-        newMission.setStatus(MissionStatus.DRAFT_ANALIS); // Status awal untuk draft
-        // newMission.setCreatedByUserId(currentUser.getId()); // Jika ada field pencatat di Mission.java
+        newMission.setStatus(MissionStatus.DRAFT_ANALIS);
 
         Optional<Mission> createdMissionOpt = missionManager.submitNewDraft(newMission);
 
         if (createdMissionOpt.isPresent()) {
-            showStatusMessage("Draft Misi '" + createdMissionOpt.get().getJudul() + "' berhasil disimpan dengan status DRAFT ANALIS!", false);
+            showStatus(statusMessageLabel, "Draft Misi '" + createdMissionOpt.get().getJudul() + "' berhasil disimpan dengan status DRAFT ANALIS!", false);
             clearForm();
-            // Opsional: Navigasi ke daftar misi atau dashboard
             if (mainDashboardController != null) {
-                // Mengarahkan ke daftar misi yang memfilter DRAFT_ANALIS jika ada konteksnya
                 mainDashboardController.loadView("/com/sigma48/fxml/MissionListView.fxml", MissionStatus.DRAFT_ANALIS.name());
             }
         } else {
-            showStatusMessage("Gagal menyimpan draft misi. Periksa detail error di konsol sistem.", true);
+            showStatus(statusMessageLabel, "Gagal menyimpan draft misi. Periksa detail error di konsol sistem.", true);
         }
     }
     
     @FXML
     private void handleBatalButton(ActionEvent event) {
         clearForm();
-        showStatusMessage("Pembuatan draft misi dibatalkan. Semua input telah dibersihkan.", false);
-        // Bisa juga navigasi kembali jika form ini bukan tampilan default setelah login
-        // if(mainDashboardController != null) {
-        //    mainDashboardController.loadDefaultRoleDashboard(currentUser.getRole());
-        // }
+        showStatus(statusMessageLabel, "Pembuatan draft misi dibatalkan. Semua input telah dibersihkan.", false);
+        if(mainDashboardController != null) {
+           mainDashboardController.loadDefaultRoleDashboard(currentUser.getRole());
+        }
     }
 
     private void clearForm() {
@@ -188,19 +175,5 @@ public class MissionCreateFormController {
         analisisRisikoArea.clear();
         jenisOperasiField.clear();
         lokasiField.clear();
-    }
-
-    private void showStatusMessage(String message, boolean isError) {
-        statusMessageLabel.setText(message);
-        statusMessageLabel.setTextFill(isError ? Color.RED : Color.GREEN);
-        statusMessageLabel.setManaged(true);
-        statusMessageLabel.setVisible(true);
-
-        PauseTransition visiblePause = new PauseTransition(Duration.seconds(5)); // Pesan tampil lebih lama
-        visiblePause.setOnFinished(ev -> {
-            statusMessageLabel.setManaged(false);
-            statusMessageLabel.setVisible(false);
-        });
-        visiblePause.play();
     }
 }

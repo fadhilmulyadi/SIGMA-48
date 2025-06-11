@@ -5,6 +5,9 @@ import com.sigma48.manager.*;
 import com.sigma48.model.*;
 import com.sigma48.ui.dto.MissionDisplayData;
 import com.sigma48.util.SoundUtils;
+import com.sigma48.ui.controller.MissionPlanningViewController.AssignedAgentTableData;
+import com.sigma48.ui.controller.base.BaseController;
+import com.sigma48.ServiceLocator;
 
 import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -40,7 +43,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MissionPlanningViewController {
+public class MissionPlanningViewController extends BaseController {
 
     @FXML ScrollPane scrollPane;
     @FXML Label missionTitleLabel;
@@ -94,44 +97,31 @@ public class MissionPlanningViewController {
     @FXML Button finalizePlanButton;
     @FXML Button markCompletedButton;
     @FXML Button markFailedButton;
-    
+    @FXML private Button viewDossierButton;
+
     private MissionManager missionManager;
     private TargetManager targetManager;
     private AgentManager agentManager;
     private UserManager userManager;
     private ReportManager reportManager;
     private EvaluationManager evaluationManager;
-
+    
+    private Runnable onCancelAction;
     private Mission currentMission;
     private User currentUser;
     private ObservableList<AssignedAgentTableData> assignedAgentsData = FXCollections.observableArrayList();
     private ObservableList<ReportTableData> reportsData = FXCollections.observableArrayList();
     private ObservableList<EvaluationTableData> evaluationsData = FXCollections.observableArrayList();
-    private Runnable onCancelAction;
-    private MainDashboardController mainDashboardController;
-    
-    public void setMainDashboardController(MainDashboardController mainDashboardController) {
-        this.mainDashboardController = mainDashboardController;
-    }
-    
-    public void setExternalManagers(MissionManager mManager, TargetManager tManager, 
-                                    AgentManager aManager, UserManager uManager,
-                                    ReportManager rManager, EvaluationManager eManager) {
-        this.missionManager = mManager;
-        this.targetManager = tManager;
-        this.agentManager = aManager;
-        this.userManager = uManager;
-        this.reportManager = rManager;
-        this.evaluationManager = eManager;
-    }
-
-    public void setOnCancelAction(Runnable onCancelAction) {
-        this.onCancelAction = onCancelAction;
-    }
 
     @FXML
     public void initialize() {
         this.currentUser = Main.authManager.getCurrentUser();
+        this.missionManager = ServiceLocator.getMissionManager();
+        this.targetManager = ServiceLocator.getTargetManager();
+        this.agentManager = ServiceLocator.getAgentManager();
+        this.userManager = ServiceLocator.getUserManager();
+        this.reportManager = ServiceLocator.getReportManager();
+        this.evaluationManager = ServiceLocator.getEvaluationManager();
         setupAssignedAgentsTable();
         setupReportsTable();
         setupEvaluationsTable();
@@ -151,16 +141,15 @@ public class MissionPlanningViewController {
 
     public void loadMissionData(Mission mission) {
         this.currentMission = mission;
-        if (currentMission == null) {
-            showStatus("Error: Tidak ada data misi yang dimuat untuk perencanaan.", true);
-            setButtonsInitialDisabledState(true);
-            return;
-        }
-        if (userManager == null || targetManager == null || agentManager == null || 
-            reportManager == null || evaluationManager == null || missionManager == null) {
-            showStatus("Error: Satu atau lebih manager belum diinisialisasi dengan benar.", true);
-            setButtonsInitialDisabledState(true);
-            return;
+        if (currentMission.getTargetId() != null) {
+            targetManager.getTargetById(currentMission.getTargetId())
+                .ifPresent(target -> {
+                    targetNameText.setText(defaultIfNull(target.getNama()) + " (Tipe: " + (target.getTipe() != null ? target.getTipe().getDisplayName() : "N/A") + ")");
+                    viewDossierButton.setDisable(false);
+                });
+        } else {
+            targetNameText.setText("N/A");
+            viewDossierButton.setDisable(true);
         }
 
         missionTitleLabel.setText("DETAIL & PERENCANAAN MISI: " + defaultIfNull(currentMission.getJudul()));
@@ -169,9 +158,9 @@ public class MissionPlanningViewController {
         tujuanText.setText(defaultIfNull(currentMission.getTujuan()));
         deskripsiText.setText(defaultIfNull(currentMission.getDeskripsi()));
         
-        initialRiskAnalysisText.setText("Analisis Risiko Awal: " + defaultIfNull(currentMission.getAnalisisRisiko()));
-        initialOperationTypeText.setText("Jenis Operasi Usulan: " + defaultIfNull(currentMission.getJenisOperasi()));
-        initialLocationText.setText("Lokasi Perkiraan: " + defaultIfNull(currentMission.getLokasi()));
+        initialRiskAnalysisText.setText(defaultIfNull(currentMission.getAnalisisRisiko()));
+        initialOperationTypeText.setText(defaultIfNull(currentMission.getJenisOperasi()));
+        initialLocationText.setText(defaultIfNull(currentMission.getLokasi()));
 
         if (currentMission.getTargetId() != null) {
             targetManager.getTargetById(currentMission.getTargetId())
@@ -271,7 +260,7 @@ public class MissionPlanningViewController {
                 private final Button btnRemoveAgent = new Button("Hapus");
                 {
                     btnEditCover.getStyleClass().add("action-button-xs");
-                    btnRemoveAgent.getStyleClass().add("cancel-button-xs");
+                    btnRemoveAgent.getStyleClass().addAll("action-button-xs", "cancel-button-xs");
 
                     btnEditCover.setOnAction(event -> {
                         AssignedAgentTableData data = getTableView().getItems().get(getIndex());
@@ -280,16 +269,17 @@ public class MissionPlanningViewController {
                                 .ifPresent(updatedCi -> {
                                     data.setCoverIdentity(updatedCi);
                                     getTableView().refresh();
-                                    showStatus("Identitas samaran untuk " + data.getAgentName() + " diperbarui.", false);
+                                    showStatus(statusPlanLabel, "Identitas samaran untuk " + data.getAgentName() + " diperbarui.", false);
                                 });
                         }
                     });
                     btnRemoveAgent.setOnAction(event -> {
                         AssignedAgentTableData data = getTableView().getItems().get(getIndex());
                         assignedAgentsData.remove(data);
-                        showStatus("Agen " + data.getAgentName() + " dihapus dari tim.", false);
+                        showStatus(statusPlanLabel, "Agen " + data.getAgentName() + " dihapus dari tim.", false);
                     });
                 }
+
                 @Override
                 protected void updateItem(Void item, boolean empty) {
                     super.updateItem(item, empty);
@@ -408,7 +398,7 @@ public class MissionPlanningViewController {
     @FXML
     private void handleSavePlanButton(ActionEvent event) {
         if (currentMission == null || currentUser == null || missionManager == null) {
-            showStatus("Sistem belum siap atau tidak ada misi dipilih.", true);
+            super.showStatus(statusPlanLabel, "Sistem belum siap atau tidak ada misi dipilih.", true);
             return;
         }
 
@@ -426,7 +416,7 @@ public class MissionPlanningViewController {
             if (selectedKomandan != null) {
                 currentMission.setKomandanId(selectedKomandan.getId());
             } else if (currentMission.getStatus() == MissionStatus.DRAFT_ANALIS) {
-                showStatus("Pilih Komandan Operasi untuk menyetujui draft.", true);
+                super.showStatus(statusPlanLabel, "Pilih Komandan Operasi untuk menyetujui draft.", true);
                 return;
             }
 
@@ -445,21 +435,21 @@ public class MissionPlanningViewController {
             }
         } else if (currentUser.getRole() == Role.KOMANDAN_OPERASI) {
             if (!currentUser.getId().equals(currentMission.getKomandanId())) {
-                showStatus("Anda bukan Komandan yang ditugaskan untuk misi ini.", true); return;
+                super.showStatus(statusPlanLabel,"Anda bukan Komandan yang ditugaskan untuk misi ini.", true); return;
             }
             updateAgentsAndCoverIdentitiesFromTableToCurrentMission();
             currentMission.setUpdatedAt(LocalDateTime.now());
             saveSuccess = missionManager.updateFullMissionDetails(currentMission);
             if (saveSuccess) successMessage = "Rencana operasional & penugasan agen berhasil disimpan!";
         } else {
-            showStatus("Peran Anda tidak memiliki wewenang untuk menyimpan.", true); return;
+            super.showStatus(statusPlanLabel, "Peran Anda tidak memiliki wewenang untuk menyimpan.", true); return;
         }
 
         if (saveSuccess) {
-            showStatus(successMessage, false);
+            super.showStatus(statusPlanLabel, successMessage, false);
             missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
         } else {
-            showStatus("Gagal menyimpan perubahan pada misi.", true);
+            super.showStatus(statusPlanLabel, "Gagal menyimpan perubahan pada misi.", true);
         }
     }
     
@@ -481,17 +471,17 @@ public class MissionPlanningViewController {
     private void handleAddAgentButton(ActionEvent event) {
         Agent selectedAgent = availableAgentsComboBox.getValue();
         if (selectedAgent == null || currentMission == null) {
-            showStatus("Pilih agen dari daftar terlebih dahulu.", true); return;
+            super.showStatus(statusPlanLabel, "Pilih agen dari daftar terlebih dahulu.", true); return;
         }
         boolean alreadyAssigned = assignedAgentsData.stream().anyMatch(data -> data.getAgentId().equals(selectedAgent.getId()));
         if (alreadyAssigned) {
-            showStatus("Agen " + selectedAgent.getUsername() + " sudah ada dalam tim.", true); return;
+            super.showStatus(statusPlanLabel, "Agen " + selectedAgent.getUsername() + " sudah ada dalam tim.", true); return;
         }
 
         Optional<CoverIdentity> coverIdentityOpt = showCoverIdentityDialog(null, selectedAgent);
         assignedAgentsData.add(new AssignedAgentTableData(selectedAgent, coverIdentityOpt.orElse(new CoverIdentity("Belum Diatur", "-", "-"))));
         availableAgentsComboBox.getSelectionModel().clearSelection();
-        showStatus("Agen " + selectedAgent.getUsername() + " ditambahkan ke tim. Atur identitas samaran jika perlu.", false);
+        super.showStatus(statusPlanLabel,  "Agen " + selectedAgent.getUsername() + " ditambahkan ke tim. Atur identitas samaran jika perlu.", false);
     }
     
      private Optional<CoverIdentity> showCoverIdentityDialog(CoverIdentity existingCoverIdentity, Agent forAgent) {
@@ -530,7 +520,7 @@ public class MissionPlanningViewController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            showStatus("Gagal memuat dialog identitas samaran.", true);
+            super.showStatus(statusPlanLabel, "Gagal memuat dialog identitas samaran.", true);
             return Optional.empty();
         }
     }
@@ -538,17 +528,17 @@ public class MissionPlanningViewController {
     @FXML
     private void handleFinalizePlanButton(ActionEvent event) {
         if (currentMission == null || currentUser == null || missionManager == null) {
-             showStatus("Sistem belum siap atau tidak ada misi.", true); return;
+             super.showStatus(statusPlanLabel, "Sistem belum siap atau tidak ada misi.", true); return;
         }
         if (!currentUser.getId().equals(currentMission.getKomandanId())) {
-            showStatus("Hanya Komandan yang ditugaskan yang dapat memfinalkan rencana.", true); return;
+            super.showStatus(statusPlanLabel, "Hanya Komandan yang ditugaskan yang dapat memfinalkan rencana.", true); return;
         }
         boolean success = missionManager.finalizePlanningAndSetReadyForBriefing(currentMission.getId(), currentUser.getId());
         if (success) {
-            showStatus("Rencana misi telah difinalkan dan SIAP BRIEFING!", false);
+            super.showStatus(statusPlanLabel, "Rencana misi telah difinalkan dan SIAP BRIEFING!", false);
             missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
         } else {
-            showStatus("Gagal memfinalkan rencana. Pastikan semua data inti (strategi, protokol, agen) sudah terisi.", true);
+            super.showStatus(statusPlanLabel, "Gagal memfinalkan rencana. Pastikan semua data inti (strategi, protokol, agen) sudah terisi.", true);
         }
     }
     
@@ -556,7 +546,7 @@ public class MissionPlanningViewController {
     private void handleMarkCompletedButton(ActionEvent event) {
         if (currentMission == null || currentUser == null || missionManager == null) return;
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "Yakin tandai misi '" + currentMission.getJudul() + "' sebagai SELESAI?", ButtonType.YES, ButtonType.NO);
-        confirmation.setHeaderText("Konfirmasi Misi Selesai");
+        super.styleAlertDialog(confirmation);
         confirmation.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
             TextInputDialog notesDialog = new TextInputDialog("Misi berhasil diselesaikan sesuai tujuan.");
             notesDialog.setTitle("Catatan Akhir Misi Selesai");
@@ -566,10 +556,10 @@ public class MissionPlanningViewController {
 
             boolean success = missionManager.concludeMission(currentMission.getId(), MissionStatus.COMPLETED, notes, currentUser.getId());
             if (success) {
-                showStatus("Misi '" + currentMission.getJudul() + "' ditandai SELESAI.", false);
+                super.showStatus(statusPlanLabel, "Misi '" + currentMission.getJudul() + "' ditandai SELESAI.", false);
                 missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
             } else {
-                showStatus("Gagal menandai misi selesai.", true);
+                super.showStatus(statusPlanLabel, "Gagal menandai misi selesai.", true);
             }
         });
     }
@@ -585,13 +575,13 @@ public class MissionPlanningViewController {
         if (reasonOpt.isPresent() && !reasonOpt.get().trim().isEmpty()) {
             boolean success = missionManager.concludeMission(currentMission.getId(), MissionStatus.FAILED, reasonOpt.get(), currentUser.getId());
             if (success) {
-                showStatus("Misi '" + currentMission.getJudul() + "' ditandai GAGAL.", false);
+                super.showStatus(statusPlanLabel, "Misi '" + currentMission.getJudul() + "' ditandai GAGAL.", false);
                 missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
             } else {
-                showStatus("Gagal menandai misi gagal.", true);
+                super.showStatus(statusPlanLabel,"Gagal menandai misi gagal.", true);
             }
         } else if (reasonOpt.isPresent()) {
-            showStatus("Alasan kegagalan wajib diisi.", true);
+            super.showStatus(statusPlanLabel, "Alasan kegagalan wajib diisi.", true);
         }
     }
     
@@ -600,7 +590,7 @@ public class MissionPlanningViewController {
         if (mainDashboardController != null && currentMission != null) {
             mainDashboardController.showEvaluationForm(currentMission);
         } else {
-            showStatus("Tidak bisa membuka form evaluasi.", true);
+            super.showStatus(statusPlanLabel, "Tidak bisa membuka form evaluasi.", true);
         }
     }
 
@@ -608,32 +598,34 @@ public class MissionPlanningViewController {
     private void handleRefreshEvaluationsButton(ActionEvent event) {
          if (currentMission != null && evaluationManager != null) {
             loadMissionEvaluations();
-            showStatus("Daftar evaluasi diperbarui.", false);
+            super.showStatus(statusPlanLabel, "Daftar evaluasi diperbarui.", false);
         } else {
-            showStatus("Pilih misi atau EvaluationManager belum siap.", true);
+            super.showStatus(statusPlanLabel, "Pilih misi atau EvaluationManager belum siap.", true);
         }
     }
 
     @FXML
     private void handleCancelPlanButton(ActionEvent event) {
-        if (onCancelAction != null) {
-            onCancelAction.run();
+        if (mainDashboardController != null) {
+            mainDashboardController.loadView("/com/sigma48/fxml/MissionListView.fxml", "ALL_MISSIONS");
         } else {
-            showStatus("Aksi dibatalkan.", false);
+            super.showStatus(statusPlanLabel, "Aksi dibatalkan.", false);
             if (currentMission != null) loadMissionData(currentMission);
         }
     }
 
-    private void showReportDetails(Report report) { 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Detail Laporan");
-        alert.setHeaderText("Laporan oleh: " + userManager.findUserById(report.getUserId()).map(User::getUsername).orElse("N/A") + 
-                          "\nPada: " + report.getWaktuLapor().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        TextArea area = new TextArea(report.getIsi());
-        area.setWrapText(true);
-        area.setEditable(false);
-        alert.getDialogPane().setContent(area);
-        alert.showAndWait();
+    @FXML
+    private void handleViewDossier() {
+        if (currentMission != null && currentMission.getTargetId() != null && mainDashboardController != null) {
+            targetManager.getTargetById(currentMission.getTargetId()).ifPresent(target -> {
+                // Panggil showDossierView dengan konteks misi saat ini untuk "kembali"
+                mainDashboardController.showDossierView(target, currentMission);
+            });
+        }
+    }
+
+    public void setOnCancelAction(Runnable onCancelAction) {
+        this.onCancelAction = onCancelAction;
     }
     
     private void showEvaluationDetails(Evaluation evaluation) { 
@@ -641,6 +633,7 @@ public class MissionPlanningViewController {
         alert.setTitle("Detail Evaluasi");
         alert.setHeaderText("Evaluasi oleh: " + userManager.findUserById(evaluation.getEvaluatorId()).map(User::getUsername).orElse("N/A") +
                           "\nPada: " + evaluation.getTimestampEvaluasi().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        super.styleAlertDialog(alert);
         VBox vbox = new VBox(10);
         vbox.getChildren().add(new Label("Efektivitas: " + evaluation.getEfektivitasOperasi().getDisplayName()));
         if (evaluation.getAgentId() != null) {
@@ -652,19 +645,6 @@ public class MissionPlanningViewController {
         vbox.getChildren().add(area);
         alert.getDialogPane().setContent(vbox);
         alert.showAndWait();
-    }
-    
-    private void showStatus(String message, boolean isError) {
-        statusPlanLabel.setText(message);
-        statusPlanLabel.setTextFill(isError ? Color.RED : Color.GREEN);
-        statusPlanLabel.setManaged(true);
-        statusPlanLabel.setVisible(true);
-        PauseTransition visiblePause = new PauseTransition(Duration.seconds(4));
-        visiblePause.setOnFinished(ev -> {
-            statusPlanLabel.setManaged(false);
-            statusPlanLabel.setVisible(false);
-        });
-        visiblePause.play();
     }
 
     private void updateAllButtonStates() {
@@ -836,5 +816,4 @@ public class MissionPlanningViewController {
         public String getCatatanSingkat() { return catatanSingkat.get(); }
         public Evaluation getOriginalEvaluation() { return originalEvaluation; }
     }
-    //</editor-fold>
 }

@@ -215,9 +215,9 @@ MAIN DASHBOARD LAYOUT (HEADER, NAV, FOOTER)
 .button {
     -fx-background-color: #4A5058;
     -fx-text-fill: #F5F5F5;
-    -fx-font-family: 'Share Tech Mono';
+    -fx-font-family: 'Agency FB';
     -fx-font-weight: bold;
-    -fx-font-size: 13px;
+    -fx-font-size: 15px;
     -fx-background-radius: 0;
     -fx-padding: 8px 16px;
     -fx-cursor: hand;
@@ -226,13 +226,19 @@ MAIN DASHBOARD LAYOUT (HEADER, NAV, FOOTER)
 
 /* Tombol Aksi Primer (misal: Simpan, Buat) */
 .action-button-primary {
+    -fx-font-family: 'Agency FB';
+    -fx-font-weight: bold;
     -fx-background-color: #FFC107;
     -fx-text-fill: black;
 }
-.action-button-primary:hover { -fx-background-color: derive(#FFC107, 20%); }
+.action-button-primary:hover {
+    -fx-background-color: derive(#FFC107, 20%);
+}
 
 /* Tombol Batal atau sekunder */
 .cancel-button {
+    -fx-font-family: 'Agency FB';
+    -fx-font-weight: bold;
     -fx-background-color: transparent;
     -fx-text-fill: #8A96A8;
     -fx-border-color: #4A5058;
@@ -242,8 +248,10 @@ MAIN DASHBOARD LAYOUT (HEADER, NAV, FOOTER)
 
 /* Tombol-tombol kecil di dalam tabel */
 .action-button-xs {
+    -fx-font-family: 'Agency FB';
+    -fx-font-weight: bold;
     -fx-padding: 4px 10px;
-    -fx-font-size: 11px;
+    -fx-font-size: 14px;
 }
 
 
@@ -320,7 +328,7 @@ FORMS & INPUTS
 }
 .table-view-standard .column-header .label {
     -fx-text-fill: white;
-    -fx-font-family: 'Share Tech Mono';
+    -fx-font-family: 'Agency FB';
     -fx-font-size: 13px;
     -fx-font-weight: bold;
     -fx-padding: 10px;
@@ -346,6 +354,7 @@ FORMS & INPUTS
     -fx-border-color: #4A5058;
     -fx-border-width: 0 0 1px 0;
     -fx-padding: 10px;
+    -fx-alignment: CENTER;
 }
 .table-view-standard .table-row-cell:hover {
     -fx-background-color: #3B3F46;
@@ -992,4 +1001,28 @@ FORMS & INPUTS
     -fx-border-width: 0 1px 0 1px;
     -fx-font-size: 12px;
     -fx-font-weight: normal;
+}
+
+#prevButton, #nextButton {
+    -fx-font-family: "Agency FB";
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-opacity: 0.8;
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-text-fill: white;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+}
+
+#prevButton:hover, #nextButton:hover {
+    -fx-opacity: 1.0;
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+}
+
+#prevButton:pressed, #nextButton:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.9);
 }

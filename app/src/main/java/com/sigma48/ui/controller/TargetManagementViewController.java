@@ -1,9 +1,11 @@
 package com.sigma48.ui.controller;
 
+import com.sigma48.ServiceLocator;
 import com.sigma48.manager.TargetManager;
 import com.sigma48.model.Target;
 import com.sigma48.model.TargetType;
 import com.sigma48.model.ThreatLevel;
+import com.sigma48.ui.controller.base.BaseController;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,7 +21,7 @@ import javafx.stage.StageStyle;
 
 import java.util.Optional;
 
-public class TargetManagementViewController {
+public class TargetManagementViewController extends BaseController{
 
     // --- Bagian Tabel ---
     @FXML private TableView<Target> targetTableView;
@@ -46,21 +48,13 @@ public class TargetManagementViewController {
 
 
     private TargetManager targetManager;
-    private MainDashboardController mainDashboardController; // Masih dibutuhkan untuk konteks
     private ObservableList<Target> targetData = FXCollections.observableArrayList();
     private Target currentTargetToEdit; // Untuk membedakan mode Tambah atau Edit
 
-    public void setMainDashboardController(MainDashboardController mainDashboardController) {
-        this.mainDashboardController = mainDashboardController;
-    }
-
-    public void setManagers(TargetManager targetManager) {
-        this.targetManager = targetManager;
-        loadTargets();
-    }
-
     @FXML
     public void initialize() {
+        this.targetManager = ServiceLocator.getTargetManager();
+        loadTargets();
         setupTableColumns();
         targetTableView.setItems(targetData);
         targetTableView.setPlaceholder(new Label("Tidak ada data target. Klik 'Tambah Target Baru' untuk memulai."));
@@ -95,9 +89,11 @@ public class TargetManagementViewController {
                 dossierBtn.setOnAction(event -> {
                     Target target = getTableView().getItems().get(getIndex());
                     if (mainDashboardController != null) {
-                        mainDashboardController.showDossierView(target);
+                        // Kirim 'null' karena tidak ada misi spesifik untuk kembali
+                        mainDashboardController.showDossierView(target, null); 
                     }
                 });
+                
                 editBtn.setOnAction(event -> {
                     Target target = getTableView().getItems().get(getIndex());
                     showFormForEdit(target);

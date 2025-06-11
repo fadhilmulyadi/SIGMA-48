@@ -36,7 +36,7 @@ public class MissionListItemController {
 
         judulMisiLabel.setText(data.getJudul());
         targetMisiLabel.setText(data.getTargetName());
-        tujuanSingkatLabel.setText("Tujuan: " + data.getTujuanSingkat());
+        tujuanSingkatLabel.setText("TUJUAN: " + data.getTujuanSingkat());
         statusTextLabel.setText(data.getStatusDisplayName().toUpperCase());
         lastUpdateLabel.setText(data.getTanggalUpdateFormatted());
         missionIdLabel.setText("ID: " + data.getId());

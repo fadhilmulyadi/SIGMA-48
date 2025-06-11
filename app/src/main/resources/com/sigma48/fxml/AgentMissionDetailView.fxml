@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="dashboard-root" stylesheets="@../../css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigma48.ui.controller.AgentMissionDetailViewController">
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header-box" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBack" styleClass="cancel-button" text="&lt; KEMBALI KE DAFTAR MISI" />
+            <Label fx:id="missionTitleLabel" styleClass="view-title-xl" text="JUDUL MISI LENGKAP" />
+            <Label fx:id="missionStatusLabel" alignment="CENTER" style="-fx-background-color: #00ff37; -fx-text-fill: black; -fx-padding: 8 12 8 12; -fx-font-weight: bold; -fx-background-radius: 3; -fx-alignment: center;" text="STATUS" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+         </padding>
+      </HBox>
+   </top>
+   <center>
+      <ScrollPane fitToWidth="true" styleClass="overview-scroll-pane">
+         <content>
+            <VBox spacing="30.0">
+               <padding>
+                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+               </padding>
+               <children>
+                  <!-- Mission Overview Section -->
+                  <VBox spacing="20.0">
+                     <children>
+                        <Label styleClass="view-title-xl" text="INFORMASI MISI" />
+                        <GridPane hgap="30.0" vgap="20.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" percentWidth="50.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" percentWidth="50.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <!-- Tujuan Utama -->
+                              <VBox spacing="8.0">
+                                 <children>
+                                    <Label styleClass="panel-title" text="TUJUAN UTAMA" />
+                                    <TextArea fx:id="tujuanTextArea" editable="false" prefHeight="120.0" prefRowCount="4" styleClass="form-input-textarea" wrapText="true" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Deskripsi & Latar Belakang -->
+                              <VBox spacing="8.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <Label styleClass="panel-title" text="DESKRIPSI &amp; LATAR BELAKANG" />
+                                    <TextArea fx:id="deskripsiTextArea" editable="false" prefHeight="120.0" prefRowCount="4" styleClass="form-input-textarea" wrapText="true" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Target Operasi -->
+                              <VBox spacing="8.0" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label styleClass="panel-title" text="TARGET OPERASI" />
+                                    <VBox spacing="5.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                             <children>
+                                                <Label fx:id="targetNameLabel" styleClass="form-label-bold" text="Nama Target" />
+                                                <Button fx:id="viewDossierButton" mnemonicParsing="false" onAction="#handleViewDossier" styleClass="action-button-xs" text="Lihat Dossier" />
+                                             </children>
+                                          </HBox>
+                                          <Label fx:id="targetDetailsLabel" styleClass="form-label" text="Tipe: Tipe Target | Lokasi: Lokasi Target" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Komandan Operasi -->
+                              <VBox spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label styleClass="panel-title" text="KOMANDAN OPERASI" />
+                                    <Label fx:id="commanderNameLabel" styleClass="form-label-bold" text="Nama Komandan" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Identitas Samaran -->
+                              <VBox spacing="8.0" GridPane.rowIndex="2">
+                                 <children>
+                                    <Label styleClass="panel-title" text="IDENTITAS SAMARAN ANDA" />
+                                    <VBox spacing="3.0">
+                                       <children>
+                                          <Label fx:id="coverNameLabel" styleClass="form-label-bold" text="Nama Samaran" />
+                                          <Label fx:id="coverRoleLabel" styleClass="form-label" text="Peran Samaran" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                  
+                  <Separator prefWidth="200.0" />
+                  
+                  <!-- Operational Plan Section -->
+                  <VBox spacing="20.0">
+                     <children>
+                        <Label styleClass="view-title-xl" text="RENCANA OPERASIONAL FINAL" />
+                        <GridPane hgap="30.0" vgap="20.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" percentWidth="50.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" percentWidth="50.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <!-- Strategi -->
+                              <VBox spacing="8.0">
+                                 <children>
+                                    <Label styleClass="panel-title" text="STRATEGI" />
+                                    <TextArea fx:id="strategiTextArea" editable="false" prefHeight="180.0" prefRowCount="6" styleClass="form-input-textarea" wrapText="true" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Protokol & Komunikasi -->
+                              <VBox spacing="8.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <Label styleClass="panel-title" text="PROTOKOL &amp; KOMUNIKASI" />
+                                    <TextArea fx:id="protokolTextArea" editable="false" prefHeight="180.0" prefRowCount="6" styleClass="form-input-textarea" wrapText="true" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Info Tambahan -->
+                              <VBox spacing="8.0" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label styleClass="panel-title" text="INFO TAMBAHAN" />
+                                    <GridPane hgap="15.0" vgap="8.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="NEVER" maxWidth="150.0" minWidth="120.0" prefWidth="140.0" />
+                                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label styleClass="form-label" text="JENIS OPERASI:" />
+                                          <Label styleClass="form-label" text="LOKASI UTAMA:" GridPane.rowIndex="1" />
+                                          <Label fx:id="jenisOperasiLabel" styleClass="form-label-bold" text="Jenis Operasi" GridPane.columnIndex="1" />
+                                          <Label fx:id="lokasiLabel" styleClass="form-label-bold" text="Lokasi Misi" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Analisis Risiko -->
+                              <VBox spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label styleClass="panel-title" text="ANALISIS RISIKO" />
+                                    <TextArea fx:id="risikoTextArea" editable="false" prefHeight="120.0" prefRowCount="4" styleClass="form-input-textarea" wrapText="true" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER" styleClass="footer-box" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="submitReportButton" mnemonicParsing="false" onAction="#handleSubmitReport" styleClass="action-button-primary" text="KIRIM LAPORAN UNTUK MISI INI" />
+         </children>
+         <padding>
+            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>

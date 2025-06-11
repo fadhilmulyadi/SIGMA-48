@@ -12,7 +12,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
          <children>
-            <Label fx:id="viewTitleLabel" text="DAFTAR SEMUA MISI" styleClass="view-title" /> <Button fx:id="refreshButton" onAction="#handleRefreshButton" text="Refresh" styleClass="action-button" />
+            <Label fx:id="viewTitleLabel" text="DAFTAR SEMUA MISI" styleClass="view-title" /> <Button fx:id="refreshButton" onAction="#handleRefreshButton" text="REFRESH" styleClass="action-button" />
             </children>
       </HBox>
    </top>
@@ -22,7 +22,7 @@
             <Insets top="10.0" />
          </BorderPane.margin>
          <placeholder>
-            <Label text="Tidak ada misi untuk ditampilkan."/>
+            <Label text="TIDAK ADA MISI UNTUK DITAMPILKAN."/>
          </placeholder>
       </ListView>
    </center>

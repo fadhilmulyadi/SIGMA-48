@@ -1,0 +1,55 @@
+==================================================
+         DOKUMEN BRIEFING MISI SIGMA-48
+==================================================
+
+ID MISI        : ${mission.id}
+JUDUL MISI     : ${mission.judul}
+STATUS         : ${mission.status}
+WAKTU DIBUAT   : ${mission.createdAt}
+WAKTU UPDATE   : ${mission.updatedAt}
+
+--------------------------------------------------
+                  TUJUAN & TARGET
+--------------------------------------------------
+TUJUAN UTAMA   : ${mission.tujuan}
+DESKRIPSI      : ${mission.deskripsi}
+
+TARGET UTAMA   :
+    NAMA       : ${target.nama}
+    TIPE       : ${target.tipe}
+    LOKASI     : ${target.lokasi}
+    ANCAMAN    : ${target.ancaman}
+
+--------------------------------------------------
+                 RENCANA OPERASIONAL
+--------------------------------------------------
+KOMANDAN OPS.  : ${komandan.username} (ID: ${komandan.id})
+JENIS OPERASI  : ${mission.jenisOperasi}
+LOKASI DETAIL  : ${mission.lokasi}
+STRATEGI       : 
+${mission.strategi}
+
+PROTOKOL KOM.  : 
+${mission.protokol}
+
+ANALISIS RISIKO: 
+${mission.analisisRisiko}
+
+--------------------------------------------------
+                  TIM AGEN LAPANGAN
+--------------------------------------------------
+${foreach.agent}
+AGEN ID        : ${agent.id}
+NAMA SAMARAN   : ${agent.coverName}
+PERAN SAMARAN  : ${agent.coverRole}
+NO. DOKUMEN    : ${agent.coverPassport}
+SPESIALISASI   : ${agent.spesialisasi}
+----------------
+${endforeach.agent}
+${if.noAgents}
+BELUM ADA AGEN YANG DITUGASKAN
+${endif.noAgents}
+
+==================================================
+    RAHASIA - KOMUNIKASI TERENKRIPSI PENUH
+==================================================

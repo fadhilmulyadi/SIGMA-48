@@ -30,25 +30,25 @@
          <children>
             <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label text="Lokasi Kejadian/Laporan:" styleClass="form-label" />
-                  <TextField fx:id="locationTextField" promptText="Contoh: Pelabuhan Soekarno-Hatta, Makassar" styleClass="form-input-text" />
+                  <Label text="LOKASI KEJADIAN:" styleClass="form-label" />
+                  <TextField fx:id="locationTextField" styleClass="form-input-text" />
                   
-                  <Label text="Isi Laporan:" styleClass="form-label">
+                  <Label text="ISI LAPORAN:" styleClass="form-label">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <TextArea fx:id="isiLaporanArea" promptText="Tuliskan detail observasi, analisis, dan kejadian di sini..." styleClass="form-input-textarea" VBox.vgrow="ALWAYS" />
+                  <TextArea fx:id="isiLaporanArea" styleClass="form-input-textarea" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
             
             <VBox prefWidth="350.0" spacing="10.0">
                <children>
-                  <Label text="Lampiran:" styleClass="form-label" />
+                  <Label text="LAMPIRAN:" styleClass="form-label" />
                   <HBox spacing="10.0">
                      <children>
-                        <Button fx:id="tambahLampiranButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAddAttachmentButtonAction" text="(+) Tambah File" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="hapusLampiranButton" mnemonicParsing="false" onAction="#handleRemoveAttachmentButtonAction" styleClass="cancel-button" text="(-) Hapus Pilihan" />
+                        <Button fx:id="tambahLampiranButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAddAttachmentButtonAction" text="TAMBAH FILE" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="hapusLampiranButton" mnemonicParsing="false" onAction="#handleRemoveAttachmentButtonAction" styleClass="cancel-button" text="HAPUS PILIHAN" />
                      </children>
                   </HBox>
                   <ListView fx:id="lampiranListView" styleClass="list-view-dark" VBox.vgrow="ALWAYS" />

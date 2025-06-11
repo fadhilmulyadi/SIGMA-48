@@ -38,8 +38,8 @@
    <bottom>
       <HBox alignment="CENTER" spacing="20.0" styleClass="nav-controls" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="viewDossierButton" mnemonicParsing="false" onAction="#handleViewDossier" styleClass="primary-button" text="Buka Dossier Target Lengkap" />
-            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBack" text="Kembali" />
+            <Button fx:id="viewDossierButton" mnemonicParsing="false" onAction="#handleViewDossier" styleClass="primary-button" text="BUKA DOSSIER TARGET" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBack" text="KEMBALI" />
          </children>
       </HBox>
    </bottom>

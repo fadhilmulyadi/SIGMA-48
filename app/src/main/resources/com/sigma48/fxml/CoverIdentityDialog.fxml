@@ -11,10 +11,10 @@
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
     </padding>
-    <Label styleClass="form-label-bold" text="Nama Samaran:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+    <Label styleClass="form-label-bold" text="NAMA SAMARAN:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
     <TextField fx:id="coverNameField" prefWidth="300.0" styleClass="form-input-text" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-    <Label styleClass="form-label-bold" text="Peran Samaran:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <Label styleClass="form-label-bold" text="PERAN SAMARAN:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
     <TextField fx:id="coverRoleField" prefWidth="300.0" styleClass="form-input-text" GridPane.columnIndex="1" GridPane.rowIndex="1" />
     
    <columnConstraints>

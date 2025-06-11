@@ -21,7 +21,7 @@
                   <Label styleClass="view-title-xl" text="FORMULIR EVALUASI MISI" />
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Label styleClass="form-label-bold" text="Evaluator:" />
+                        <Label styleClass="form-label-bold" text="EVALUATOR: " />
                         <Label fx:id="evaluatorInfoLabel" text="[NAMA_USER] (ROLE)" />
                      </children>
                   </HBox>
@@ -41,15 +41,15 @@
                   <RowConstraints minHeight="10.0" prefHeight="120.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label styleClass="form-label-bold" text="Misi yang Dievaluasi:" />
-                  <Label styleClass="form-label-bold" text="Agen yang Dievaluasi (Opsional):" GridPane.rowIndex="1" />
-                  <Label styleClass="form-label-bold" text="Tingkat Efektivitas Operasi:" GridPane.rowIndex="2" />
-                  <Label styleClass="form-label-bold" text="Catatan Kondisi Mental Agen:" GridPane.rowIndex="3" />
-                  <Label styleClass="form-label-bold" text="Catatan Kondisi Fisik Agen:" GridPane.rowIndex="4" />
-                  <Label styleClass="form-label-bold" text="Catatan Umum Evaluator (Wajib):" GridPane.rowIndex="5" />
-                  <ComboBox fx:id="missionComboBox" prefWidth="400.0" promptText="Pilih Misi..." GridPane.columnIndex="1" />
-                  <ComboBox fx:id="agentComboBox" prefWidth="400.0" promptText="Pilih Agen..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <ComboBox fx:id="efektivitasComboBox" prefWidth="400.0" promptText="Pilih Tingkat Efektivitas..." GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label styleClass="form-label-bold" text="MISI YANG DIEVALUASI:" />
+                  <Label styleClass="form-label-bold" text="AGEN YANG DIEVALUASI:" GridPane.rowIndex="1" />
+                  <Label styleClass="form-label-bold" text="TINGKAT EFEKTIVITAS OPERASI:" GridPane.rowIndex="2" />
+                  <Label styleClass="form-label-bold" text="CATATAN KONDISI MENTAL AGEN:" GridPane.rowIndex="3" />
+                  <Label styleClass="form-label-bold" text="CATATAN KONDISI FISIK AGEN:" GridPane.rowIndex="4" />
+                  <Label styleClass="form-label-bold" text="CATATAN UMUM EVALUATOR:" GridPane.rowIndex="5" />
+                  <ComboBox fx:id="missionComboBox" prefWidth="400.0" GridPane.columnIndex="1" />
+                  <ComboBox fx:id="agentComboBox" prefWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <ComboBox fx:id="efektivitasComboBox" prefWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <TextArea fx:id="catatanMentalArea" styleClass="form-input-textarea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <TextArea fx:id="kondisiFisikArea" styleClass="form-input-textarea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                   <TextArea fx:id="catatanUmumArea" styleClass="form-input-textarea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
@@ -57,14 +57,14 @@
             </GridPane>
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
-                  <Button fx:id="simpanEvalButton" mnemonicParsing="false" onAction="#handleSaveEvaluationButton" styleClass="action-button-primary" text="Simpan Evaluasi" />
-                  <Button fx:id="batalEvalButton" mnemonicParsing="false" onAction="#handleCancelEvaluationButton" styleClass="cancel-button" text="Batal" />
+                  <Button fx:id="simpanEvalButton" mnemonicParsing="false" onAction="#handleSaveEvaluationButton" styleClass="action-button-primary" text="SIMPAN EVALUASI" />
+                  <Button fx:id="batalEvalButton" mnemonicParsing="false" onAction="#handleCancelEvaluationButton" styleClass="cancel-button" text="BATAL" />
                </children>
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </HBox>
-            <Label fx:id="statusEvalLabel" managed="false" text="Status message here." textFill="#f5f5f5" visible="false">
+            <Label fx:id="statusEvalLabel" managed="false" text="STATUS PESAN" textFill="#f5f5f5" visible="false">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>

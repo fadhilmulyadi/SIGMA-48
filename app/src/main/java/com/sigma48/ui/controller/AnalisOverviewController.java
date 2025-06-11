@@ -4,6 +4,8 @@ import com.sigma48.manager.MissionManager;
 import com.sigma48.manager.TargetManager;
 import com.sigma48.model.Mission;
 import com.sigma48.model.MissionStatus;
+import com.sigma48.ui.controller.base.BaseController;
+import com.sigma48.ServiceLocator;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-public class AnalisOverviewController {
+public class AnalisOverviewController extends BaseController {
 
     @FXML private Label draftCountLabel;
     @FXML private Label targetCountLabel;
@@ -27,24 +29,17 @@ public class AnalisOverviewController {
 
     private MissionManager missionManager;
     private TargetManager targetManager;
-    private MainDashboardController mainDashboardController;
 
     private final ObservableList<Mission> recentDraftsData = FXCollections.observableArrayList();
 
-    public void setMainDashboardController(MainDashboardController mainDashboardController) {
-        this.mainDashboardController = mainDashboardController;
-    }
-
-    public void setManagers(MissionManager missionManager, TargetManager targetManager) {
-        this.missionManager = missionManager;
-        this.targetManager = targetManager;
-        loadDashboardData();
-    }
-
     @FXML
     public void initialize() {
+        this.missionManager = ServiceLocator.getMissionManager();
+        this.targetManager = ServiceLocator.getTargetManager();
+        
         setupListView();
         setupActionButtons();
+        loadDashboardData();
     }
 
     private void loadDashboardData() {
@@ -54,13 +49,11 @@ public class AnalisOverviewController {
             return;
         }
 
-        // Load Counts
         draftCountLabel.setText(String.valueOf(
             missionManager.getMissionsByStatus(MissionStatus.DRAFT_ANALIS).size()
         ));
         targetCountLabel.setText(String.valueOf(targetManager.getAllTargets().size()));
 
-        // Load Recent Drafts
         recentDraftsData.clear();
         recentDraftsData.addAll(
             missionManager.getMissionsByStatus(MissionStatus.DRAFT_ANALIS).stream()
@@ -72,7 +65,7 @@ public class AnalisOverviewController {
 
     private void setupListView() {
         recentDraftsListView.setItems(recentDraftsData);
-        recentDraftsListView.setPlaceholder(new Label("Belum ada draft misi yang dibuat."));
+        recentDraftsListView.setPlaceholder(new Label("BELUM ADA DRAFT MIS YANG DIBUAT."));
         recentDraftsListView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Mission item, boolean empty) {
