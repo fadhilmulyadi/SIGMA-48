@@ -14,7 +14,8 @@ public class ReportDao extends GenericDao<Report> {
         super("data/reports.json", new TypeReference<List<Report>>() {});
     }
 
-    public Optional<Report> findReportById(String reportId) {
+
+    public Optional<Report> findById(String reportId) {
         return find(report -> report.getReportId().equals(reportId));
     }
 
@@ -30,13 +31,15 @@ public class ReportDao extends GenericDao<Report> {
                 .collect(Collectors.toList());
     }
 
-    public boolean saveReport(Report reportToSave) {
+   
+    public boolean save(Report reportToSave) {
         if (reportToSave == null) return false;
         save(reportToSave, r -> r.getReportId().equals(reportToSave.getReportId()));
         return true;
     }
 
-    public boolean deleteReport(String reportId) {
+    
+    public boolean delete(String reportId) {
         return delete(report -> report.getReportId().equals(reportId));
     }
 }

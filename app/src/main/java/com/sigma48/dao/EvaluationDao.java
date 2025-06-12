@@ -14,7 +14,8 @@ public class EvaluationDao extends GenericDao<Evaluation> {
         super("data/evaluations.json", new TypeReference<List<Evaluation>>() {});
     }
 
-    public Optional<Evaluation> findEvaluationById(String evaluationId) {
+ 
+    public Optional<Evaluation> findById(String evaluationId) {
         return find(eval -> eval.getId().equals(evaluationId));
     }
 
@@ -30,14 +31,14 @@ public class EvaluationDao extends GenericDao<Evaluation> {
                 .collect(Collectors.toList());
     }
 
-    // PERBAIKAN: Menambahkan kembali method ini
     public List<Evaluation> findEvaluationsByEvaluatorId(String evaluatorId) {
         return getAll().stream()
                 .filter(eval -> evaluatorId.equals(eval.getEvaluatorId()))
                 .collect(Collectors.toList());
     }
 
-    public boolean saveEvaluation(Evaluation evaluationToSave) {
+    
+    public boolean save(Evaluation evaluationToSave) {
         if (evaluationToSave == null) return false;
         save(evaluationToSave, e -> e.getId().equals(evaluationToSave.getId()));
         return true;

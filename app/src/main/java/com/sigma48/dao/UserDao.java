@@ -20,20 +20,22 @@ public class UserDao extends GenericDao<User> {
         return find(user -> user.getUsername().equalsIgnoreCase(username));
     }
     
-    public Optional<User> findUserById(String userId) {
+    public Optional<User> findById(String userId) {
         if (userId == null || userId.trim().isEmpty()) {
             return Optional.empty();
         }
         return find(user -> user.getId().equals(userId));
     }
 
-    public boolean saveUser(User user) {
+    
+    public boolean save(User user) {
         if (user == null) return false;
         save(user, u -> u.getId().equals(user.getId()));
         return true;
     }
 
-    public boolean deleteUser(String userId) {
+
+    public boolean delete(String userId) {
         if (userId == null || userId.trim().isEmpty()) {
             return false;
         }

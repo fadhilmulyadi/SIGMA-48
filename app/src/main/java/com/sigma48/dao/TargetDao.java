@@ -13,20 +13,20 @@ public class TargetDao extends GenericDao<Target> {
         super("data/targets.json", new TypeReference<List<Target>>() {});
     }
 
-    public Optional<Target> findTargetById(String targetId) {
+    public Optional<Target> findById(String targetId) {
         if (targetId == null || targetId.trim().isEmpty()) {
             return Optional.empty();
         }
         return find(target -> target.getId().equals(targetId));
     }
 
-    public boolean saveTarget(Target target) {
+    public boolean save(Target target) {
         if (target == null) return false;
         save(target, t -> t.getId().equals(target.getId()));
         return true;
     }
 
-    public boolean deleteTarget(String targetId) {
+    public boolean delete(String targetId) {
         if (targetId == null || targetId.trim().isEmpty()) {
             return false;
         }

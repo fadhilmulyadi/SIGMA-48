@@ -13,16 +13,16 @@ public class MissionDao extends GenericDao<Mission> {
         super("data/missions.json", new TypeReference<List<Mission>>() {});
     }
 
-    public Optional<Mission> findMissionById(String missionId) {
+    public Optional<Mission> findById(String missionId) {
         return find(mission -> mission.getId().equals(missionId));
     }
 
-    public boolean saveMission(Mission mission) {
+    public boolean save(Mission mission) {
         save(mission, m -> m.getId().equals(mission.getId()));
         return true;
     }
 
-    public boolean deleteMission(String missionId) {
+    public boolean delete(String missionId) {
         return delete(m -> m.getId().equals(missionId));
     }
 }
