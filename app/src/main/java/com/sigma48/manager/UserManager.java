@@ -25,7 +25,7 @@ public class UserManager {
         if (userId == null || userId.trim().isEmpty()) {
             return Optional.empty();
         }
-        return userDao.findUserById(userId);
+        return userDao.findById(userId);
     }
 
     public List<User> getUsersByRole(Role role) {
@@ -78,13 +78,13 @@ public class UserManager {
         
         newUser.setActive(isActive); // Gunakan status dari parameter
 
-        boolean saved = userDao.saveUser(newUser);
+        boolean saved = userDao.save(newUser);
         return saved ? Optional.of(newUser) : Optional.empty();
     }
 
     public boolean updateUser(String userId, String newUsername, Role newRole, 
                               Boolean isActive, List<String> newSpesialisasiIfAgent) {
-        Optional<User> userOptional = userDao.findUserById(userId);
+        Optional<User> userOptional = userDao.findById(userId);
         if (!userOptional.isPresent()) {
             System.err.println("UserManager: Pengguna dengan ID '" + userId + "' tidak ditemukan.");
             return false;
@@ -111,7 +111,7 @@ public class UserManager {
             userToUpdate.setActive(isActive);
         }
         
-        return userDao.saveUser(userToUpdate);
+        return userDao.save(userToUpdate);
     }
 
     public boolean resetUserPassword(String userId, String newPlainPassword) {
@@ -119,28 +119,28 @@ public class UserManager {
             System.err.println("UserManager: Password baru tidak boleh kosong.");
             return false;
         }
-        Optional<User> userOptional = userDao.findUserById(userId);
+        Optional<User> userOptional = userDao.findById(userId);
         if (!userOptional.isPresent()) {
             System.err.println("UserManager: Pengguna dengan ID '" + userId + "' tidak ditemukan untuk reset password.");
             return false;
         }
         User userToUpdate = userOptional.get();
         userToUpdate.setPasswordHash(PasswordUtils.hashPassword(newPlainPassword));
-        return userDao.saveUser(userToUpdate);
+        return userDao.save(userToUpdate);
     }
 
     public boolean setUserStatus(String userId, boolean activeStatus) {
-        Optional<User> userOptional = userDao.findUserById(userId);
+        Optional<User> userOptional = userDao.findById(userId);
         if (!userOptional.isPresent()) {
             System.err.println("UserManager: Pengguna dengan ID '" + userId + "' tidak ditemukan untuk mengubah status.");
             return false;
         }
         User userToUpdate = userOptional.get();
         userToUpdate.setActive(activeStatus);
-        return userDao.saveUser(userToUpdate);
+        return userDao.save(userToUpdate);
     }
 
     public boolean deleteUser(String userId) {
-        return userDao.deleteUser(userId);
+        return userDao.delete(userId);
     }
 }

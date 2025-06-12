@@ -71,7 +71,7 @@ public class EvaluationManager {
         newEvaluation.setKondisiFisikAgen(kondisiFisikAgen);
         newEvaluation.setCatatanUmumEvaluator(catatanUmumEvaluator);
 
-        boolean saved = evaluationDao.saveEvaluation(newEvaluation);
+        boolean saved = evaluationDao.save(newEvaluation);
         if (saved) {
             return Optional.of(newEvaluation);
         } else {
@@ -111,6 +111,6 @@ public class EvaluationManager {
         if (evaluationId == null || evaluationId.trim().isEmpty()) {
             return Optional.empty();
         }
-        return evaluationDao.findEvaluationById(evaluationId);
+        return evaluationDao.findById(evaluationId);
     }
 }

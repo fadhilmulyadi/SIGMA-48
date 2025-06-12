@@ -39,7 +39,7 @@ public class AuthManager {
                 this.currentUser = user;
                 
                 user.setLastLogin(LocalDateTime.now());
-                userDao.saveUser(user);
+                userDao.save(user);
                 
                 return true;
             }

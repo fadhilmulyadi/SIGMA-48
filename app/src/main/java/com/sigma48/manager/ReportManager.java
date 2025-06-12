@@ -39,7 +39,7 @@ public class ReportManager {
         }
 
         // Simpan laporan
-        boolean reportSaved = reportDao.saveReport(newReport);
+        boolean reportSaved = reportDao.save(newReport);
         if (!reportSaved) {
             System.err.println("ReportManager: Gagal menyimpan laporan ke database/file.");
             return Optional.empty();
@@ -71,7 +71,7 @@ public class ReportManager {
             return false;
         }
         // Meneruskan panggilan langsung ke metode saveReport yang ada di ReportDao
-        return reportDao.saveReport(reportToSave);
+        return reportDao.save(reportToSave);
     }
 
     public List<Report> getReportsForMission(String missionId) {
@@ -97,6 +97,6 @@ public class ReportManager {
         if (reportId == null || reportId.trim().isEmpty()) {
             return Optional.empty();
         }
-        return reportDao.findReportById(reportId);
+        return reportDao.findById(reportId);
     }
 }
