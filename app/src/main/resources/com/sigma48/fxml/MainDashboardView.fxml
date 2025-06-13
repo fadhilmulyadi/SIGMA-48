@@ -18,7 +18,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" spacing="15.0">
                <children>
-                  <ImageView fitHeight="24.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="40.0" pickOnBounds="true" preserveRatio="true">
                      <image><Image url="@../images/logo.png" /></image>
                   </ImageView>
                   <Label text="SIGMA 48" style="-fx-font-family: 'Agency FB'; -fx-font-weight: bold; -fx-text-fill: white;" />

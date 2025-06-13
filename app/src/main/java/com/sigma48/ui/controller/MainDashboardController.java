@@ -9,15 +9,20 @@ import com.sigma48.util.SoundUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.control.Tooltip;
@@ -66,7 +71,7 @@ public class MainDashboardController {
     }
 
     private void setupFooter() {
-        // Footer bisa diisi dengan informasi statis atau dinamis nanti
+        // Sudah Tidak Dipakai
         pageInfoLabel.setText("PAGE: 01");
         sectionInfoLabel.setText("SEC: 01");
         itemInfoLabel.setText("1/1");
@@ -76,7 +81,7 @@ public class MainDashboardController {
 
     private void setupNavigationIcons(Role role) {
         navigationIconBar.getChildren().clear();
-        if (role != Role.AGEN_LAPANGAN || role != Role.ADMIN) {
+        if (role != Role.AGEN_LAPANGAN && role != Role.ADMIN) {
             addNavIconButton("icons/home.png", "Dashboard Utama", () -> loadDefaultRoleDashboard(role));
         }
 
@@ -87,10 +92,10 @@ public class MainDashboardController {
              addNavIconButton("icons/pen.png", "Buat Draft Misi", () -> loadView("/com/sigma48/fxml/MissionCreateForm.fxml", null));
         }
         if (role == Role.AGEN_LAPANGAN) {
-            addNavIconButton("icons/home", "Misi Saya", () -> loadView("/com/sigma48/fxml/AgentMissionView.fxml", null));
+            addNavIconButton("icons/list.png", "Misi Saya", () -> loadView("/com/sigma48/fxml/AgentMissionView.fxml", null));
         }
         if (role == Role.ADMIN) {
-             addNavIconButton("icons/home", "Manajemen Pengguna", () -> loadDefaultRoleDashboard(role));
+             addNavIconButton("icons/list.png", "Manajemen Pengguna", () -> loadDefaultRoleDashboard(role));
         }
     }
 
@@ -113,7 +118,7 @@ public class MainDashboardController {
         navigationIconBar.getChildren().add(button);
     }
 
-    // Metode helper untuk mendapatkan teks Level (bisa diperluas)
+    // Metode helper untuk mendapatkan teks Level
     private String getClearanceLevel(Role role) {
         switch(role) {
             case DIREKTUR_INTELIJEN: return "07";
@@ -179,19 +184,17 @@ public class MainDashboardController {
         if (role == Role.DIREKTUR_INTELIJEN) {
             addButtonToMenu("Daftar Semua Misi", () -> loadView("/com/sigma48/fxml/MissionListView.fxml", "ALL_MISSIONS"));
             addButtonToMenu("Buat Draft Misi", () -> loadView("/com/sigma48/fxml/MissionCreateForm.fxml", null));
-            addButtonToMenu("Manajemen Target", () -> showTargetManagementView()); // Metode khusus
-            // addButtonToMenu("Buat Evaluasi", () -> showEvaluationForm(null));
+            addButtonToMenu("Manajemen Target", () -> showTargetManagementView());
         } else if (role == Role.ANALIS_INTELIJEN) {
             addButtonToMenu("Daftar Misi (Draft)", () -> loadView("/com/sigma48/fxml/MissionListView.fxml", MissionStatus.DRAFT_ANALIS.name()));
             addButtonToMenu("Buat Draft Misi", () -> loadView("/com/sigma48/fxml/MissionCreateForm.fxml", null));
             addButtonToMenu("Manajemen Target", () -> showTargetManagementView());
         } else if (role == Role.KOMANDAN_OPERASI) {
             addButtonToMenu("Misi Perlu Direncanakan", () -> loadView("/com/sigma48/fxml/MissionListView.fxml", "FOR_COMMANDER_PLANNING"));
-            addButtonToMenu("Semua Misi Saya", () -> loadView("/com/sigma48/fxml/MissionListView.fxml", "FOR_COMMANDER_ALL_ASSIGNED")); // Konteks baru
+            addButtonToMenu("Semua Misi Saya", () -> loadView("/com/sigma48/fxml/MissionListView.fxml", "FOR_COMMANDER_ALL_ASSIGNED"));
         } else if (role == Role.AGEN_LAPANGAN) {
             addButtonToMenu("Misi Saya", () -> loadView("/com/sigma48/fxml/AgentMissionsView.fxml", null));
         } else if (role == Role.ADMIN) {
-            // addButtonToMenu("Manajemen Pengguna", () -> loadView("/com/sigma48/fxml/AdminUserManagementView.fxml", null)); // Akan dibuat
              addButtonToMenu("Manajemen Pengguna", () -> System.out.println("ADMIN: Navigasi ke Manajemen Pengguna")); // Placeholder
         }
     }
@@ -380,6 +383,71 @@ public class MainDashboardController {
         } catch (IOException e) {
             e.printStackTrace();
             contentAreaPane.getChildren().setAll(new Label("Error: Gagal memuat detail misi."));
+        }
+    }
+
+    public Optional<String> showMissionConclusionDialog(Mission mission, boolean isSuccess) {
+        try {
+            Dialog<String> dialog = new Dialog<>();
+            dialog.initOwner(mainDashboardPane.getScene().getWindow());
+            dialog.initStyle(StageStyle.UNDECORATED);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sigma48/fxml/MissionConclusionDialog.fxml"));
+            Parent content = loader.load();
+            MissionConclusionDialogController controller = loader.getController();
+            controller.setup(isSuccess);
+
+            DialogPane dialogPane = dialog.getDialogPane();
+            dialogPane.setContent(content);
+            dialogPane.getStylesheets().add(getClass().getResource("/com/sigma48/css/theme.css").toExternalForm());
+            dialogPane.getStyleClass().add("custom-dialog");
+
+            dialog.setTitle(isSuccess ? "MISI SELESAI" : "MISI GAGAL");
+            dialogPane.setHeaderText(isSuccess ? "KONFIRMASI: MISI SELESAI" : "PERINGATAN: TANDAI MISI GAGAL");
+            dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            Node okButton = dialogPane.lookupButton(ButtonType.OK);
+            if (isSuccess) {
+                okButton.setStyle("-fx-background-color: #FFC107; -fx-text-fill: black;");
+            } else {
+                okButton.getStyleClass().add("button-danger"); 
+                okButton.setStyle("-fx-background-color: #E53935; -fx-text-fill: white;");
+
+                okButton.disableProperty().bind(
+                    controller.getNotesTextArea().textProperty().isEmpty()
+                );
+            }
+
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    return controller.getNotes();
+                }
+                return null;
+            });
+
+            return dialog.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public void showEvaluationDetailView(Evaluation evaluation) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sigma48/fxml/EvaluationDetailView.fxml"));
+            Parent viewRoot = loader.load();
+            EvaluationDetailViewController controller = loader.getController();
+
+            // Kirim MainDashboardController dan data evaluasi ke controller baru
+            controller.setMainDashboardController(this);
+            controller.loadEvaluationDetails(evaluation);
+
+            // Tampilkan view di area konten utama
+            contentAreaPane.getChildren().setAll(viewRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+            contentAreaPane.getChildren().setAll(new Label("Error: Gagal memuat tampilan Detail Evaluasi."));
         }
     }
 

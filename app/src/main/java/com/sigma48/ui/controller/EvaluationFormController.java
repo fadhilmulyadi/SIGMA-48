@@ -9,9 +9,9 @@ import com.sigma48.model.Evaluation;
 import com.sigma48.model.Mission;
 import com.sigma48.model.MissionStatus;
 import com.sigma48.model.OperationEffectiveness;
-import com.sigma48.model.User; // Termasuk Agent
+import com.sigma48.model.User;
 import com.sigma48.ui.controller.base.BaseController;
-import com.sigma48.model.Role; // Untuk validasi peran evaluator
+import com.sigma48.model.Role;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -51,9 +51,8 @@ public class EvaluationFormController extends BaseController{
     private User currentUser; // Pengguna yang melakukan evaluasi (Direktur/Komandan)
     
     private MainDashboardController mainDashboardController;
-    private Mission preselectedMission; // Misi yang mungkin sudah dipilih sebelumnya
+    private Mission preselectedMission;
 
-    // Dipanggil oleh MainDashboardController saat view ini dimuat
     public void setMainDashboardController(MainDashboardController mainDashboardController) {
         this.mainDashboardController = mainDashboardController;
     }
@@ -62,7 +61,6 @@ public class EvaluationFormController extends BaseController{
         this.preselectedMission = mission;
     }
 
-    // Panggil ini dari MainDashboardController setelah semua dependensi di-set
     public void loadInitialData() {
         this.evaluationManager = ServiceLocator.getEvaluationManager();
         this.missionManager = ServiceLocator.getMissionManager();
@@ -72,7 +70,6 @@ public class EvaluationFormController extends BaseController{
             evaluatorInfoLabel.setText(currentUser.getUsername() + " (" + currentUser.getRole().getDisplayName() + ")");
         } else {
             evaluatorInfoLabel.setText("EVALUATOR TIDAK DIKENALI");
-            // Sebaiknya form ini tidak bisa diakses jika tidak ada user login
             simpanEvalButton.setDisable(true);
         }
 
@@ -94,9 +91,7 @@ public class EvaluationFormController extends BaseController{
 
         if (preselectedMission != null) {
             missionComboBox.setValue(preselectedMission);
-            // Jika misi sudah dipilih, ComboBox misi bisa di-disable agar tidak diubah
-            // missionComboBox.setDisable(true); 
-            // Atau tetap enable jika evaluator boleh memilih misi lain
+            missionComboBox.setDisable(true); 
         }
     }
     
@@ -126,17 +121,15 @@ public class EvaluationFormController extends BaseController{
             }
             @Override public User fromString(String string) { return null; }
         });
-        agentComboBox.setDisable(true); // Awalnya disable sampai misi dipilih
+        agentComboBox.setDisable(true);
     }
 
     private void loadMissionsToComboBox() {
         // Hanya tampilkan misi yang sudah selesai atau sedang aktif untuk dievaluasi
         List<Mission> evaluableMissions = missionManager.getAll().stream()
-                .filter(m -> m.getStatus() == MissionStatus.ACTIVE || 
-                             m.getStatus() == MissionStatus.COMPLETED ||
-                             m.getStatus() == MissionStatus.FAILED ||
-                             m.getStatus() == MissionStatus.READY_FOR_BRIEFING) // Mungkin juga yang siap briefing
-                .sorted(Comparator.comparing(Mission::getUpdatedAt).reversed()) // Terbaru dulu
+                .filter(m -> m.getStatus() == MissionStatus.COMPLETED ||
+                             m.getStatus() == MissionStatus.FAILED)
+                .sorted(Comparator.comparing(Mission::getUpdatedAt).reversed())
                 .collect(Collectors.toList());
         missionComboBox.setItems(FXCollections.observableArrayList(evaluableMissions));
         if (evaluableMissions.isEmpty()){
@@ -152,7 +145,7 @@ public class EvaluationFormController extends BaseController{
             List<User> agentsInMission = new ArrayList<>();
             for (String agentId : selectedMission.getAssignedAgents()) {
                 userManager.findUserById(agentId).ifPresent(user -> {
-                    if (user.getRole() == Role.AGEN_LAPANGAN) { // Pastikan hanya agen
+                    if (user.getRole() == Role.AGEN_LAPANGAN) {
                         agentsInMission.add(user);
                     }
                 });
@@ -160,20 +153,20 @@ public class EvaluationFormController extends BaseController{
             agentComboBox.setItems(FXCollections.observableArrayList(agentsInMission));
             if(agentsInMission.isEmpty()) {
                 agentComboBox.setPromptText("Tidak ada agen di misi ini.");
-                // agentComboBox.setDisable(true); // Biarkan enable agar user tahu tidak ada pilihan
+                agentComboBox.setDisable(true);
             } else {
                 agentComboBox.setPromptText("Pilih Agen (Opsional)...");
             }
         } else {
             agentComboBox.setPromptText("Tidak ada agen ditugaskan ke misi ini.");
-            // agentComboBox.setDisable(true);
+            agentComboBox.setDisable(true);
         }
     }
 
     @FXML
     private void handleSaveEvaluationButton(ActionEvent event) {
         Mission selectedMission = missionComboBox.getValue();
-        User selectedAgent = agentComboBox.getValue(); // Bisa null (jika tidak ada agen dipilih atau ComboBox kosong)
+        User selectedAgent = agentComboBox.getValue();
         OperationEffectiveness efektivitas = efektivitasComboBox.getValue();
         String catatanMental = catatanMentalArea.getText().trim();
         String kondisiFisik = kondisiFisikArea.getText().trim();
@@ -200,7 +193,7 @@ public class EvaluationFormController extends BaseController{
 
         Optional<Evaluation> savedEvaluation = evaluationManager.submitEvaluation(
                 selectedMission.getId(),
-                agentId, // Bisa null
+                agentId,
                 currentUser.getId(),
                 efektivitas,
                 catatanMental,
@@ -211,10 +204,8 @@ public class EvaluationFormController extends BaseController{
         if (savedEvaluation.isPresent()) {
             showStatus("Evaluasi untuk misi '" + selectedMission.getJudul() + "' berhasil disimpan!", false);
             clearForm();
-            // Opsional: navigasi ke daftar evaluasi atau detail misi
             if (mainDashboardController != null) {
-                // mainDashboardController.showMissionPlanningView(selectedMission); // Kembali ke detail misi yg sama
-                mainDashboardController.loadDefaultRoleDashboard(currentUser.getRole()); // Kembali ke dashboard evaluator
+                mainDashboardController.showMissionPlanningView(selectedMission);
             }
         } else {
             showStatus("Gagal menyimpan evaluasi. Periksa detail error di konsol sistem.", true);
@@ -232,8 +223,6 @@ public class EvaluationFormController extends BaseController{
 
     private void clearForm() {
         missionComboBox.getSelectionModel().clearSelection();
-        // agentComboBox.getItems().clear(); // Dikosongkan oleh listener missionComboBox
-        // agentComboBox.setDisable(true);
         efektivitasComboBox.getSelectionModel().clearSelection();
         catatanMentalArea.clear();
         kondisiFisikArea.clear();

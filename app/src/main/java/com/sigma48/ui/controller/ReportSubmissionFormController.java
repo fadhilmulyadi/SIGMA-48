@@ -57,7 +57,7 @@ public class ReportSubmissionFormController extends BaseController {
     public void initialize() {
         this.currentUser = Main.authManager.getCurrentUser();
         this.reportManager = ServiceLocator.getReportManager();
-
+        isiLaporanArea.setWrapText(true);
         lampiranListView.setItems(attachedFileNamesList);
         hapusLampiranButton.disableProperty().bind(
             lampiranListView.getSelectionModel().selectedItemProperty().isNull()
@@ -71,7 +71,7 @@ public class ReportSubmissionFormController extends BaseController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Pilih File Lampiran (Bisa Lebih Dari Satu)");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Semua File Didukung", "*.png", "*.jpg", "*.jpeg", "*.mp3", "*.m4a", "*.wav", "*.pdf"));
+                new FileChooser.ExtensionFilter("File Gambar", "*.png", "*.jpg", "*.jpeg"));
         
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog((Stage) tambahLampiranButton.getScene().getWindow());
 

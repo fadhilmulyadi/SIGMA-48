@@ -38,13 +38,13 @@ public class TargetFormDialogController {
     public void setTarget(Target target) {
         this.currentTarget = (target == null) ? new Target() : target;
         if (target != null) {
-            dialogTitleLabel.setText("Edit Target: " + target.getNama());
+            dialogTitleLabel.setText("EDIT TARGET: " + target.getNama());
             namaTargetField.setText(target.getNama());
             lokasiTargetField.setText(target.getLokasi());
             tipeTargetComboBox.setValue(target.getTipe());
             ancamanTargetComboBox.setValue(target.getAncaman());
         } else {
-            dialogTitleLabel.setText("Tambah Target Baru");
+            dialogTitleLabel.setText("TAMBAH TARGET BARU");
         }
     }
 

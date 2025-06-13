@@ -17,7 +17,7 @@
    <top>
       <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header-box" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBack" styleClass="cancel-button" text="&lt; KEMBALI KE DAFTAR MISI" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBack" styleClass="cancel-button" text="KEMBALI KE DAFTAR MISI" />
             <Label fx:id="missionTitleLabel" styleClass="view-title-xl" text="JUDUL MISI LENGKAP" />
             <Label fx:id="missionStatusLabel" alignment="CENTER" style="-fx-background-color: #00ff37; -fx-text-fill: black; -fx-padding: 8 12 8 12; -fx-font-weight: bold; -fx-background-radius: 3; -fx-alignment: center;" text="STATUS" />
          </children>
@@ -74,7 +74,7 @@
                                           <HBox alignment="CENTER_LEFT" spacing="15.0">
                                              <children>
                                                 <Label fx:id="targetNameLabel" styleClass="form-label-bold" text="Nama Target" />
-                                                <Button fx:id="viewDossierButton" mnemonicParsing="false" onAction="#handleViewDossier" styleClass="action-button-xs" text="Lihat Dossier" />
+                                                <Button fx:id="viewDossierButton" mnemonicParsing="false" onAction="#handleViewDossier" styleClass="action-button-xs" text="LIHAT DOSSIER" />
                                              </children>
                                           </HBox>
                                           <Label fx:id="targetDetailsLabel" styleClass="form-label" text="Tipe: Tipe Target | Lokasi: Lokasi Target" />

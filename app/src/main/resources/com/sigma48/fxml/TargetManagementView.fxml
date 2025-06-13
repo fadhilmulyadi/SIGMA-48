@@ -19,7 +19,7 @@
       
       <VBox fx:id="formPanel" managed="false" spacing="10.0" styleClass="dashboard-panel" visible="false">
          <children>
-            <Label fx:id="formTitleLabel" styleClass="panel-title" text="Tambah Target Baru" />
+            <Label fx:id="formTitleLabel" styleClass="panel-title" text="TAMBAH TARGET BARU" />
             
             <GridPane hgap="10.0" vgap="12.0">
                <Label styleClass="form-label-bold" text="Nama Target:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -33,7 +33,7 @@
                <ComboBox fx:id="ancamanTargetComboBox" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                <Label styleClass="form-label-bold" text="Deskripsi/Intel:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-               <TextArea fx:id="deskripsiTargetArea" prefHeight="100.0" promptText="Masukkan deskripsi, afiliasi, kebiasaan, atau catatan intelijen lainnya..." styleClass="form-input-textarea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+               <TextArea fx:id="deskripsiTargetArea" prefHeight="100.0" styleClass="form-input-textarea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             
             </GridPane>
             

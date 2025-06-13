@@ -36,11 +36,9 @@ public class DirekturOverviewController extends BaseController {
 
     @FXML
     public void initialize() {
-        // Get managers from ServiceLocator
         this.missionManager = ServiceLocator.getMissionManager();
         this.evaluationManager = ServiceLocator.getEvaluationManager();
         
-        // Kosongkan semua data awal dan setup tombol
         aktifMissionsCountLabel.setText("-");
         plannedMissionsCountLabel.setText("-");
         draftMissionsCountLabel.setText("-");
@@ -48,7 +46,7 @@ public class DirekturOverviewController extends BaseController {
         notificationsListView.setPlaceholder(new Label("MEMUAT NOTIFIKASI..."));
         
         setupActionButtons();
-        loadDashboardData(); // Muat data setelah semua manager di-set
+        loadDashboardData();
     }
 
     private void loadDashboardData() {
@@ -58,7 +56,6 @@ public class DirekturOverviewController extends BaseController {
             return;
         }
 
-        // Muat Ringkasan Status Misi
         List<Mission> allMissions = missionManager.getAll();
         aktifMissionsCountLabel.setText(String.valueOf(allMissions.stream().filter(m -> m.getStatus() == MissionStatus.ACTIVE).count()));
         plannedMissionsCountLabel.setText(String.valueOf(allMissions.stream().filter(m -> 
@@ -67,14 +64,12 @@ public class DirekturOverviewController extends BaseController {
         long draftCount = allMissions.stream().filter(m -> m.getStatus() == MissionStatus.DRAFT_ANALIS).count();
         draftMissionsCountLabel.setText(String.valueOf(draftCount));
         
-        // Menampilkan jumlah misi yang sudah selesai
         long awaitingEvaluationCount = allMissions.stream()
             .filter(m -> m.getStatus() == MissionStatus.COMPLETED || m.getStatus() == MissionStatus.FAILED)
             .filter(m -> evaluationManager.getEvaluationsForMission(m.getId()).isEmpty())
-            .count(); // 3. Hitung hasilnya
+            .count();
         evalMissionsCountLabel.setText(String.valueOf(awaitingEvaluationCount));
 
-        // Muat Notifikasi
         ObservableList<String> notifItems = FXCollections.observableArrayList();
         if (draftCount > 0) {
             notifItems.add("PERHATIAN: " + draftCount + " DRAFT MISI BARU MENUNGGU PERSETUJUAN ANDA.");
@@ -107,7 +102,7 @@ public class DirekturOverviewController extends BaseController {
         });
         bukaAntrianEvaluasiButton.setOnAction(e -> {
             if (mainDashboardController != null)
-                mainDashboardController.showEvaluationForm(null); // Membuka form evaluasi kosong
+                mainDashboardController.showEvaluationForm(null);
         });
         manajemenTargetButton.setOnAction(e -> {
             if (mainDashboardController != null)

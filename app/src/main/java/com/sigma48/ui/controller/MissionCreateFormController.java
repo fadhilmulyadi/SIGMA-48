@@ -63,7 +63,7 @@ public class MissionCreateFormController extends BaseController {
                 return target != null ? target.getNama() + " (Tipe: " + target.getTipe().getDisplayName() + ")" : null;
             }
             @Override
-            public Target fromString(String string) { return null; } // Tidak diperlukan untuk pemilihan
+            public Target fromString(String string) { return null; }
         });
         targetComboBox.setPlaceholder(new Label("Memuat daftar target..."));
         
@@ -92,7 +92,6 @@ public class MissionCreateFormController extends BaseController {
     @FXML
     private void handleTambahTargetButton(ActionEvent event) {
         if (mainDashboardController != null) {
-            // Langsung panggil metode untuk menampilkan view Manajemen Target
             mainDashboardController.showTargetManagementView();
         } else {
             showStatus(statusMessageLabel, "Error internal: MainDashboardController tidak tersedia.", true);

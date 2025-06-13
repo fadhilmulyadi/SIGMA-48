@@ -196,7 +196,8 @@
                         <Button fx:id="finalizePlanButton" mnemonicParsing="false" onAction="#handleFinalizePlanButton" text="FINALKAN RENCANA" />
                         <Button fx:id="markCompletedButton" mnemonicParsing="false" onAction="#handleMarkCompletedButton" style="-fx-background-color: #4CAF50;" text="TANDAI SELESAI" textFill="white" />
                         <Button fx:id="markFailedButton" mnemonicParsing="false" onAction="#handleMarkFailedButton" style="-fx-background-color: #f44336;" text="TANDAI GAGAL" textFill="white" />
-                        <Button fx:id="cancelPlanButton" mnemonicParsing="false" onAction="#handleCancelPlanButton" styleClass="cancel-button" text="BATAL / KEMBALI" />
+                        <Button fx:id="cancelMissionButton" onAction="#handleCancelMission" text="BATALKAN MISI" style="-fx-background-color: #FFC107;" textFill="white" /> 
+                        <Button fx:id="cancelPlanButton" mnemonicParsing="false" onAction="#handleCancelPlanButton" styleClass="cancel-button" text="KEMBALI" />
                      </children>
                   </HBox>
                   <Label fx:id="statusPlanLabel" managed="false" text="STATUS PESAN" textFill="LIME" visible="false">

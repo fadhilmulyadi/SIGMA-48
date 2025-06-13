@@ -185,6 +185,7 @@ MAIN DASHBOARD LAYOUT (HEADER, NAV, FOOTER)
     -fx-opacity: 0.7;
 }
 .nav-icon-button:hover {
+    background-color: #2B2F36;
     -fx-background-color: #2B2F36;
     -fx-border-color: #FFC107;
 }

@@ -52,9 +52,7 @@ public class AgentMissionsViewController extends BaseController {
             if (event.getClickCount() == 2) {
                 MissionDisplayData selectedData = missionsListView.getSelectionModel().getSelectedItem();
                 if (selectedData != null && mainDashboardController != null) {
-                    // Cari objek Mission lengkap berdasarkan ID
                     missionManager.getMissionById(selectedData.getId()).ifPresent(mission -> {
-                        // Panggil metode baru di MainDashboardController untuk menampilkan detail
                         mainDashboardController.showAgentMissionDetailView(mission);
                     });
                 }
@@ -91,7 +89,6 @@ public class AgentMissionsViewController extends BaseController {
         }
     }
 
-    // Inner class untuk kustomisasi tampilan item di ListView
     private static class MissionListCell extends ListCell<MissionDisplayData> {
         private FXMLLoader fxmlLoader;
         private HBox graphicNode;

@@ -44,7 +44,7 @@ public class AdminUserManagementViewController {
     @FXML private TextField spesialisasiField;
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
-    @FXML private Label statusFormLabel; // Variabel yang menyebabkan error
+    @FXML private Label statusFormLabel;
     @FXML private Button toggleStatusInFormBtn;
     @FXML private Button resetPasswordInFormBtn;
     @FXML private Button deleteUserInFormBtn;
@@ -161,14 +161,12 @@ public class AdminUserManagementViewController {
         spesialisasiField.clear();
         roleComboBox.getSelectionModel().clearSelection();
         
-        // --- PERBAIKAN DI SINI ---
         if (statusFormLabel != null) {
             statusFormLabel.setVisible(false);
         }
     }
 
     private void showFormStatus(String message, boolean isError) {
-        // --- PERBAIKAN DI SINI ---
         if (statusFormLabel != null) {
             statusFormLabel.setText(message);
             statusFormLabel.setTextFill(isError ? Color.RED : Color.LIME);
@@ -176,8 +174,6 @@ public class AdminUserManagementViewController {
             statusFormLabel.setManaged(true);
         }
     }
-
-    // ... sisa kode tidak berubah ...
     
     @FXML
     private void handleSaveUser() {

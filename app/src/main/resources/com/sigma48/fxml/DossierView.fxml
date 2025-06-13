@@ -81,9 +81,9 @@
                     </HBox>
                     <HBox alignment="CENTER" spacing="5.0">
                        <children>
-                          <Button fx:id="zoomOutButton" onAction="#handleZoomOut" styleClass="nav-btn" text="-" />
-                          <Button fx:id="zoomResetButton" onAction="#handleZoomReset" styleClass="nav-btn" text="100%" />
-                          <Button fx:id="zoomInButton" onAction="#handleZoomIn" styleClass="nav-btn" text="+" />
+                          <Button fx:id="zoomOutButton" styleClass="nav-btn" text="-" />
+                          <Button fx:id="zoomResetButton" styleClass="nav-btn" text="100%" />
+                          <Button fx:id="zoomInButton" styleClass="nav-btn" text="+" />
                        </children>
                     </HBox>
                  </HBox>

@@ -9,10 +9,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.sigma48.util.ImageViewZoomManager;
 
 public class MediaViewerController {
 
@@ -29,25 +32,15 @@ public class MediaViewerController {
 
     private List<File> imageFiles;
     private int currentIndex;
-    private double currentZoomFactor = 1.0;
-    private static final double ZOOM_AMOUNT = 0.2;
+    private ImageViewZoomManager zoomManager;
+
 
     private static final List<String> IMAGE_EXT = Arrays.asList("jpg", "jpeg", "png", "gif", "bmp");
 
-    // BARU: Tambahkan method initialize untuk menangani event.
     @FXML
     public void initialize() {
-        // BARU: Tambahkan event handler untuk zoom dengan mouse wheel/pad
-        viewerScrollPane.setOnScroll(event -> {
-            if (imageView.getImage() != null) {
-                if (event.getDeltaY() > 0) {
-                    handleZoomIn();
-                } else if (event.getDeltaY() < 0) {
-                    handleZoomOut();
-                }
-                event.consume(); // Konsumsi event agar tidak ada scrolling lain yang terjadi
-            }
-        });
+        this.zoomManager = new ImageViewZoomManager(viewerScrollPane, imageView, zoomInButton, zoomOutButton, resetZoomButton);
+ 
     }
 
     public void setupViewer(List<File> attachments, File selectedFile) {
@@ -75,7 +68,9 @@ public class MediaViewerController {
         try {
             Image image = new Image(file.toURI().toString());
             imageView.setImage(image);
-            resetZoom(); // Panggil resetZoom untuk memastikan gambar pas di jendela
+            if (zoomManager != null) {
+                zoomManager.resetZoom();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             // Handle jika gambar gagal dimuat
@@ -85,44 +80,7 @@ public class MediaViewerController {
 
         updateNavControls();
     }
-
-    // --- LOGIKA ZOOM (DIADOPSI DARI DOSSIERVIEW) ---
-
-    // MODIFIKASI: Mengubah akses menjadi private karena dipanggil dari dalam
-    @FXML private void handleZoomIn() {
-        currentZoomFactor += ZOOM_AMOUNT;
-        applyZoom();
-    }
-
-    // MODIFIKASI: Mengubah akses menjadi private karena dipanggil dari dalam
-    @FXML private void handleZoomOut() {
-        // Batasi zoom out agar tidak terlalu kecil
-        currentZoomFactor = Math.max(0.2, currentZoomFactor - ZOOM_AMOUNT);
-        applyZoom();
-    }
-
-    @FXML private void handleResetZoom() {
-        resetZoom();
-    }
-
-    private void applyZoom() {
-        if (imageView.getImage() == null) return;
-        // Mengatur ukuran gambar berdasarkan ukuran aslinya dikali faktor zoom
-        imageView.setFitWidth(imageView.getImage().getWidth() * currentZoomFactor);
-        imageView.setFitHeight(imageView.getImage().getHeight() * currentZoomFactor);
-        resetZoomButton.setText(String.format("%.0f%%", currentZoomFactor * 100));
-    }
-
-    private void resetZoom() {
-        currentZoomFactor = 1.0;
-        // Membuat fitWidth/Height mengikuti ukuran ScrollPane agar gambar pas
-        imageView.setFitWidth(viewerScrollPane.getWidth());
-        imageView.setFitHeight(viewerScrollPane.getHeight());
-        resetZoomButton.setText("100%");
-    }
     
-    // --- LOGIKA NAVIGASI ---
-
     @FXML private void handlePrev() {
         if (currentIndex > 0) {
             currentIndex--;

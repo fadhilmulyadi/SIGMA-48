@@ -48,6 +48,7 @@ public class ReportDetailViewController {
     @FXML
     public void initialize() {
         this.reportManager = new ReportManager(new com.sigma48.dao.ReportDao(), null); // missionManager bisa null jika tidak ada update status
+        isiLaporanTextArea.setWrapText(true); 
         setupAttachmentsListView();
     }
 
@@ -64,7 +65,6 @@ public class ReportDetailViewController {
 
         titleLabel.setText("DETAIL LAPORAN: " + currentReport.getMissionId());
         reportIdLabel.setText("ID LAPORAN: " + currentReport.getReportId());
-        // Untuk nama agen, kita perlu mengambil dari UserManager, untuk saat ini gunakan ID
         agentNameLabel.setText("OLEH: " + currentReport.getUserId()); 
         dateTimeLabel.setText("WAKTU: " + currentReport.getWaktuLapor().format(formatter));
         locationLabel.setText("LOKASI: " + (currentReport.getLokasi() != null ? currentReport.getLokasi() : "N/A"));

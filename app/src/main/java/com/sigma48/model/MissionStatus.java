@@ -2,14 +2,14 @@ package com.sigma48.model;
 
 public enum MissionStatus {
 
-    DRAFT_ANALIS("Draft (Oleh Analis)", "Misi baru dibuat oleh Analis, menunggu review Direktur."), // BARU
-    MENUNGGU_PERENCANAAN_KOMANDAN("Menunggu Perencanaan KO", "Disetujui Direktur, Komandan telah ditugaskan, menunggu rencana detail."), // BARU (atau bisa jadi PLANNED yang dimodifikasi)
-    PLANNED("Planned", "Rencana operasional awal telah dibuat atau Komandan ditugaskan."), // Maknanya bisa disesuaikan
-    READY_FOR_BRIEFING("Siap Briefing", "Rencana operasional dan agen telah ditetapkan, siap untuk briefing."),
-    ACTIVE("Active", "Misi sedang berjalan dan dilaksanakan oleh agen."),
-    COMPLETED("Completed", "Misi telah selesai dilaksanakan dengan sukses."),
-    FAILED("Failed", "Misi gagal mencapai tujuannya."),
-    CANCELLED("Cancelled", "Misi dibatalkan sebelum atau saat pelaksanaan.");
+    DRAFT_ANALIS("DRAFT (OLEH ANALISIS)", "Misi baru dibuat oleh Analis, menunggu review Direktur."),
+    MENUNGGU_PERENCANAAN_KOMANDAN("MENUNGGU PERENCANAAN KO", "Disetujui Direktur, Komandan telah ditugaskan, menunggu rencana detail."), // BARU (atau bisa jadi PLANNED yang dimodifikasi)
+    PLANNED("PLANNED", "Rencana operasional awal telah dibuat atau Komandan ditugaskan."),
+    READY_FOR_BRIEFING("BRIEFING", "Rencana operasional dan agen telah ditetapkan, siap untuk briefing."),
+    ACTIVE("ACTIVE", "Misi sedang berjalan dan dilaksanakan oleh agen."),
+    COMPLETED("COMPLETED", "Misi telah selesai dilaksanakan dengan sukses."),
+    FAILED("FAILED", "Misi gagal mencapai tujuannya."),
+    CANCELLED("CANCELLED", "Misi dibatalkan sebelum atau saat pelaksanaan.");
 
     //Atribut Enum
     private final String displayName;

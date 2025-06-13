@@ -72,7 +72,6 @@ public class MissionListViewController extends BaseController {
 
     @FXML
     public void initialize() {
-        // Get managers from ServiceLocator
         this.missionManager = ServiceLocator.getMissionManager();
         this.targetManager = ServiceLocator.getTargetManager();
         this.userManager = ServiceLocator.getUserManager();
@@ -87,7 +86,7 @@ public class MissionListViewController extends BaseController {
         });
 
         missionListView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) { // Double click
+            if (event.getClickCount() == 2) {
                 MissionDisplayData selectedData = missionListView.getSelectionModel().getSelectedItem();
                 if (selectedData != null) {
                     handleMissionItemSelected(selectedData.getId());
@@ -97,7 +96,6 @@ public class MissionListViewController extends BaseController {
         updateViewTitle(); // Set judul awal berdasarkan konteks default
     }
     
-    // Panggil ini dari MainDashboardController setelah konteks di-set
     public void loadData() {
         if (missionManager == null || targetManager == null || userManager == null || currentUser == null) {
             System.err.println("MissionListViewController: Managers or currentUser not initialized!");
@@ -160,7 +158,7 @@ public class MissionListViewController extends BaseController {
                     Optional<Target> targetOpt = targetManager.getTargetById(mission.getTargetId());
                     targetName = targetOpt.map(Target::getNama).orElse(mission.getTargetId());
                 }
-                String tujuanSingkat = mission.getTujuan(); // Atau getDeskripsi()
+                String tujuanSingkat = mission.getTujuan();
                 if (tujuanSingkat != null && tujuanSingkat.length() > 60) {
                     tujuanSingkat = tujuanSingkat.substring(0, 57) + "...";
                 }
@@ -215,17 +213,15 @@ public class MissionListViewController extends BaseController {
                     (selectedMission.getStatus() == MissionStatus.MENUNGGU_PERENCANAAN_KOMANDAN ||
                      selectedMission.getStatus() == MissionStatus.PLANNED ||
                      selectedMission.getStatus() == MissionStatus.READY_FOR_BRIEFING ||
-                     selectedMission.getStatus() == MissionStatus.ACTIVE) ) { // Komandan juga bisa lihat detail misi aktifnya
+                     selectedMission.getStatus() == MissionStatus.ACTIVE ||
+                     selectedMission.getStatus() == MissionStatus.COMPLETED ||
+                     selectedMission.getStatus() == MissionStatus.FAILED) ) {
                     mainDashboardController.showMissionPlanningView(selectedMission);
                 } else {
-                    // Tampilkan pesan atau dialog read-only detail misi (belum dirancang)
                     System.out.println("Komandan tidak bisa merencanakan misi ini atau status tidak sesuai.");
                 }
             } else if (user.getRole() == Role.ANALIS_INTELIJEN) {
-                // Analis mungkin bisa melihat detail draftnya, atau misi yang terkait targetnya
-                // Untuk sekarang, bisa buka MissionPlanningView dalam mode read-only atau form draft lagi
                 if (selectedMission.getStatus() == MissionStatus.DRAFT_ANALIS) {
-                    // mainDashboardController.showMissionCreateFormForEdit(selectedMission); // Perlu metode ini
                     System.out.println("Analis membuka draft: " + selectedMission.getJudul());
                 }
             } else if (user.getRole() == Role.AGEN_LAPANGAN) {

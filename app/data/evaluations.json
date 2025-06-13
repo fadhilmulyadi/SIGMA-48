@@ -1,11 +1,1 @@
-[ {
-  "id" : "958553e9-8a6a-4631-9686-3cada756fab6",
-  "missionId" : "96157b92-ebfe-4cb8-8102-89572074b37c",
-  "agentId" : "test-agen-001",
-  "evaluatorId" : "test-direktur-001",
-  "timestampEvaluasi" : [ 2025, 6, 11, 16, 46, 18, 251807200 ],
-  "efektivitasOperasi" : "SANGAT_MEMUASKAN",
-  "catatanMentalAgen" : "PBO",
-  "kondisiFisikAgen" : "PBO",
-  "catatanUmumEvaluator" : "PBO"
-} ]
+[]

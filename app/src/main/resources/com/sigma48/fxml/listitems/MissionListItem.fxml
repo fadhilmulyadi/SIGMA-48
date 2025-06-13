@@ -30,7 +30,6 @@
                <children>
                   <Label fx:id="statusTextLabel" styleClass="mission-item-status" text="STATUS" />
                   <Label fx:id="lastUpdateLabel" styleClass="mission-item-date" text="dd/mm/yyyy hh:mm" />
-                  <Label fx:id="missionIdLabel" styleClass="mission-item-id" text="ID: [ID_MISI]" />
                </children>
             </VBox>
          </children>

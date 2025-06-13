@@ -23,7 +23,6 @@ import java.util.Optional;
 
 public class TargetManagementViewController extends BaseController{
 
-    // --- Bagian Tabel ---
     @FXML private TableView<Target> targetTableView;
     @FXML private TableColumn<Target, String> namaColumn;
     @FXML private TableColumn<Target, TargetType> tipeColumn;
@@ -33,7 +32,6 @@ public class TargetManagementViewController extends BaseController{
     @FXML private Button tambahTargetButton;
     @FXML private Label statusLabel;
 
-    // --- Bagian Form (yang baru digabung) ---
     @FXML private VBox formPanel;
     @FXML private VBox listPanel;
     @FXML private Label formTitleLabel;
@@ -49,7 +47,7 @@ public class TargetManagementViewController extends BaseController{
 
     private TargetManager targetManager;
     private ObservableList<Target> targetData = FXCollections.observableArrayList();
-    private Target currentTargetToEdit; // Untuk membedakan mode Tambah atau Edit
+    private Target currentTargetToEdit;
 
     @FXML
     public void initialize() {
@@ -75,9 +73,9 @@ public class TargetManagementViewController extends BaseController{
         ancamanColumn.setCellValueFactory(new PropertyValueFactory<>("ancaman"));
 
         aksiColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button dossierBtn = new Button("Dossier");
-            private final Button editBtn = new Button("Edit");
-            private final Button deleteBtn = new Button("Hapus");
+            private final Button dossierBtn = new Button("DOSSIER");
+            private final Button editBtn = new Button("EDIT");
+            private final Button deleteBtn = new Button("HAPUS");
             private final HBox pane = new HBox(10, dossierBtn, editBtn, deleteBtn);
 
             {
@@ -89,7 +87,6 @@ public class TargetManagementViewController extends BaseController{
                 dossierBtn.setOnAction(event -> {
                     Target target = getTableView().getItems().get(getIndex());
                     if (mainDashboardController != null) {
-                        // Kirim 'null' karena tidak ada misi spesifik untuk kembali
                         mainDashboardController.showDossierView(target, null); 
                     }
                 });
@@ -122,15 +119,15 @@ public class TargetManagementViewController extends BaseController{
 
     @FXML
     private void handleTambahTarget(ActionEvent event) {
-        currentTargetToEdit = null; // Mode tambah baru
-        formTitleLabel.setText("Tambah Target Baru");
+        currentTargetToEdit = null;
+        formTitleLabel.setText("TAMBAH TARGET BARU");
         clearFormFields();
         showFormPanel(true);
     }
     
     private void showFormForEdit(Target target) {
-        currentTargetToEdit = target; // Mode edit
-        formTitleLabel.setText("Edit Target: " + target.getNama());
+        currentTargetToEdit = target;
+        formTitleLabel.setText("EDIT TARGET: " + target.getNama());
         populateFormFields(target);
         showFormPanel(true);
     }
@@ -142,7 +139,7 @@ public class TargetManagementViewController extends BaseController{
 
         alert.initOwner(targetTableView.getScene().getWindow());
         alert.setHeaderText("HAPUS TARGET: " + target.getNama().toUpperCase());
-        alert.setContentText("Aksi ini bersifat permanen dan tidak dapat dibatalkan. Lanjutkan?");
+        alert.setContentText("AKSI INI BERSIFAT PERMANEN DAN TIDAK DAPAT DIKEMBALIKAN. LANJUTKAN?");
 
         alert.setGraphic(null);
         DialogPane dialogPane = alert.getDialogPane();
@@ -189,7 +186,7 @@ public class TargetManagementViewController extends BaseController{
         if (currentTargetToEdit != null) { // Mode Edit
             targetToSave = currentTargetToEdit;
             successMessage = "Data target '" + targetToSave.getNama() + "' berhasil diperbarui.";
-        } else { // Mode Tambah Baru
+        } else {
             targetToSave = new Target();
             successMessage = "Target baru berhasil disimpan.";
         }

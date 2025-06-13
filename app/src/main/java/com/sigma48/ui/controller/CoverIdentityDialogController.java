@@ -25,7 +25,7 @@ public class CoverIdentityDialogController {
         String passport = "DOC-S48-" + (System.currentTimeMillis() % 10000); 
 
         if (name.isEmpty()) {
-            return null; // Anggap batal jika nama samaran kosong
+            return null;
         }
         return new CoverIdentity(name, passport, role);
     }

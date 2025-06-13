@@ -126,31 +126,24 @@ public class LoginViewController {
 
     private void navigateToMainDashboard() {
         try {
-            // 1. Dapatkan Stage (jendela) saat ini
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
 
-            // 2. Muat FXML untuk MainDashboardView
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sigma48/fxml/MainDashboardView.fxml"));
             Parent dashboardRoot = loader.load();
 
-            // 3. Buat Scene baru untuk dashboard
             Scene dashboardScene = new Scene(dashboardRoot);
 
-            // 4. === INI ADALAH PERBAIKAN KUNCI ===
-            //    Terapkan file 'theme.css' ke scene dashboard yang baru.
             URL cssUrl = getClass().getResource("/com/sigma48/css/theme.css");
             if (cssUrl != null) {
                 dashboardScene.getStylesheets().add(cssUrl.toExternalForm());
-                System.out.println("CSS berhasil diterapkan ke Scene Dashboard."); // Pesan untuk debugging
+                System.out.println("CSS berhasil diterapkan ke Scene Dashboard.");
             } else {
                 System.err.println("Peringatan: File theme.css tidak ditemukan untuk Scene Dashboard!");
             }
-            // ===================================
 
-            // 5. Atur stage untuk menampilkan scene dashboard
             currentStage.setTitle("SIGMA-48: Dashboard");
             currentStage.setScene(dashboardScene);
-            currentStage.setFullScreen(true); // Pastikan tetap fullscreen
+            currentStage.setFullScreen(true);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -54,13 +54,11 @@ public class KomandanOverviewController extends BaseController {
 
     @FXML
     public void initialize() {
-        // Get managers from ServiceLocator
         this.missionManager = ServiceLocator.getMissionManager();
         this.reportManager = ServiceLocator.getReportManager();
         this.userManager = ServiceLocator.getUserManager();
         this.targetManager = ServiceLocator.getTargetManager();
         
-        // Get current user
         this.currentUser = Main.authManager.getCurrentUser();
         
         setupListViews();

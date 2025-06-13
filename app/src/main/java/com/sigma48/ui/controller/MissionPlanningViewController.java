@@ -63,6 +63,7 @@ public class MissionPlanningViewController extends BaseController {
     @FXML TextArea analisisRisikoArea;
     @FXML TextArea strategiArea;
     @FXML TextArea protokolArea;
+    @FXML private Button viewDossierButton;
 
     @FXML ComboBox<Agent> availableAgentsComboBox;
     @FXML Button addAgentButton;
@@ -97,7 +98,7 @@ public class MissionPlanningViewController extends BaseController {
     @FXML Button finalizePlanButton;
     @FXML Button markCompletedButton;
     @FXML Button markFailedButton;
-    @FXML private Button viewDossierButton;
+    @FXML private Button cancelMissionButton;
 
     private MissionManager missionManager;
     private TargetManager targetManager;
@@ -144,7 +145,7 @@ public class MissionPlanningViewController extends BaseController {
         if (currentMission.getTargetId() != null) {
             targetManager.getTargetById(currentMission.getTargetId())
                 .ifPresent(target -> {
-                    targetNameText.setText(defaultIfNull(target.getNama()) + " (Tipe: " + (target.getTipe() != null ? target.getTipe().getDisplayName() : "N/A") + ")");
+                    targetNameText.setText(defaultIfNull(target.getNama()) + " (TIPE: " + (target.getTipe() != null ? target.getTipe().getDisplayName() : "N/A") + ")");
                     viewDossierButton.setDisable(false);
                 });
         } else {
@@ -153,7 +154,7 @@ public class MissionPlanningViewController extends BaseController {
         }
 
         missionTitleLabel.setText("DETAIL & PERENCANAAN MISI: " + defaultIfNull(currentMission.getJudul()));
-        missionStatusLabel.setText("Status: " + (currentMission.getStatus() != null ? currentMission.getStatus().getDisplayName() : "N/A"));
+        missionStatusLabel.setText("STATUS: " + (currentMission.getStatus() != null ? currentMission.getStatus().getDisplayName() : "N/A"));
         missionIdText.setText(defaultIfNull(currentMission.getId()));
         tujuanText.setText(defaultIfNull(currentMission.getTujuan()));
         deskripsiText.setText(defaultIfNull(currentMission.getDeskripsi()));
@@ -164,7 +165,7 @@ public class MissionPlanningViewController extends BaseController {
 
         if (currentMission.getTargetId() != null) {
             targetManager.getTargetById(currentMission.getTargetId())
-                .ifPresent(target -> targetNameText.setText(defaultIfNull(target.getNama()) + " (Tipe: " + (target.getTipe() != null ? target.getTipe().getDisplayName() : "N/A") + ")"));
+                .ifPresent(target -> targetNameText.setText(defaultIfNull(target.getNama()) + " (TIPE: " + (target.getTipe() != null ? target.getTipe().getDisplayName() : "N/A") + ")"));
         } else {
             targetNameText.setText("N/A");
         }
@@ -201,14 +202,14 @@ public class MissionPlanningViewController extends BaseController {
                 userManager.findUserById(currentMission.getKomandanId()).ifPresent(komandanComboBox::setValue);
             } else {
                 komandanComboBox.getSelectionModel().clearSelection();
-                komandanComboBox.setPromptText("Pilih Komandan Operasi...");
+                komandanComboBox.setPromptText("PILIH KOMANDAN OPERASI");
             }
         } else { 
             if (currentMission.getKomandanId() != null && !currentMission.getKomandanId().isEmpty()) {
                 userManager.findUserById(currentMission.getKomandanId()).ifPresent(assignedCmdr -> 
                     komandanNameLabel.setText(defaultIfNull(assignedCmdr.getUsername())));
             } else {
-                komandanNameLabel.setText("Komandan Belum Ditugaskan");
+                komandanNameLabel.setText("KOMANDAN BELUM DITUGASKAN");
             }
         }
     }
@@ -220,7 +221,7 @@ public class MissionPlanningViewController extends BaseController {
         komandanComboBox.setConverter(new StringConverter<User>() {
             @Override
             public String toString(User user) {
-                return user != null ? user.getUsername() + " (ID: " + user.getId() + ")" : "";
+                return user != null ? user.getUsername(): "";
             }
             
             @Override
@@ -237,7 +238,7 @@ public class MissionPlanningViewController extends BaseController {
         availableAgentsComboBox.setConverter(new StringConverter<Agent>() {
             @Override
             public String toString(Agent agent) {
-                return agent != null ? agent.getUsername() + " (Spes: " + (agent.getSpesialisasi() != null && !agent.getSpesialisasi().isEmpty() ? String.join(", ", agent.getSpesialisasi()) : "N/A") + ")" : "";
+                return agent != null ? agent.getUsername() + " (SPESIALISASI: " + (agent.getSpesialisasi() != null && !agent.getSpesialisasi().isEmpty() ? String.join(", ", agent.getSpesialisasi()) : "N/A") + ")" : "";
             }
 
             @Override
@@ -245,7 +246,7 @@ public class MissionPlanningViewController extends BaseController {
                 return null;
             }
         });
-        availableAgentsComboBox.setPromptText("Pilih agen...");
+        availableAgentsComboBox.setPromptText("PILIH AGEN...");
     }
 
     private void setupAssignedAgentsTable() {
@@ -256,8 +257,8 @@ public class MissionPlanningViewController extends BaseController {
         
         Callback<TableColumn<AssignedAgentTableData, Void>, TableCell<AssignedAgentTableData, Void>> cellFactory = param -> {
             return new TableCell<>() {
-                private final Button btnEditCover = new Button("Identitas");
-                private final Button btnRemoveAgent = new Button("Hapus");
+                private final Button btnEditCover = new Button("IDENTITAS");
+                private final Button btnRemoveAgent = new Button("HAPUS");
                 {
                     btnEditCover.getStyleClass().add("action-button-xs");
                     btnRemoveAgent.getStyleClass().addAll("action-button-xs", "cancel-button-xs");
@@ -269,14 +270,14 @@ public class MissionPlanningViewController extends BaseController {
                                 .ifPresent(updatedCi -> {
                                     data.setCoverIdentity(updatedCi);
                                     getTableView().refresh();
-                                    showStatus(statusPlanLabel, "Identitas samaran untuk " + data.getAgentName() + " diperbarui.", false);
+                                    showStatus(statusPlanLabel, "IDENTITAS SAMARAN UNTUK " + data.getAgentName() + " diperbarui.", false);
                                 });
                         }
                     });
                     btnRemoveAgent.setOnAction(event -> {
                         AssignedAgentTableData data = getTableView().getItems().get(getIndex());
                         assignedAgentsData.remove(data);
-                        showStatus(statusPlanLabel, "Agen " + data.getAgentName() + " dihapus dari tim.", false);
+                        showStatus(statusPlanLabel, "AGEN " + data.getAgentName() + " DIHAPUS DARI TIM.", false);
                     });
                 }
 
@@ -368,12 +369,14 @@ public class MissionPlanningViewController extends BaseController {
         
         Callback<TableColumn<EvaluationTableData, Void>, TableCell<EvaluationTableData, Void>> cellFactory = param -> {
             return new TableCell<>() {
-                private final Button btnViewEval = new Button("Detail");
+                private final Button btnViewEval = new Button("DETAIL");
                 {
                     btnViewEval.getStyleClass().add("action-button-xs");
                     btnViewEval.setOnAction(event -> {
                         EvaluationTableData data = getTableView().getItems().get(getIndex());
-                        if (data != null) showEvaluationDetails(data.getOriginalEvaluation());
+                         if (data != null && mainDashboardController != null) {
+                            mainDashboardController.showEvaluationDetailView(data.getOriginalEvaluation());
+                        }
                     });
                 }
                 @Override
@@ -487,11 +490,11 @@ public class MissionPlanningViewController extends BaseController {
      private Optional<CoverIdentity> showCoverIdentityDialog(CoverIdentity existingCoverIdentity, Agent forAgent) {
         try {
             Dialog<CoverIdentity> dialog = new Dialog<>();
-            dialog.setTitle("Pengaturan Identitas Samaran");
-            dialog.setHeaderText("Atur identitas samaran untuk Agen: " + forAgent.getUsername());
+            dialog.setTitle("PENGATURAN IDENTITAS SAMARAN");
+            dialog.setHeaderText("ATUR IDENTITAS SAMARAH UNTUK: " + forAgent.getUsername());
 
             dialog.initOwner(assignedAgentsTableView.getScene().getWindow());
-            dialog.initStyle(StageStyle.UNDECORATED); // Hapus title bar standar
+            dialog.initStyle(StageStyle.UNDECORATED);
             DialogPane dialogPane = dialog.getDialogPane();
             dialogPane.getStylesheets().add(getClass().getResource("/com/sigma48/css/theme.css").toExternalForm());
             dialogPane.getStyleClass().add("custom-dialog");
@@ -515,7 +518,6 @@ public class MissionPlanningViewController extends BaseController {
                 return null;
             });
 
-            // Tampilkan dialog dan tunggu hasilnya
             return dialog.showAndWait();
 
         } catch (IOException e) {
@@ -535,7 +537,7 @@ public class MissionPlanningViewController extends BaseController {
         }
         boolean success = missionManager.finalizePlanningAndSetReadyForBriefing(currentMission.getId(), currentUser.getId());
         if (success) {
-            super.showStatus(statusPlanLabel, "Rencana misi telah difinalkan dan SIAP BRIEFING!", false);
+            super.showStatus(statusPlanLabel, "RENCANA MISI TELAH DIFINALKAN SIAP BRIEFING!", false);
             missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
         } else {
             super.showStatus(statusPlanLabel, "Gagal memfinalkan rencana. Pastikan semua data inti (strategi, protokol, agen) sudah terisi.", true);
@@ -544,46 +546,40 @@ public class MissionPlanningViewController extends BaseController {
     
     @FXML
     private void handleMarkCompletedButton(ActionEvent event) {
-        if (currentMission == null || currentUser == null || missionManager == null) return;
-        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION, "Yakin tandai misi '" + currentMission.getJudul() + "' sebagai SELESAI?", ButtonType.YES, ButtonType.NO);
-        super.styleAlertDialog(confirmation);
-        confirmation.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response -> {
-            TextInputDialog notesDialog = new TextInputDialog("Misi berhasil diselesaikan sesuai tujuan.");
-            notesDialog.setTitle("Catatan Akhir Misi Selesai");
-            notesDialog.setHeaderText("Berikan catatan akhir (opsional):");
-            notesDialog.setContentText("Catatan:");
-            String notes = notesDialog.showAndWait().orElse("Misi berhasil diselesaikan.");
+        if (currentMission == null || currentUser == null || missionManager == null || mainDashboardController == null) return;
 
-            boolean success = missionManager.concludeMission(currentMission.getId(), MissionStatus.COMPLETED, notes, currentUser.getId());
+        Optional<String> notesOpt = mainDashboardController.showMissionConclusionDialog(currentMission, true);
+
+        notesOpt.ifPresent(notes -> {
+            String finalNotes = notes.isEmpty() ? "MISI BERHASIL DISELESAIKAN SESUAI TUJUAN." : notes;
+
+            boolean success = missionManager.concludeMission(currentMission.getId(), MissionStatus.COMPLETED, finalNotes, currentUser.getId());
             if (success) {
-                super.showStatus(statusPlanLabel, "Misi '" + currentMission.getJudul() + "' ditandai SELESAI.", false);
+                super.showStatus(statusPlanLabel, "MISI '" + currentMission.getJudul() + "' DITANDAI SELESAI.", false);
                 missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
             } else {
-                super.showStatus(statusPlanLabel, "Gagal menandai misi selesai.", true);
+                super.showStatus(statusPlanLabel, "GAGAL MENANDAI MISI SELESAI.", true);
             }
         });
     }
 
     @FXML
     private void handleMarkFailedButton(ActionEvent event) {
-        if (currentMission == null || currentUser == null || missionManager == null) return;
-        TextInputDialog reasonDialog = new TextInputDialog();
-        reasonDialog.setTitle("Misi Gagal");
-        reasonDialog.setHeaderText("Konfirmasi Misi Gagal: " + currentMission.getJudul());
-        reasonDialog.setContentText("Masukkan alasan kegagalan (WAJIB):");
-        Optional<String> reasonOpt = reasonDialog.showAndWait();
-        if (reasonOpt.isPresent() && !reasonOpt.get().trim().isEmpty()) {
-            boolean success = missionManager.concludeMission(currentMission.getId(), MissionStatus.FAILED, reasonOpt.get(), currentUser.getId());
+        if (currentMission == null || currentUser == null || missionManager == null || mainDashboardController == null) return;
+
+        Optional<String> reasonOpt = mainDashboardController.showMissionConclusionDialog(currentMission, false);
+
+        reasonOpt.ifPresent(reason -> {
+            boolean success = missionManager.concludeMission(currentMission.getId(), MissionStatus.FAILED, reason, currentUser.getId());
             if (success) {
-                super.showStatus(statusPlanLabel, "Misi '" + currentMission.getJudul() + "' ditandai GAGAL.", false);
+                super.showStatus(statusPlanLabel, "MISI '" + currentMission.getJudul() + "' DITANDAI GAGAL.", false);
                 missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
             } else {
-                super.showStatus(statusPlanLabel,"Gagal menandai misi gagal.", true);
+                super.showStatus(statusPlanLabel, "GAGAL MENANDAI MISI GAGAL", true);
             }
-        } else if (reasonOpt.isPresent()) {
-            super.showStatus(statusPlanLabel, "Alasan kegagalan wajib diisi.", true);
-        }
+        });
     }
+
     
     @FXML
     private void handleAddEvaluationButton(ActionEvent event) {
@@ -618,7 +614,6 @@ public class MissionPlanningViewController extends BaseController {
     private void handleViewDossier() {
         if (currentMission != null && currentMission.getTargetId() != null && mainDashboardController != null) {
             targetManager.getTargetById(currentMission.getTargetId()).ifPresent(target -> {
-                // Panggil showDossierView dengan konteks misi saat ini untuk "kembali"
                 mainDashboardController.showDossierView(target, currentMission);
             });
         }
@@ -627,24 +622,29 @@ public class MissionPlanningViewController extends BaseController {
     public void setOnCancelAction(Runnable onCancelAction) {
         this.onCancelAction = onCancelAction;
     }
-    
-    private void showEvaluationDetails(Evaluation evaluation) { 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Detail Evaluasi");
-        alert.setHeaderText("Evaluasi oleh: " + userManager.findUserById(evaluation.getEvaluatorId()).map(User::getUsername).orElse("N/A") +
-                          "\nPada: " + evaluation.getTimestampEvaluasi().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        super.styleAlertDialog(alert);
-        VBox vbox = new VBox(10);
-        vbox.getChildren().add(new Label("Efektivitas: " + evaluation.getEfektivitasOperasi().getDisplayName()));
-        if (evaluation.getAgentId() != null) {
-             vbox.getChildren().add(new Label("Agen dievaluasi: " + userManager.findUserById(evaluation.getAgentId()).map(User::getUsername).orElse("N/A")));
+
+    @FXML
+    private void handleCancelMission(ActionEvent event) {
+        if (currentMission == null || currentUser == null) return;
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.initOwner(scrollPane.getScene().getWindow()); 
+        super.styleAlertDialog(confirmation);
+        confirmation.setTitle("KONFIRMASI PEMBATALAN MISI");
+        confirmation.setHeaderText("ANDA YAKIN INGIN MEMBATALKAN MISI INI: " + currentMission.getJudul() + "?");
+        confirmation.setContentText("AKSI INI AKAN MENGUBAH MISI MENJADI STATUS DIBATALKAN.");
+
+        Optional<ButtonType> result = confirmation.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            boolean success = missionManager.updateMissionStatus(currentMission.getId(), MissionStatus.CANCELLED);
+            if (success) {
+                super.showStatus(statusPlanLabel, "MISI BERHASIL DIBATALKAN.", false);
+                missionManager.getMissionById(currentMission.getId()).ifPresent(this::loadMissionData);
+            } else {
+                super.showStatus(statusPlanLabel, "GAGAL MEMBATALKAN MISI.", true);
+            }
         }
-        TextArea area = new TextArea(evaluation.getCatatanUmumEvaluator());
-        area.setWrapText(true);
-        area.setEditable(false);
-        vbox.getChildren().add(area);
-        alert.getDialogPane().setContent(vbox);
-        alert.showAndWait();
     }
 
     private void updateAllButtonStates() {
@@ -661,16 +661,16 @@ public class MissionPlanningViewController extends BaseController {
 
         boolean isDirektur = currentUser.getRole() == Role.DIREKTUR_INTELIJEN;
         boolean isKomandanThisMission = currentUser.getRole() == Role.KOMANDAN_OPERASI &&
-                                    currentUser.getId().equals(currentMission.getKomandanId());
+                                        currentUser.getId().equals(currentMission.getKomandanId());
         MissionStatus status = currentMission.getStatus();
 
         boolean canSavePlan = false;
         if (isDirektur) {
             canSavePlan = (status != MissionStatus.COMPLETED && status != MissionStatus.FAILED && status != MissionStatus.CANCELLED);
-            savePlanButton.setText(status == MissionStatus.DRAFT_ANALIS ? "Setujui & Tugaskan KO" : "Simpan Perubahan Detail");
+            savePlanButton.setText(status == MissionStatus.DRAFT_ANALIS ? "SETUJUI DAN TUGASKAN KO" : "SIMPAN PERUBAHAN DETAIL");
         } else if (isKomandanThisMission) {
             canSavePlan = (status == MissionStatus.MENUNGGU_PERENCANAAN_KOMANDAN || status == MissionStatus.PLANNED);
-            savePlanButton.setText("Simpan Rencana & Penugasan");
+            savePlanButton.setText("SIMPAN RENCANA DAN PENUGASAN");
         }
         savePlanButton.setDisable(!canSavePlan);
 
@@ -689,7 +689,7 @@ public class MissionPlanningViewController extends BaseController {
         markFailedButton.setManaged(canConcludeMission); markFailedButton.setVisible(canConcludeMission); markFailedButton.setDisable(!canConcludeMission);
         
         boolean canEvaluate = (isDirektur || isKomandanThisMission) &&
-                            (status == MissionStatus.ACTIVE || status == MissionStatus.COMPLETED || status == MissionStatus.FAILED || status == MissionStatus.READY_FOR_BRIEFING);
+                            (status == MissionStatus.COMPLETED || status == MissionStatus.FAILED);
         addEvaluationButton.setManaged(canEvaluate); addEvaluationButton.setVisible(canEvaluate); addEvaluationButton.setDisable(!canEvaluate);
 
         boolean canAddAgent = (isDirektur || isKomandanThisMission) &&
@@ -705,7 +705,23 @@ public class MissionPlanningViewController extends BaseController {
             markCompletedButton.setDisable(true);
             markFailedButton.setDisable(true);
         }
-    }
+
+        boolean canCancelByDirector = isDirektur && 
+                                (status != MissionStatus.COMPLETED && 
+                                status != MissionStatus.FAILED && 
+                                status != MissionStatus.CANCELLED);
+
+        boolean canCancelByCommander = isKomandanThisMission && 
+                                        (status == MissionStatus.PLANNED || 
+                                        status == MissionStatus.READY_FOR_BRIEFING || 
+                                        status == MissionStatus.ACTIVE);
+
+        boolean canCancel = canCancelByDirector || canCancelByCommander;
+
+        cancelMissionButton.setManaged(canCancel);
+        cancelMissionButton.setVisible(canCancel);
+        cancelMissionButton.setDisable(!canCancel);
+        }
 
     private String defaultIfNull(String value) {
         return value != null ? value : "";
@@ -732,7 +748,7 @@ public class MissionPlanningViewController extends BaseController {
         }
 
         public String getAgentCoverName() {
-            return coverIdentity != null ? defaultIfNull(coverIdentity.getCoverName()) : "Belum Diatur";
+            return coverIdentity != null ? defaultIfNull(coverIdentity.getCoverName()) : "BELUM DIATUR";
         }
 
         public String getAgentCoverRole() {
@@ -799,7 +815,7 @@ public class MissionPlanningViewController extends BaseController {
             String evaluator = eval.getEvaluatorId();
             if(userManager!=null) evaluator = userManager.findUserById(eval.getEvaluatorId()).map(User::getUsername).orElse(eval.getEvaluatorId());
             this.evaluatorName = new SimpleStringProperty(evaluator);
-            String agent = "Misi Keseluruhan";
+            String agent = "MISI KESELURUHAN";
             if (eval.getAgentId() != null && !eval.getAgentId().isEmpty() && userManager != null) {
                 agent = userManager.findUserById(eval.getAgentId()).map(User::getUsername).orElse(eval.getAgentId());
             } else if (eval.getAgentId() != null && !eval.getAgentId().isEmpty()) agent = eval.getAgentId();

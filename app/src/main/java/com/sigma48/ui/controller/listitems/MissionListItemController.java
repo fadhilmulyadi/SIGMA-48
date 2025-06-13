@@ -10,14 +10,13 @@ import javafx.scene.shape.Rectangle;
 
 public class MissionListItemController {
 
-    @FXML HBox missionItemRoot; // Root HBox dari FXML item
+    @FXML HBox missionItemRoot;
     @FXML Rectangle statusIndicatorBar;
     @FXML Label judulMisiLabel;
     @FXML Label targetMisiLabel;
-    @FXML Label tujuanSingkatLabel; // Bisa diaktifkan nanti
+    @FXML Label tujuanSingkatLabel;
     @FXML Label statusTextLabel;
     @FXML Label lastUpdateLabel;
-    @FXML Label missionIdLabel;
     @FXML Label komandanMisiLabel;
 
     public void setData(MissionDisplayData data) {
@@ -27,9 +26,8 @@ public class MissionListItemController {
             tujuanSingkatLabel.setText("");
             statusTextLabel.setText("");
             lastUpdateLabel.setText("");
-            missionIdLabel.setText("");
             komandanMisiLabel.setText("");
-            missionItemRoot.getStyleClass().setAll("mission-list-item"); // Reset style
+            missionItemRoot.getStyleClass().setAll("mission-list-item");
             statusIndicatorBar.getStyleClass().setAll("status-indicator-bar");
             return;
         }
@@ -39,30 +37,29 @@ public class MissionListItemController {
         tujuanSingkatLabel.setText("TUJUAN: " + data.getTujuanSingkat());
         statusTextLabel.setText(data.getStatusDisplayName().toUpperCase());
         lastUpdateLabel.setText(data.getTanggalUpdateFormatted());
-        missionIdLabel.setText("ID: " + data.getId());
         komandanMisiLabel.setText(data.getKomandanName());
 
         Color statusColor;
         switch (data.getStatusEnum()) {
             case DRAFT_ANALIS:
-                statusColor = Color.web("#A0AEC0"); // Abu-abu muda
+                statusColor = Color.web("#A0AEC0");
                 break;
             case MENUNGGU_PERENCANAAN_KOMANDAN:
             case PLANNED:
-                statusColor = Color.web("#0000ff"); // Biru gelap
+                statusColor = Color.web("#0000ff"); 
                 break;
             case ACTIVE:
-                statusColor = Color.web("#00ff37"); // Hijau cerah
+                statusColor = Color.web("#00ff37");
                 break;
             case COMPLETED:
-                statusColor = Color.web("#40C4FF"); // Biru cerah
+                statusColor = Color.web("#40C4FF");
                 break;
             case FAILED:
             case CANCELLED:
-                statusColor = Color.web("#FF5252"); // Merah
+                statusColor = Color.web("#FF5252");
                 break;
             default:
-                statusColor = Color.web("#607080"); // Warna default
+                statusColor = Color.web("#607080");
                 break;
         }
         statusIndicatorBar.setFill(statusColor);

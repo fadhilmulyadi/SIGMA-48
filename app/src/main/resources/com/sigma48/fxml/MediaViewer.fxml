@@ -49,9 +49,9 @@
          <children>
             <HBox alignment="CENTER" styleClass="zoom-control-group">
                <children>
-                  <Button fx:id="zoomOutButton" mnemonicParsing="false" onAction="#handleZoomOut" styleClass="zoom-button" text="-" />
-                  <Button fx:id="resetZoomButton" mnemonicParsing="false" onAction="#handleResetZoom" styleClass="zoom-button zoom-center-button" text="100%" />
-                  <Button fx:id="zoomInButton" mnemonicParsing="false" onAction="#handleZoomIn" styleClass="zoom-button" text="+" />
+                  <Button fx:id="zoomOutButton" mnemonicParsing="false" styleClass="zoom-button" text="-" />
+                  <Button fx:id="resetZoomButton" mnemonicParsing="false" styleClass="zoom-button zoom-center-button" text="100%" />
+                  <Button fx:id="zoomInButton" mnemonicParsing="false" styleClass="zoom-button" text="+" />
                </children>
             </HBox>
          </children>

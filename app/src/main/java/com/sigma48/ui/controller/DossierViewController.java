@@ -8,6 +8,8 @@ import com.sigma48.model.Role;
 import com.sigma48.model.Target;
 import com.sigma48.model.User;
 import com.sigma48.ui.controller.base.BaseController;
+import com.sigma48.util.ImageViewZoomManager;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -32,7 +34,6 @@ import java.util.stream.Collectors;
 
 public class DossierViewController extends BaseController {
 
-    // --- FXML Components ---
     @FXML private Button backButton;
     @FXML private Label targetIdLabel;
     @FXML private ListView<File> evidenceListView;
@@ -62,6 +63,7 @@ public class DossierViewController extends BaseController {
     private String returnView;
     private Target currentTarget;
     private User currentUser;
+    private ImageViewZoomManager zoomManager;
     private final ObservableList<File> evidenceFiles = FXCollections.observableArrayList();
     private List<File> imageFiles;
     private int currentImageIndex = 0;
@@ -69,10 +71,9 @@ public class DossierViewController extends BaseController {
 
     @FXML
     public void initialize() {
-        // Inisialisasi manager dan user dari sumber yang benar
         this.targetManager = ServiceLocator.getTargetManager();
         this.currentUser = Main.authManager.getCurrentUser();
-
+        this.zoomManager = new ImageViewZoomManager(viewerScrollPane, dossierImageView, zoomInButton, zoomOutButton, zoomResetButton);
         evidenceListView.setItems(evidenceFiles);
         evidenceListView.setCellFactory(param -> new ListCell<>() {
             @Override
@@ -88,25 +89,9 @@ public class DossierViewController extends BaseController {
             }
         });
         
-        // Disable tombol hapus jika tidak ada item yang dipilih
         if (deleteEvidenceButton != null) {
             deleteEvidenceButton.disableProperty().bind(evidenceListView.getSelectionModel().selectedItemProperty().isNull());
         }
-
-        viewerScrollPane.setFitToWidth(true);
-        viewerScrollPane.setFitToHeight(true);
-
-        // BARU: Tambahkan event handler untuk zoom dengan mouse wheel/pad
-        viewerScrollPane.setOnScroll(event -> {
-            if (dossierImageView.getImage() != null) {
-                if (event.getDeltaY() > 0) {
-                    handleZoomIn();
-                } else if (event.getDeltaY() < 0) {
-                    handleZoomOut();
-                }
-                event.consume(); // Konsumsi event agar tidak ada scrolling lain yang terjadi
-            }
-        });
     }
 
     public void loadDossierData(Target target, Mission missionToReturnTo, String returnView) {
@@ -120,7 +105,7 @@ public class DossierViewController extends BaseController {
         targetStatusLabel.setText("ANCAMAN: " + target.getAncaman().getDisplayName().toUpperCase());
         targetTipeLabel.setText(target.getTipe() != null ? target.getTipe().getDisplayName() : "N/A");
         targetLokasiLabel.setText(target.getLokasi() != null ? target.getLokasi() : "N/A");
-        intelTextArea.setText("ANALISIS AWAL:\n" + (target.getDeskripsi() != null ? target.getDeskripsi() : "-") + "\n\nCATATAN TAMBAHAN:\n-");
+        intelTextArea.setText(target.getDeskripsi() != null ? target.getDeskripsi() : "-");
 
         evidenceFiles.clear();
         if (target.getEvidencePaths() != null) {
@@ -142,7 +127,6 @@ public class DossierViewController extends BaseController {
             showPlaceholder();
         }
         
-        // Panggil metode untuk mengatur akses UI berdasarkan peran
         updateUIAccess();
     }
 
@@ -161,6 +145,10 @@ public class DossierViewController extends BaseController {
             showPlaceholder();
             contentTitleLabel.setText("Tipe File Tidak Didukung");
         }
+
+        if (zoomManager != null) {
+                zoomManager.resetZoom();
+            }
     }
     
     @FXML
@@ -184,9 +172,10 @@ public class DossierViewController extends BaseController {
         if (selectedFile == null) return;
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(evidenceListView.getScene().getWindow());
         alert.initStyle(StageStyle.UNDECORATED);
         alert.setHeaderText("HAPUS BUKTI INI?");
-        alert.setContentText("Anda yakin ingin menghapus file '" + selectedFile.getName() + "' secara permanen?");
+        alert.setContentText("ANDA YAKIN INGIN MENGHAPUS FILE '" + selectedFile.getName() + "' SECARA PERMANEN?");
         styleAlertDialog(alert);
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -201,7 +190,7 @@ public class DossierViewController extends BaseController {
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                 errorAlert.initStyle(StageStyle.UNDECORATED);
                 errorAlert.setHeaderText("GAGAL MENGHAPUS FILE");
-                errorAlert.setContentText("Terjadi error saat menghapus file bukti dari disk.");
+                errorAlert.setContentText("TERJADI ERROR SAAT MENGHAPUS FILE DARI DISK.");
                 styleAlertDialog(errorAlert);
                 errorAlert.showAndWait();
             }
@@ -209,17 +198,18 @@ public class DossierViewController extends BaseController {
     }
 
     private void updateUIAccess() {
-        // Visibilitas tombol hanya untuk Analis Intelijen
         boolean canEditEvidence = (currentUser != null && currentUser.getRole() == Role.ANALIS_INTELIJEN);
-        
+        boolean isAnalis = (currentUser != null && currentUser.getRole() == Role.ANALIS_INTELIJEN);
+
         addEvidenceButton.setVisible(canEditEvidence);
         addEvidenceButton.setManaged(canEditEvidence);
         
         deleteEvidenceButton.setVisible(canEditEvidence);
         deleteEvidenceButton.setManaged(canEditEvidence);
+
+        intelTextArea.setEditable(isAnalis);
     }
     
-    // Sisa metode lain (tidak berubah signifikan)
     private void showImageViewer(File imageFile) {
         imageViewerPane.setVisible(true);
         imageNavBox.setVisible(true);
@@ -227,7 +217,9 @@ public class DossierViewController extends BaseController {
             try {
                 Image image = new Image(imageFile.toURI().toString());
                 dossierImageView.setImage(image);
-                resetZoom(dossierImageView);
+                if (zoomManager != null) {
+                    zoomManager.resetZoom();
+                }
                 updateImageNavUI();
             } catch (Exception e) {
                 showPlaceholder();
@@ -242,7 +234,7 @@ public class DossierViewController extends BaseController {
         dossierImageView.setImage(new Image(getClass().getResourceAsStream("/com/sigma48/images/placeholder.png")));
         imageNavBox.setVisible(false);
         contentTitleLabel.setText("TIDAK ADA BUKTI");
-        contentSubtitleLabel.setText("Pilih atau tambahkan file bukti.");
+        contentSubtitleLabel.setText("PILIH ATAU TAMBAHKAN BUKTI.");
     }
     
     @FXML private void handlePrevImage() {
@@ -251,24 +243,6 @@ public class DossierViewController extends BaseController {
     
     @FXML private void handleNextImage() {
         if (currentImageIndex < imageFiles.size() - 1) displayEvidence(imageFiles.get(++currentImageIndex));
-    }
-
-    // MODIFIKASI: Mengubah akses menjadi private karena dipanggil dari dalam
-    @FXML private void handleZoomIn() {
-        currentZoomFactor += 0.2;
-        applyZoom();
-    }
-
-    // MODIFIKASI: Mengubah akses menjadi private karena dipanggil dari dalam
-    @FXML private void handleZoomOut() {
-        if (currentZoomFactor > 0.3) {
-            currentZoomFactor -= 0.2;
-            applyZoom();
-        }
-    }
-
-    @FXML private void handleZoomReset() {
-        resetZoom(dossierImageView);
     }
     
     @FXML private void handleSetProfilePhoto(MouseEvent event) {
@@ -324,24 +298,6 @@ public class DossierViewController extends BaseController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void applyZoom() {
-        if(dossierImageView.getImage() == null) return;
-        dossierImageView.setFitWidth(dossierImageView.getImage().getWidth() * currentZoomFactor);
-        dossierImageView.setFitHeight(dossierImageView.getImage().getHeight() * currentZoomFactor);
-        zoomResetButton.setText(String.format("%.0f%%", currentZoomFactor * 100));
-    }
-    
-    private void resetZoom(ImageView imageView) {
-        currentZoomFactor = 1.0;
-        if(imageView != null && viewerScrollPane != null) {
-            imageView.setFitWidth(viewerScrollPane.getWidth());
-            imageView.setFitHeight(viewerScrollPane.getHeight());
-        }
-        if(zoomResetButton != null) {
-            zoomResetButton.setText("100%");
         }
     }
 
