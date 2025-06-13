@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13' // Plugin JavaFX
+}
+
+group = 'com.sigma48' // Base package
+version = '1.0-SPRINT1'
+
+repositories {
+    mavenCentral() // Repository untuk mengambil dependensi
+}
+
+// Konfigurasi Java
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+application {
+    mainClass = 'com.sigma48.Main' // Kelas utama aplikasi kita
+}
+
+// Konfigurasi JavaFX
+javafx {
+    version = "21" // Versi JavaFX yang kita gunakan
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.media', 'javafx.swing' ] // Modul JavaFX yang dibutuhkan
+}
+
+dependencies {
+    // Dependensi untuk JSON processing (Jackson)
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
+
+    // Dependensi untuk Password Hashing (jBcrypt)
+    implementation 'org.mindrot:jbcrypt:0.4'
+
+    // Dependensi untuk testing (Contoh: JUnit 5)
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+
+    // Dependensi untuk lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+// Konfigurasi untuk testing
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="dossier-container" stylesheets="@../css/theme.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigma48.ui.controller.MissionBriefingViewController">
+   <top>
+      <VBox styleClass="dossier-header" spacing="5.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="missionTitleLabel" styleClass="target-id" text="BRIEFING MISI: [NAMA MISI]">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+            <Label fx:id="missionCodeLabel" styleClass="content-subtitle" text="KODE MISI: [KODE]" />
+         </children>
+         <padding>
+            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+         </padding>
+      </VBox>
+   </top>
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: transparent;">
+         <content>
+            <TextArea fx:id="briefingContentArea" editable="false" styleClass="notes-area" wrapText="true" />
+         </content>
+         <padding>
+            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+         </padding>
+      </ScrollPane>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER" spacing="20.0" styleClass="nav-controls" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="viewDossierButton" mnemonicParsing="false" onAction="#handleViewDossier" styleClass="primary-button" text="BUKA DOSSIER TARGET" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBack" text="KEMBALI" />
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>

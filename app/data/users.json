@@ -1,0 +1,9 @@
+[ {
+  "id" : "admin-001",
+  "username" : "4899",
+  "passwordHash" : "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
+  "role" : "ADMIN",
+  "createdAt" : [ 2025, 6, 1, 0, 0 ],
+  "lastLogin" : [ 2025, 6, 13, 11, 8, 13, 367834300 ],
+  "isActive" : true
+}]

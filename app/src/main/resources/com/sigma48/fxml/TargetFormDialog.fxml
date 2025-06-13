@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane styleClass="dialog-pane" stylesheets="@../css/theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigma48.ui.controller.TargetFormDialogController">
+   <children>
+      <VBox spacing="15.0">
+         <children>
+            <Label fx:id="dialogTitleLabel" styleClass="dialog-title" text="Dialog Title" />
+            <GridPane hgap="10.0" vgap="10.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="120.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label styleClass="form-label-bold" text="NAMA TARGET" />
+                  <Label styleClass="form-label-bold" text="TIPE TARGET" GridPane.rowIndex="1" />
+                  <Label styleClass="form-label" text="LOKASI" GridPane.rowIndex="2" />
+                  <Label styleClass="form-label-bold" text="LEVEL ANCAMAN" GridPane.rowIndex="3" />
+                  <TextField fx:id="namaTargetField" styleClass="form-input-text" GridPane.columnIndex="1" />
+                  <ComboBox fx:id="tipeTargetComboBox" maxWidth="1.7976931348623157E308" styleClass="form-input-combo-box" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="lokasiTargetField" styleClass="form-input-text" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="ancamanTargetComboBox" maxWidth="1.7976931348623157E308" styleClass="form-input-combo-box" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               </children>
+            </GridPane>
+            <Label fx:id="statusDialogLabel" managed="false" visible="false" />
+            <HBox alignment="CENTER_RIGHT" spacing="10.0">
+               <children>
+                  <Button onAction="#handleCancel" styleClass="cancel-button" text="BATAL" />
+                  <Button fx:id="saveButton" onAction="#handleSave" styleClass="action-button-primary" text="SIMPAN" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>
