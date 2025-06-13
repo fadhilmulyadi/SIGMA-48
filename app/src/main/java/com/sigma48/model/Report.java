@@ -11,7 +11,6 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@ToString(exclude = "isi") // custom toString nanti akan ditulis ulang
 public class Report {
 
     private String reportId = UUID.randomUUID().toString();

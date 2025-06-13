@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@ToString(exclude = {"evidencePaths", "profileImagePath", "deskripsi", "lokasi", "ancaman"})
 public class Target {
 
     private String id = UUID.randomUUID().toString();
