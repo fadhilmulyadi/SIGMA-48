@@ -1,0 +1,1029 @@
+/* Style untuk area konten utama tempat semua view dimuat */
+.content-area {
+    -fx-background-color: #1A1D22; /* Samakan dengan warna latar utama */
+    -fx-padding: 20px; /* Beri sedikit padding di sekitar konten agar tidak terlalu mepet */
+}
+
+/* Menargetkan ScrollPane dengan styleClass 'overview-scroll-pane' dari FXML Anda */
+.overview-scroll-pane {
+    -fx-background-color: transparent; /* Membuat latar belakang ScrollPane transparan */
+    -fx-background: transparent;
+}
+
+/* Ini bagian terpenting: membuat area konten di dalam ScrollPane juga transparan */
+.overview-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Menargetkan class 'custom-titled-pane' yang sudah ada di FXML Anda */
+.custom-titled-pane {
+    -fx-text-fill: #F5F5F5; /* Warna teks untuk judul pane */
+}
+
+.custom-titled-pane > .title {
+    /* Style untuk baris judul TitledPane */
+    -fx-background-color: #2B2F36; /* Warna latar header */
+    -fx-font-family: 'Share Tech Mono';
+    -fx-background-radius: 0;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+    -fx-padding: 8px 12px;
+}
+
+.custom-titled-pane:focused > .title {
+    -fx-border-color: #FFC107; /* Warna aksen saat pane di-fokus */
+}
+
+.custom-titled-pane > .title > .arrow-button .arrow {
+    /* Warna untuk panah expand/collapse */
+    -fx-background-color: #F5F5F5;
+}
+
+/* Ini adalah bagian terpenting untuk menghilangkan warna putih */
+.custom-titled-pane > .content {
+    -fx-background-color: #1A1D22; /* Warna latar area konten, samakan dengan background utama */
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px 0 0 0; /* Garis pemisah tipis di atas */
+    -fx-padding: 20px;
+}
+
+/* ==========================================================================
+GLOBAL & TYPOGRAPHY
+   ========================================================================== */
+.dashboard-root, .dialog-pane {
+    -fx-background-color: #1A1D22; /* Latar belakang utama aplikasi */
+}
+
+/* Style default untuk semua label */
+.label {
+    -fx-font-family: 'Share Tech Mono';
+    -fx-font-size: 14px;
+    -fx-text-fill: #F5F5F5; /* Warna teks utama */
+}
+
+/* Judul besar untuk setiap tampilan */
+.view-title-xl {
+    -fx-font-size: 28px;
+    -fx-font-family: 'Agency FB';
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 10px 0;
+}
+
+/* Judul untuk setiap panel/kontainer */
+.panel-title {
+    -fx-font-size: 18px;
+    -fx-text-fill: #FFC107; /* Warna aksen untuk judul panel */
+    -fx-font-family: 'Agency FB';
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 12px 0;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 0 0 1px 0;
+}
+
+
+/* ==========================================================================
+   LOGIN SCREEN
+   ========================================================================== */
+   .login-root-pane {
+       -fx-background-color: black;
+    }
+
+    .login-card {
+    -fx-background-color: rgba(26, 29, 34, 0.8); /* Latar belakang transparan */
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+    -fx-padding: 40px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-effect: dropshadow(gaussian, black, 25, 0.8, 0, 0);
+}
+
+.input-label {
+    -fx-font-family: 'Agency FB Bold';
+    -fx-font-size: 22px;
+    -fx-text-fill: #8A96A8;
+}
+
+.login-input {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-family: 'Agency FB Bold';
+    -fx-font-size: 20px;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 0 0 1px 0; /* Style garis bawah */
+    -fx-padding: 8px 4px;
+    -fx-prompt-text-fill: #666;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.login-input:focused {
+    -fx-border-color: #FFC107;
+    -fx-border-width: 0 0 2px 0;
+}
+
+.login-button {
+    -fx-background-color: #FFC107;
+    -fx-text-fill: black;
+    -fx-font-family: 'Agency FB Bold';
+    -fx-font-size: 20px;
+    -fx-background-radius: 0;
+    -fx-padding: 12px 15px;
+    -fx-font-weight: bold;
+}
+
+.login-button:hover { -fx-opacity: 0.9; -fx-cursor: hand; }
+
+.access-denied-text {
+    -fx-background-color: #E53935;
+    -fx-text-fill: white;
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Share Tech Mono';
+    -fx-padding: 20px 40px;
+}
+
+
+/* ==========================================================================
+MAIN DASHBOARD LAYOUT (HEADER, NAV, FOOTER)
+========================================================================== */
+
+/* Panel untuk Header, Sidebar Ikon, dan Footer */
+.header-box, .nav-icon-bar, .footer-box {
+    -fx-background-color: #111317; /* Warna lebih gelap untuk elemen layout utama */
+    -fx-border-color: black;
+}
+.header-box { -fx-padding: 8px 16px; -fx-border-width: 0 0 1px 0; }
+.nav-icon-bar { -fx-padding: 8px 4px; -fx-border-width: 0 1px 0 0; }
+.footer-box { -fx-padding: 4px 12px; -fx-border-width: 1px 0 0 0; }
+
+/* Teks-teks kecil di header dan footer */
+.header-label, .header-label-small, .footer-box .label {
+    -fx-font-size: 10px;
+    -fx-text-fill: #8A96A8;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 0.2em;
+}
+
+/* Teks besar (nilai) di header */
+.header-value, .header-value-large {
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-text-transform: uppercase;
+}
+.header-value-large { -fx-font-size: 14px; -fx-letter-spacing: 0.3em; }
+
+/* Tombol ikon di sidebar */
+.nav-icon-button {
+    -fx-background-color: transparent;
+    -fx-padding: 10px;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 0 3px; /* Indikator di kiri */
+}
+.nav-icon-button .image-view { /* Jika Anda kembali menggunakan ImageView */
+    -fx-opacity: 0.7;
+}
+.nav-icon-button:hover {
+    background-color: #2B2F36;
+    -fx-background-color: #2B2F36;
+    -fx-border-color: #FFC107;
+}
+.nav-icon-button:hover .image-view {
+    -fx-opacity: 1.0;
+}
+.nav-icon-button.nav-icon-button-active {
+    -fx-background-color: #2B2F36;
+    -fx-border-color: #FFC107;
+}
+
+
+/* ==========================================================================
+   GENERAL COMPONENTS & BUTTONS
+   ========================================================================== */
+   
+/* Kontainer panel utama di dalam setiap view */
+.dashboard-panel {
+    -fx-background-color: #2B2F36;
+    -fx-padding: 20px;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+/* Tombol standar */
+.button {
+    -fx-background-color: #4A5058;
+    -fx-text-fill: #F5F5F5;
+    -fx-font-family: 'Agency FB';
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-background-radius: 0;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+}
+.button:hover { -fx-background-color: #5A6068; }
+
+/* Tombol Aksi Primer (misal: Simpan, Buat) */
+.action-button-primary {
+    -fx-font-family: 'Agency FB';
+    -fx-font-weight: bold;
+    -fx-background-color: #FFC107;
+    -fx-text-fill: black;
+}
+.action-button-primary:hover {
+    -fx-background-color: derive(#FFC107, 20%);
+}
+
+/* Tombol Batal atau sekunder */
+.cancel-button {
+    -fx-font-family: 'Agency FB';
+    -fx-font-weight: bold;
+    -fx-background-color: transparent;
+    -fx-text-fill: #8A96A8;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+}
+.cancel-button:hover { -fx-border-color: #8A96A8; -fx-text-fill: white; }
+
+/* Tombol-tombol kecil di dalam tabel */
+.action-button-xs {
+    -fx-font-family: 'Agency FB';
+    -fx-font-weight: bold;
+    -fx-padding: 4px 10px;
+    -fx-font-size: 14px;
+}
+
+
+/* ==========================================================================
+FORMS & INPUTS
+   ========================================================================== */
+.form-label, .form-label-bold {
+    -fx-font-size: 14px;
+    -fx-text-fill: #8A96A8;
+}
+.form-label-bold { -fx-text-fill: white; }
+
+.form-input-text, .form-input-textarea {
+    -fx-background-color: #1A1D22;
+    -fx-text-fill: #F5F5F5;
+    -fx-font-family: 'Share Tech Mono';
+    -fx-font-size: 14px;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-padding: 8px 10px;
+    -fx-prompt-text-fill: #666;
+}
+.form-input-textarea .content { -fx-background-color: #1A1D22; }
+
+.form-input-text:focused, .form-input-textarea:focused {
+    -fx-border-color: #FFC107;
+    -fx-border-width: 2px;
+    -fx-padding: 7px 9px; /* Sesuaikan padding agar ukuran tidak berubah */
+}
+
+/* ComboBox Styling */
+.combo-box {
+    -fx-background-color: #1A1D22;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+.combo-box .list-cell {
+    -fx-background-color: #2B2F36;
+    -fx-text-fill: #F5F5F5;
+    -fx-font-family: 'Share Tech Mono';
+}
+.combo-box .list-cell:hover { -fx-background-color: #4A5058; }
+.combo-box .list-cell:filled:selected {
+    -fx-background-color: #FFC107;
+    -fx-text-fill: black;
+}
+.combo-box-popup .list-view {
+    -fx-background-color: #2B2F36;
+    -fx-border-color: #4A5058;
+}
+
+
+/* ==========================================================================
+   TABLE VIEW & LIST VIEW
+   ========================================================================== */
+   
+/* TableView */
+.table-view-standard {
+    -fx-background-color: #2B2F36;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px 0 0 0;
+}
+.table-view-standard .column-header-background {
+    -fx-background-color: #1A1D22;
+}
+.table-view-standard .column-header, .table-view-standard .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent #4A5058 transparent transparent;
+    -fx-border-width: 0 1px 0 0;
+}
+.table-view-standard .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-family: 'Agency FB';
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-text-transform: uppercase;
+}
+.table-view-standard .virtual-flow .scroll-bar:vertical,
+.table-view-standard .virtual-flow .scroll-bar:vertical .track,
+.table-view-standard .virtual-flow .scroll-bar:vertical .track-background,
+.table-view-standard .virtual-flow .scroll-bar:horizontal,
+.table-view-standard .virtual-flow .scroll-bar:horizontal .track,
+.table-view-standard .virtual-flow .scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent; /* Membuat scrollbar di dalam tabel transparan */
+}
+
+.table-view-standard .table-row-cell {
+    -fx-background-color: transparent; /* Membuat latar belakang baris transparan */
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+.table-view-standard .table-cell {
+    -fx-text-fill: #F5F5F5;
+    -fx-font-family: 'Share Tech Mono';
+    -fx-border-color: #4A5058;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 10px;
+    -fx-alignment: CENTER;
+}
+.table-view-standard .table-row-cell:hover {
+    -fx-background-color: #3B3F46;
+}
+.table-view-standard .table-row-cell:selected {
+    -fx-background-color: #FFC107;
+}
+.table-view-standard .table-row-cell:selected .table-cell,
+.table-view-standard .table-row-cell:selected .label {
+    -fx-text-fill: black;
+}
+
+/* ListView Kustom untuk Misi */
+.mission-list-view-custom {
+    -fx-background-color: #1A1D22;
+}
+.mission-list-view-custom .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.mission-list-item {
+    -fx-background-color: #2B2F36;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #1A1D22;
+}
+.mission-list-view-custom .list-cell:filled:hover .mission-list-item {
+    -fx-background-color: #3B3F46;
+}
+.mission-list-view-custom .list-cell:filled:selected .mission-list-item {
+    -fx-background-color: #FFC107;
+}
+.mission-list-view-custom .list-cell:filled:selected .mission-list-item .label {
+    -fx-text-fill: black;
+}
+
+/* ==========================================================================
+   SCROLLBAR
+   ========================================================================== */
+.scroll-bar > .track-background {
+    -fx-background-color: #1A1D22;
+}
+.scroll-bar > .thumb {
+    -fx-background-color: #4A5058;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+.scroll-bar > .thumb:hover {
+    -fx-background-color: #5A6068;
+}
+.scroll-bar > .increment-button,
+.scroll-bar > .decrement-button {
+    -fx-padding: 0;
+}
+.scroll-bar > .increment-button > .increment-arrow,
+.scroll-bar > .decrement-button > .decrement-arrow {
+    -fx-shape: ""; /* Sembunyikan panah */
+}
+
+/* ==========================================================================
+   LIST VIEW GENERAL
+   ========================================================================== */
+
+.list-view-dark {
+    -fx-background-color: #1A1D22; /* Warna latar utama yang gelap */
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+}
+
+.list-view-dark .list-cell {
+    -fx-background-color: transparent; /* Latar sel transparan agar warna list-view terlihat */
+    -fx-text-fill: #F5F5F5; /* Warna teks putih */
+    -fx-font-family: 'Share Tech Mono';
+    -fx-font-size: 13px;
+    -fx-padding: 8px 12px;
+    -fx-border-color: transparent; /* Hilangkan border default antar sel */
+}
+
+/* Efek saat mouse berada di atas sel */
+.list-view-dark .list-cell:hover {
+    -fx-background-color: #2B2F36;
+}
+
+/* Style untuk sel yang dipilih */
+.list-view-dark .list-cell:filled:selected {
+    -fx-background-color: #FFC107; /* Warna aksen kuning saat dipilih */
+    -fx-text-fill: black; /* Teks menjadi hitam agar terbaca di atas background kuning */
+}
+
+/* ==========================================================================
+   CUSTOM DIALOG PANE
+   ========================================================================== */
+.custom-dialog {
+    -fx-background-color: #1A1D22;
+    -fx-border-color: #FFC107; /* Beri border warna aksen */
+    -fx-border-width: 1.5px;
+}
+
+/* Mengatur area header dialog */
+.custom-dialog .header-panel {
+    -fx-background-color: #111317; /* Warna lebih gelap untuk header */
+    -fx-padding: 15px;
+}
+
+/* Mengatur teks judul di header */
+.custom-dialog .header-panel .label {
+    -fx-font-family: 'Agency FB Bold';
+    -fx-font-size: 24px;
+    -fx-text-fill: #FFC107; /* Warna aksen untuk judul */
+    -fx-wrap-text: true;
+}
+
+/* Mengatur teks konten/isi dialog */
+.custom-dialog .content.label {
+    -fx-font-family: 'Share Tech Mono';
+    -fx-font-size: 16px;
+    -fx-text-fill: #F5F5F5;
+    -fx-wrap-text: true;
+    -fx-padding: 25px 15px;
+}
+
+/* Mengatur area tombol (OK, Batal) */
+.custom-dialog .button-bar {
+    -fx-background-color: #1A1D22;
+    -fx-padding: 10px 15px 15px 15px;
+}
+
+/* Mengatur style default tombol di dalam dialog */
+.custom-dialog .button {
+    -fx-background-color: #4A5058;
+    -fx-text-fill: #F5F5F5;
+    -fx-font-family: 'Share Tech Mono';
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 0;
+    -fx-padding: 8px 25px;
+    -fx-cursor: hand;
+}
+
+.custom-dialog .button:hover {
+    -fx-background-color: #5A6068;
+}
+
+/* Mengatur tombol konfirmasi (Tombol "OK") secara spesifik */
+.custom-dialog .button:default {
+    -fx-background-color: #E53935; /* Warna merah untuk aksi berbahaya seperti hapus */
+    -fx-text-fill: white;
+}
+
+.custom-dialog .button:default:hover {
+    -fx-background-color: derive(#E53935, -20%);
+}
+/* ==========================================================================
+   DOSSIER VIEW 
+   ========================================================================== */
+
+.dossier-container {
+    -fx-background-color: #0a0b0d;
+}
+
+/* Header */
+.dossier-header {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #111317, #1a1d22);
+    -fx-border-color: #ffc107 transparent transparent transparent;
+    -fx-border-width: 2px;
+}
+.target-id {
+    -fx-font-family: 'Agency FB Bold';
+    -fx-font-size: 24px;
+    -fx-text-fill: #ffc107;
+}
+.classification {
+    -fx-background-color: #E53935;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 5px 15px;
+}
+
+/* File Sidebar (Kiri) */
+.file-sidebar {
+    -fx-background-color: #111317;
+    -fx-border-color: black;
+    -fx-border-width: 0 1px 0 0;
+}
+.file-header {
+    -fx-padding: 15px;
+    -fx-background-color: #1a1d22;
+    -fx-border-color: #4a5058;
+    -fx-border-width: 0 0 1px 0;
+    -fx-font-size: 12px;
+    -fx-text-fill: #ffc107;
+    -fx-font-weight: bold;
+}
+.file-sidebar .list-view {
+    -fx-background-color: #111317;
+}
+.file-sidebar .list-cell {
+    -fx-background-color: #111317;
+    -fx-font-family: 'Agency FB Bold';
+    -fx-text-fill: #f5f5f5;
+    -fx-padding: 8px 15px;
+    -fx-border-color: transparent transparent transparent #111317;
+    -fx-border-width: 3px;
+    -fx-font-size: 12px;
+}
+.file-sidebar .list-cell:hover {
+    -fx-background-color: #1a1d22;
+    -fx-border-color: transparent transparent transparent #ffc107;
+}
+.file-sidebar .list-cell:filled:selected {
+    -fx-background-color: #2b2f36;
+    -fx-border-color: transparent transparent transparent #ffc107;
+}
+
+/* Main Content (Tengah) */
+.main-content {
+    -fx-background-color: #1a1d22;
+}
+.content-header {
+    -fx-padding: 20px 25px 15px;
+    -fx-border-color: #4a5058;
+    -fx-border-width: 0 0 1px 0;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #1a1d22, #2b2f36);
+}
+.content-title {
+    -fx-font-family: 'Agency FB Bold';
+    -fx-font-size: 18px;
+    -fx-text-fill: #ffc107;
+    -fx-padding-bottom: 5px;
+}
+.content-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #8a96a8;
+    -fx-text-transform: uppercase;
+}
+.viewer-area {
+    -fx-background-color: radial-gradient(center 50% 50%, radius 50%, #2b2f36, #1a1d22);
+    -fx-padding: 20px;
+}
+.main-image {
+    -fx-border-color: #4a5058;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 20, 0, 0, 0);
+}
+.nav-controls {
+    -fx-background-color: rgba(17, 19, 23, 0.8);
+    -fx-padding: 10px 20px;
+    -fx-border-color: #4a5058;
+    -fx-border-width: 1px;
+}
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: #ffc107;
+    -fx-text-fill: #ffc107;
+    -fx-padding: 8px 12px;
+    -fx-cursor: hand;
+    -fx-font-size: 11px;
+}
+.nav-btn:hover {
+    -fx-background-color: #ffc107;
+    -fx-text-fill: black;
+}
+.nav-btn:disabled {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+.page-counter {
+    -fx-text-fill: #8a96a8;
+    -fx-font-size: 11px;
+    -fx-min-width: 80px;
+    -fx-alignment: center;
+}
+
+/* Details Panel (Kanan) */
+.details-panel {
+    -fx-background-color: #111317;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 0 1px;
+}
+.details-header {
+    -fx-padding: 15px;
+    -fx-background-color: #1a1d22;
+    -fx-border-color: #4a5058;
+    -fx-border-width: 0 0 1px 0;
+}
+.target-photo {
+    -fx-border-color: #ffc107;
+    -fx-border-width: 2px;
+    -fx-background-color: #2b2f36;
+}
+.target-name {
+    -fx-font-family: 'Agency FB Bold';
+    -fx-font-size: 22px;
+    -fx-text-fill: #ffc107;
+    -fx-padding: 10px 0 5px 0;
+}
+.target-status {
+    -fx-font-size: 10px;
+    -fx-text-fill: #E53935;
+    -fx-background-color: rgba(229, 57, 53, 0.1);
+    -fx-border-color: #E53935;
+    -fx-border-width: 1px;
+    -fx-padding: 3px 8px;
+}
+.intel-data {
+    -fx-padding: 15px;
+    -fx-spacing: 20px;
+}
+.data-title {
+    -fx-font-size: 11px;
+    -fx-text-fill: #ffc107;
+    -fx-font-weight: bold;
+    -fx-text-transform: uppercase;
+    -fx-padding-bottom: 5px;
+    -fx-margin-bottom: 10px;
+    -fx-border-color: #4a5058;
+    -fx-border-width: 0 0 1px 0;
+}
+.data-label {
+    -fx-text-fill: #8a96a8;
+}
+.data-value {
+    -fx-text-fill: #f5f5f5;
+}
+.threat-level {
+    -fx-background-color: #E53935;
+    -fx-text-fill: white;
+    -fx-padding: 2px 6px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+.notes-area {
+    -fx-background-color: #0a0b0d;
+    -fx-text-fill: #f5f5f5;
+    -fx-font-family: 'Share Tech Mono';
+    -fx-border-color: #4a5058;
+    -fx-border-width: 1px;
+}
+.notes-area .content {
+    -fx-background-color: #0a0b0d;
+}
+
+/* ==========================================================================
+   LIST VIEW GENERAL (UNTUK OVERVIEW, DLL)
+   ========================================================================== */
+
+.list-view-dark {
+    -fx-background-color: #1A1D22; /* Warna latar utama yang gelap */
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+}
+
+.list-view-dark .list-cell {
+    -fx-background-color: transparent; /* Latar sel transparan agar warna list-view terlihat */
+    -fx-text-fill: #F5F5F5; /* Warna teks putih */
+    -fx-font-family: 'Share Tech Mono';
+    -fx-font-size: 13px;
+    -fx-padding: 8px 12px;
+    -fx-border-color: transparent; /* Hilangkan border default antar sel */
+}
+
+/* Efek saat mouse berada di atas sel */
+.list-view-dark .list-cell:hover {
+    -fx-background-color: #2B2F36;
+}
+
+/* Style untuk sel yang dipilih */
+.list-view-dark .list-cell:filled:selected {
+    -fx-background-color: #FFC107; /* Warna aksen kuning saat dipilih */
+    -fx-text-fill: black; /* Teks menjadi hitam agar terbaca di atas background kuning */
+}
+
+/* Style untuk teks placeholder (Contoh: "Belum ada draft...") */
+.list-view-dark .placeholder .label {
+    -fx-text-fill: #666; /* Warna abu-abu gelap untuk placeholder */
+}
+
+/* ==========================================================================
+   STYLE UNTUK OVERVIEW DASHBOARD (SESUAI TEMA)
+   ========================================================================== */
+
+.overview-container {
+    -fx-background-color: #1A1D22; /* Warna latar utama yang sudah ada */
+}
+
+.overview-header {
+    -fx-background-color: #111317; /* Warna lebih gelap seperti header lain */
+    -fx-padding: 20px;
+    -fx-border-color: #4A5058;      /* Border abu-abu */
+    -fx-border-width: 0 0 1px 0;
+}
+
+.header-title {
+    -fx-font-family: "Agency FB Bold";
+    -fx-font-size: 32px;
+    -fx-text-fill: #F5F5F5;         /* Warna teks utama (putih keabuan) */
+}
+
+.header-subtitle {
+    -fx-font-family: "Share Tech Mono";
+    -fx-font-size: 16px;
+    -fx-text-fill: #8A96A8;         /* Warna teks sekunder abu-abu */
+}
+
+.overview-content {
+    -fx-padding: 20px;
+}
+
+/* Kartu Statistik */
+.stats-grid {
+    -fx-padding: 10px 0;
+}
+
+.stat-card {
+    -fx-background-color: #2B2F36; /* Warna panel yang sudah ada */
+    -fx-padding: 15px 20px;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 0 0 0 4px; /* Border tebal di kiri saja */
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-min-height: 120px; /* Beri tinggi minimal agar seragam */
+    /* Tambahkan transition untuk animasi yang smooth */
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+/* Tampilan HOVER dengan efek terangkat */
+.stat-card:hover {
+    -fx-background-color: #333840;
+    -fx-border-color: #FFC107; /* Warna aksen kuning saat hover */
+    -fx-effect: dropshadow(gaussian, rgba(255, 193, 7, 0.3), 20, 0, 0, 5); /* Shadow lebih besar dan offset ke bawah */
+    -fx-translate-y: -5px;
+    -fx-scale-x: 1.01;
+    -fx-scale-y: 1.01;
+}
+
+/* Judul Kartu (MISI AKTIF, dll) - SEMUA KAPITAL */
+.stat-card .stat-title {
+    -fx-font-family: "Agency FB Bold";
+    -fx-font-size: 16px;
+    -fx-text-fill: #FFC107;
+    -fx-text-transform: uppercase; /* Membuat teks menjadi kapital */
+}
+
+/* Angka Statistik (12, 8, dll) */
+.stat-card .stat-value {
+    -fx-font-family: "Agency FB Bold";
+    -fx-font-size: 48px;
+    -fx-text-fill: #F5F5F5;
+    -fx-padding: 0;
+}
+
+/* Sub-judul (OPERASI BERLANGSUNG, dll) - SEMUA KAPITAL */
+.stat-card .stat-subtitle {
+    -fx-font-family: "Share Tech Mono";
+    -fx-font-size: 12px;
+    -fx-text-fill: #8A96A8;
+    -fx-text-transform: uppercase; /* Membuat teks menjadi kapital */
+}
+
+/* Judul untuk setiap bagian (Misi & Laporan) */
+.section-title {
+    -fx-font-family: "Agency FB Bold";
+    -fx-font-size: 20px;
+    -fx-text-fill: #FFC107;         /* Warna aksen kuning */
+    -fx-padding: 0 0 10px 5px;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 0 0 1px 0;
+}
+
+/* Style untuk ListView di Dashboard */
+.data-list-view {
+    -fx-background-color: #1A1D22; /* Latar gelap */
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+}
+
+.data-list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #F5F5F5;
+    -fx-font-family: 'Share Tech Mono';
+    -fx-padding: 8px 12px;
+}
+
+.data-list-view .list-cell:filled:hover {
+    -fx-background-color: #2B2F36;
+}
+
+.data-list-view .list-cell:filled:selected {
+    -fx-background-color: #004D4D; /* Menggunakan warna lain agar tidak sama dengan aksen utama */
+    -fx-text-fill: white;
+}
+
+/* Tombol Aksi */
+/* Menggunakan style yang sudah ada yaitu .action-button-primary */
+.primary-button {
+    -fx-background-color: #FFC107; /* Warna aksen kuning */
+    -fx-text-fill: black;
+    /* Gunakan fallback fonts */
+    -fx-font-family: "Agency FB";
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+.primary-button:hover {
+    -fx-background-color: derive(#FFC107, 20%);
+}
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8A96A8;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+    /* Gunakan fallback fonts */
+    -fx-font-family: "Agency FB";
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-padding: 7px 15px; 
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+.secondary-button:hover {
+    -fx-border-color: #8A96A8;
+    -fx-text-fill: white;
+}
+.secondary-button:disabled {
+    -fx-border-color: #444;
+    -fx-text-fill: #666;
+    -fx-opacity: 0.7;
+}
+.secondary-button-dr {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8A96A8;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+    -fx-font-family: "Agency FB";
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-padding: 7px 15px;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+
+.secondary-button-dr:hover {
+    -fx-background-color: #FFC107;
+    -fx-text-fill: black;
+    -fx-font-family: "Agency FB";
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-padding: 7px 15px;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+
+/* ==========================================================================
+   MEDIA VIEWER OVERLAY (BARU)
+   ========================================================================== */
+
+.media-viewer-overlay {
+    -fx-background-color: rgba(10, 11, 13, 0.85); /* Latar belakang gelap semi-transparan */
+}
+
+.media-viewer-content-pane {
+    -fx-background-color: #1A1D22;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 30, 0, 0, 0);
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+}
+
+.media-viewer-header {
+    -fx-background-color: #111317;
+    -fx-padding: 8px 8px 8px 15px;
+}
+
+.media-viewer-filename {
+    -fx-font-family: 'Share Tech Mono';
+    -fx-text-fill: #8A96A8;
+    -fx-font-size: 13px;
+}
+
+.media-viewer-close-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8A96A8;
+    -fx-font-family: 'Agency FB Bold';
+    -fx-font-size: 14px;
+}
+.media-viewer-close-button:hover {
+    -fx-background-color: #E53935;
+    -fx-text-fill: white;
+}
+
+.media-viewer-footer {
+    -fx-background-color: #111317;
+    -fx-padding: 12px;
+}
+
+.media-viewer-nav-button {
+    -fx-background-color: rgba(43, 47, 54, 0.7);
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-shape: "M 15 0 A 15 15 0 1 1 14.99 0 Z"; /* Membuat tombol menjadi lingkaran */
+    -fx-min-width: 50px;
+    -fx-min-height: 50px;
+    -fx-background-radius: 50px;
+    -fx-border-color: #8A96A8;
+    -fx-border-radius: 50px;
+    -fx-border-width: 1px;
+}
+.media-viewer-nav-button:hover {
+    -fx-background-color: rgba(255, 193, 7, 0.9);
+    -fx-text-fill: black;
+    -fx-border-color: transparent;
+}
+.media-viewer-nav-button:disabled {
+    -fx-opacity: 0.3;
+}
+
+.zoom-control-group {
+    -fx-background-color: #2B2F36;
+    -fx-border-color: #4A5058;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+    -fx-background-radius: 2px;
+    -fx-padding: 1;
+}
+
+.zoom-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #F5F5F5;
+    -fx-min-width: 50px;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 6px 12px;
+}
+.zoom-button:hover {
+    -fx-background-color: #4A5058;
+}
+
+.zoom-center-button {
+    -fx-border-color: #4A5058;
+    -fx-border-width: 0 1px 0 1px;
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
+}
+
+#prevButton, #nextButton {
+    -fx-font-family: "Agency FB";
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-opacity: 0.8;
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-text-fill: white;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+}
+
+#prevButton:hover, #nextButton:hover {
+    -fx-opacity: 1.0;
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+}
+
+#prevButton:pressed, #nextButton:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.9);
+}

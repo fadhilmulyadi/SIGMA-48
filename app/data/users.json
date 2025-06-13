@@ -1,32 +1,9 @@
-[
-  {
-    "id": "test-direktur-001",
-    "username": "4801",
-    "passwordHash": "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
-    "role": "DIREKTUR_INTELIJEN"
-  },
-  {
-    "id": "test-analis-001",
-    "username": "4802",
-    "passwordHash": "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
-    "role": "ANALIS_INTELIJEN"
-  },
-  {
-    "id": "test-komandan-001",
-    "username": "4803",
-    "passwordHash": "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
-    "role": "KOMANDAN_OPERASI"
-  },
-  {
-    "id": "test-agen-001",
-    "username": "4804",
-    "passwordHash": "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
-    "role": "AGEN_LAPANGAN"
-  },
-  {
-    "id": "test-teknisi-001",
-    "username": "4805",
-    "passwordHash": "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
-    "role": "TEKNISI_DUKUNGAN"
-  }
-]
+[ {
+  "id" : "admin-001",
+  "username" : "4899",
+  "passwordHash" : "$2a$10$fU.6gdQ/qWrR/.oyQ16SzuJk1BytRvbOWAa3M/ZvQUWGzOr.FY6fW",
+  "role" : "ADMIN",
+  "createdAt" : [ 2025, 6, 1, 0, 0 ],
+  "lastLogin" : [ 2025, 6, 13, 11, 8, 13, 367834300 ],
+  "isActive" : true
+}]

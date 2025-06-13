@@ -14,14 +14,14 @@ public class TargetManager {
     }
 
     public List<Target> getAllTargets() {
-        return targetDao.getAllTargets();
+        return targetDao.getAll();
     }
 
     public Optional<Target> getTargetById(String targetId) {
         if (targetId == null || targetId.trim().isEmpty()) {
             return Optional.empty();
         }
-        return targetDao.findTargetById(targetId);
+        return targetDao.findById(targetId);
     }
 
     public boolean saveTarget(Target target) {
@@ -29,10 +29,10 @@ public class TargetManager {
             System.err.println("Nama target tidak boleh kosong.");
             return false;
         }
-        return targetDao.saveTarget(target);
+        return targetDao.save(target);
     }
 
     public boolean deleteTarget(String targetId) {
-        return targetDao.deleteTarget(targetId);
+        return targetDao.delete(targetId);
     }
 }

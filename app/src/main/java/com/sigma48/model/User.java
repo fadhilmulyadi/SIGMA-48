@@ -1,83 +1,44 @@
 package com.sigma48.model;
 
+import com.fasterxml.jackson.annotation.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Data
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "role",
+    visible = true
+)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Agent.class, name = "AGEN_LAPANGAN"),
+    @JsonSubTypes.Type(value = User.class, name = "DIREKTUR_INTELIJEN"),
+    @JsonSubTypes.Type(value = User.class, name = "ANALIS_INTELIJEN"),
+    @JsonSubTypes.Type(value = User.class, name = "KOMANDAN_OPERASI"),
+    @JsonSubTypes.Type(value = User.class, name = "ADMIN")
+})
 public class User {
-    private String id;
+
+    private String id = UUID.randomUUID().toString();
     private String username;
     private String passwordHash;
     private Role role;
-    private boolean isActive;
-    private LocalDateTime createdAt;
+
+    @JsonProperty("isActive")
+    private boolean isActive = true;
+
+    private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime lastLogin;
 
-    public User() {
-        this.id = UUID.randomUUID().toString();
-        this.createdAt = LocalDateTime.now();
-        this.isActive = true;    
-    }
-
     public User(String username, String passwordHash, Role role) {
-        this.id = UUID.randomUUID().toString();
         this.username = username;
         this.passwordHash = passwordHash;
         this.role = role;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-    
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(LocalDateTime lastLogin) {
-        this.lastLogin = lastLogin;
     }
 }

@@ -1,16 +1,22 @@
 package com.sigma48.model;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.UUID;
-import java.time.LocalDateTime;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
+@Data
+@NoArgsConstructor
+@ToString(onlyExplicitlyIncluded = true)
 public class Mission {
 
-    private String id;
+    private String id = UUID.randomUUID().toString();
+
+    @ToString.Include
     private String judul;
+
     private String tujuan;
     private String deskripsi;
     private String targetId;
@@ -21,24 +27,17 @@ public class Mission {
     private String protokol;
     private String komandanId;
     private String conclusionNotes;
-    private MissionStatus status;
-    private List<String> assignedAgents;
-    private Map<String, CoverIdentity> coverIdentities;
+
+    @ToString.Include
+    private MissionStatus status = MissionStatus.PLANNED;
+
+    private List<String> assignedAgents = new ArrayList<>();
+    private Map<String, CoverIdentity> coverIdentities = new HashMap<>();
+
     private String dokBriefingPath;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
-    //Konstruktor Default
-    public Mission() {
-        this.id = UUID.randomUUID().toString();
-        this.status = MissionStatus.PLANNED;
-        this.assignedAgents = new ArrayList<>();
-        this.coverIdentities = new HashMap<>();
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    // Konstruktor dengan parameter
     public Mission(String judul, String tujuan, String deskripsi, String targetId) {
         this(); // panggil konstruktor default
         this.judul = judul;
@@ -47,13 +46,9 @@ public class Mission {
         this.targetId = targetId;
     }
 
-    //Getter dan Setter
-    public String getId() {
-        return id;
-    }
-
-    public String getJudul() {
-        return judul;
+    // Pemutakhiran waktu modifikasi
+    public void updateUpdatedAt() {
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void setJudul(String judul) {
@@ -61,17 +56,9 @@ public class Mission {
         updateUpdatedAt();
     }
 
-    public String getTujuan() {
-        return tujuan;
-    }
-
     public void setTujuan(String tujuan) {
         this.tujuan = tujuan;
         updateUpdatedAt();
-    }
-
-    public String getDeskripsi() {
-        return deskripsi;
     }
 
     public void setDeskripsi(String deskripsi) {
@@ -79,17 +66,9 @@ public class Mission {
         updateUpdatedAt();
     }
 
-    public String getTargetId() {
-        return targetId;
-    }
-
     public void setTargetId(String targetId) {
         this.targetId = targetId;
         updateUpdatedAt();
-    }
-
-    public MissionStatus getStatus() {
-        return status;
     }
 
     public void setStatus(MissionStatus status) {
@@ -97,17 +76,9 @@ public class Mission {
         updateUpdatedAt();
     }
 
-    public List<String> getAssignedAgents() {
-        return assignedAgents;
-    }
-
     public void setAssignedAgents(List<String> assignedAgents) {
         this.assignedAgents = assignedAgents;
         updateUpdatedAt();
-    }
-
-    public Map<String, CoverIdentity> getCoverIdentities() {
-        return coverIdentities;
     }
 
     public void setCoverIdentities(Map<String, CoverIdentity> coverIdentities) {
@@ -115,44 +86,24 @@ public class Mission {
         updateUpdatedAt();
     }
 
-    public String getDokBriefingPath() {
-        return dokBriefingPath;
-    }
-
     public void setDokBriefingPath(String dokBriefingPath) {
         this.dokBriefingPath = dokBriefingPath;
         updateUpdatedAt();
     }
 
-    public String getAnalisisRisiko() {
-        return analisisRisiko;
-    }
-
     public void setAnalisisRisiko(String analisisRisiko) {
         this.analisisRisiko = analisisRisiko;
-        updateUpdatedAt();;
-    }
-    
-    public String getJenisOperasi() {
-        return jenisOperasi;
-    }
-    
-    public void setJenisOperasi(String jenisOperasi) {
-        this.jenisOperasi = jenisOperasi;
-        updateUpdatedAt();;
-    }
-    
-    public String getLokasi() {
-        return lokasi;
-    }
-    
-    public void setLokasi(String lokasi) {
-        this.lokasi = lokasi;
         updateUpdatedAt();
     }
 
-    public String getStrategi() {
-        return strategi;
+    public void setJenisOperasi(String jenisOperasi) {
+        this.jenisOperasi = jenisOperasi;
+        updateUpdatedAt();
+    }
+
+    public void setLokasi(String lokasi) {
+        this.lokasi = lokasi;
+        updateUpdatedAt();
     }
 
     public void setStrategi(String strategi) {
@@ -160,17 +111,9 @@ public class Mission {
         updateUpdatedAt();
     }
 
-    public String getProtokol() {
-        return protokol;
-    }
-    
     public void setProtokol(String protokol) {
         this.protokol = protokol;
         updateUpdatedAt();
-    }
-
-    public String getKomandanId() {
-        return komandanId;
     }
 
     public void setKomandanId(String komandanId) {
@@ -178,33 +121,12 @@ public class Mission {
         updateUpdatedAt();
     }
 
-    public String getConclusionNotes() {
-        return conclusionNotes;
-    }
-
     public void setConclusionNotes(String conclusionNotes) {
         this.conclusionNotes = conclusionNotes;
         updateUpdatedAt();
     }
 
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    //Metode Tambahan
+    // Helper methods
     public void addAgent(String agentId) {
         if (!assignedAgents.contains(agentId)) {
             assignedAgents.add(agentId);
@@ -221,16 +143,5 @@ public class Mission {
     public void addCoverIdentity(String agentId, CoverIdentity coverIdentity) {
         coverIdentities.put(agentId, coverIdentity);
         updateUpdatedAt();
-    }
-
-    // Update waktu terakhir
-    public void updateUpdatedAt() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    //Override toString
-    @Override
-    public String toString() {
-        return judul + " (Status: " + status.getDisplayName() + ")";
     }
 }

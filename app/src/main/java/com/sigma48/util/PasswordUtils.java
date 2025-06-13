@@ -1,4 +1,3 @@
-
 package com.sigma48.util;
 
 import org.mindrot.jbcrypt.BCrypt;

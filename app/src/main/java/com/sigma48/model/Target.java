@@ -1,66 +1,40 @@
 package com.sigma48.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+@Data
+@NoArgsConstructor
 public class Target {
-    private String id;
+
+    private String id = UUID.randomUUID().toString();
     private String nama;
-    private TargetType tipe;
+    private TargetType tipe = TargetType.LAINNYA;
     private String lokasi;
-    private ThreatLevel ancaman;
+    private String deskripsi;
+    private ThreatLevel ancaman = ThreatLevel.TIDAK_DIKETAHUI;
+    private List<String> evidencePaths = new ArrayList<>();
+    private String profileImagePath;
 
-    public Target() {
-        this.id = UUID.randomUUID().toString();
-        this.tipe = TargetType.LAINNYA;
-        this.ancaman = ThreatLevel.TIDAK_DIKETAHUI;
-    }
-
-    public Target(String nama, TargetType tipe, String lokasi, ThreatLevel ancaman) {
+    public Target(String nama, TargetType tipe, String lokasi, ThreatLevel ancaman, String deskripsi) {
         this();
         this.nama = nama;
         this.tipe = tipe;
         this.lokasi = lokasi;
         this.ancaman = ancaman;
+        this.deskripsi = deskripsi;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getNama() {
-        return nama;
-    }
-
-    public void setNama(String nama) {
-        this.nama = nama; 
-    }
-
-    public TargetType getTipe() {
-        return tipe; 
-    }
-
-    public void setTipe(TargetType tipe) {
-        this.tipe = tipe;
-    }
-
-    public String getLokasi() {
-        return lokasi;
-    }
-    
-    public void setLokasi(String lokasi) {
-        this.lokasi = lokasi;
-    }
-
-    public ThreatLevel getAncaman() {
-        return ancaman;
-    }
-
-    public void setAncaman(ThreatLevel ancaman) {
-        this.ancaman = ancaman;
+    public List<String> getEvidencePaths() {
+        if (evidencePaths == null) {
+            evidencePaths = new ArrayList<>();
+        }
+        return evidencePaths;
     }
 
     @Override

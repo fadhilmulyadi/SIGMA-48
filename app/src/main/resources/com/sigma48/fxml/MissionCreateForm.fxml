@@ -6,57 +6,62 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.Priority?>
 
-<VBox spacing="15.0" styleClass="form-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigma48.ui.controller.MissionCreateFormController">
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
+<AnchorPane styleClass="dashboard-root" stylesheets="@../css/theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigma48.ui.controller.MissionCreateFormController">
    <children>
-      <Label text="BUAT DRAFT MISI BARU" styleClass="view-title" />
-      <GridPane hgap="10.0" vgap="10.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="120.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
-        </columnConstraints>
+      <VBox spacing="20.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
          <children>
-            <Label text="Judul Misi:" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-            <TextField fx:id="judulField" styleClass="form-input" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-            
-            <Label text="Tujuan Misi:" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-            <TextArea fx:id="tujuanArea" prefHeight="80.0" styleClass="form-input" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-            
-            <Label text="Deskripsi Singkat:" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-            <TextArea fx:id="deskripsiArea" prefHeight="100.0" styleClass="form-input" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-            
-            <Label text="Pilih Target:" styleClass="form-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-            <ComboBox fx:id="targetComboBox" prefWidth="300.0" styleClass="form-input" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-            
-            <Label text="Analisis Risiko Awal:" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-            <TextArea fx:id="analisisRisikoArea" prefHeight="80.0" styleClass="form-input" wrapText="true" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-
-            <Label text="Jenis Operasi (usulan):" styleClass="form-label" GridPane.rowIndex="5" GridPane.columnIndex="0" />
-            <TextField fx:id="jenisOperasiField" styleClass="form-input" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-
-            <Label text="Lokasi (perkiraan):" styleClass="form-label" GridPane.rowIndex="6" GridPane.columnIndex="0" />
-            <TextField fx:id="lokasiField" styleClass="form-input" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-
+            <Label styleClass="view-title-xl" text="FORMULIR PEMBUATAN DRAFT MISI BARU" />
+            <GridPane hgap="15.0" vgap="12.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="160.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="60.0" valignment="TOP" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="90.0" valignment="TOP" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="90.0" valignment="TOP" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label styleClass="form-label-bold" text="JUDUL MISI" />
+                  <Label styleClass="form-label-bold" text="TUJUAN UTAMA" GridPane.rowIndex="1" />
+                  <Label styleClass="form-label" text="DESKRIPSI TAMBAHAN" GridPane.rowIndex="2" />
+                  <Label styleClass="form-label-bold" text="TARGET UTAMA" GridPane.rowIndex="3" />
+                  <Label styleClass="form-label" text="ANALISIS RISIKO AWAL" GridPane.rowIndex="4" />
+                  <Label styleClass="form-label" text="JENIS OPERASI USULAN" GridPane.rowIndex="5" />
+                  <Label styleClass="form-label" text="PERKIRAAN LOKASI" GridPane.rowIndex="6" />
+                  <TextField fx:id="judulField" styleClass="form-input-text" GridPane.columnIndex="1" />
+                  <TextArea fx:id="tujuanArea" prefHeight="200.0" prefWidth="200.0" styleClass="form-input-textarea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextArea fx:id="deskripsiArea" prefHeight="200.0" prefWidth="200.0" styleClass="form-input-textarea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <children>
+                        <ComboBox fx:id="targetComboBox" maxWidth="1.7976931348623157E308" styleClass="form-input-combo-box" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="tambahTargetButton" mnemonicParsing="false" onAction="#handleTambahTargetButton" styleClass="action-button-sm" text="+" />
+                     </children>
+                  </HBox>
+                  <TextArea fx:id="analisisRisikoArea" prefHeight="200.0" prefWidth="200.0" styleClass="form-input-textarea" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <TextField fx:id="jenisOperasiField" styleClass="form-input-text" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <TextField fx:id="lokasiField" styleClass="form-input-text" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+               </children>
+            </GridPane>
+            <HBox alignment="CENTER_RIGHT" spacing="10.0">
+               <children>
+                  <Label fx:id="statusMessageLabel" managed="false" visible="false" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="batalButton" mnemonicParsing="false" onAction="#handleBatalButton" styleClass="cancel-button" text="BATAL" />
+                  <Button fx:id="simpanDraftButton" mnemonicParsing="false" onAction="#handleSimpanDraftButton" styleClass="action-button-primary" text="SIMPAN DRAFT" />
+               </children>
+            </HBox>
          </children>
-      </GridPane>
-      <Label fx:id="statusMessageLabel" styleClass="status-message" managed="false" visible="false"/>
-      <HBox alignment="CENTER_RIGHT" spacing="10.0">
-         <children>
-            <Button fx:id="cancelButton" onAction="#handleCancelButton" styleClass="cancel-button" text="Batal" />
-            <Button fx:id="saveButton" onAction="#handleSaveButton" styleClass="action-button-primary" text="Simpan Draft Misi" />
-         </children>
-         <VBox.margin>
-            <Insets top="20.0" />
-         </VBox.margin>
-      </HBox>
+      </VBox>
    </children>
-</VBox>
+</AnchorPane>

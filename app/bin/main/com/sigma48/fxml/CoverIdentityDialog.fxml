@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane hgap="10" vgap="15" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigma48.ui.controller.CoverIdentityDialogController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+    </padding>
+    <Label styleClass="form-label-bold" text="Nama Samaran:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+    <TextField fx:id="coverNameField" prefWidth="300.0" promptText="e.g., 'Spectre', 'Ghost'" styleClass="form-input-text" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+    <Label styleClass="form-label-bold" text="Peran Samaran:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <TextField fx:id="coverRoleField" prefWidth="300.0" promptText="e.g., 'Wisatawan', 'Jurnalis'" styleClass="form-input-text" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    
+   <columnConstraints>
+      <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+   </rowConstraints>
+</GridPane>

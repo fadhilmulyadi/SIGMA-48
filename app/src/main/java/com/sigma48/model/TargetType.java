@@ -1,13 +1,13 @@
 package com.sigma48.model;
 
 public enum TargetType {
-    ORGANISASI("Organisasi"),
-    INDIVIDU("Individu"),
-    FASILITAS("Fasilitas"),
-    INFRASTRUKTUR_KRITIS("Infrastruktur Kritis"),
-    SISTEM_INFORMASI("Sistem Informasi"),
-    JARINGAN_KOMUNIKASI("Jaringan Komunikasi"),
-    LAINNYA("Lainnya");
+    ORGANISASI("ORGANISASI"),
+    INDIVIDU("INDIVIDU"),
+    FASILITAS("FASILITAS"),
+    INFRASTRUKTUR_KRITIS("INFRASTRUKTUR KRITIS"),
+    SISTEM_INFORMASI("SISTEM  INFORMASI"),
+    JARINGAN_KOMUNIKASI("JARINGAN KOMUNIKASI"),
+    LAINNYA("LAINNYA");
 
     private final String displayName;
 

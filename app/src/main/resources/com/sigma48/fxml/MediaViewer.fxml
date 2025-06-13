@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane fx:id="rootPane" prefHeight="650.0" prefWidth="900.0" styleClass="media-viewer-content-pane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigma48.ui.controller.MediaViewerController">
+   <top>
+      <HBox fx:id="headerBar" alignment="CENTER_LEFT" styleClass="media-viewer-header">
+         <children>
+            <Label fx:id="fileNameLabel" styleClass="media-viewer-filename" text="NAMA_FILE.JPG" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="closeButton" mnemonicParsing="false" onAction="#handleClose" styleClass="media-viewer-close-button" text="X" />
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <StackPane alignment="CENTER">
+         <children>
+            <ScrollPane fx:id="viewerScrollPane" fitToHeight="true" fitToWidth="true" styleClass="viewer-area">
+               <content>
+                  <StackPane alignment="CENTER">
+                     <ImageView fx:id="imageView" pickOnBounds="true" preserveRatio="true" />
+                  </StackPane>
+               </content>
+            </ScrollPane>
+            <!-- Navigation buttons positioned on left and right sides -->
+            <Button fx:id="prevButton" mnemonicParsing="false" onAction="#handlePrev" styleClass="zoom-button" text="&lt;" StackPane.alignment="CENTER_LEFT">
+               <StackPane.margin>
+                  <Insets left="20.0" />
+               </StackPane.margin>
+            </Button>
+            <Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNext" styleClass="zoom-button" text="&gt;" StackPane.alignment="CENTER_RIGHT">
+               <StackPane.margin>
+                  <Insets right="20.0" />
+               </StackPane.margin>
+            </Button>
+         </children>
+      </StackPane>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER" spacing="50.0" styleClass="media-viewer-footer" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" styleClass="zoom-control-group">
+               <children>
+                  <Button fx:id="zoomOutButton" mnemonicParsing="false" styleClass="zoom-button" text="-" />
+                  <Button fx:id="resetZoomButton" mnemonicParsing="false" styleClass="zoom-button zoom-center-button" text="100%" />
+                  <Button fx:id="zoomInButton" mnemonicParsing="false" styleClass="zoom-button" text="+" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="5.0" top="5.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>

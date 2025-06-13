@@ -3,7 +3,7 @@ package com.sigma48.manager;
 import com.sigma48.dao.UserDao;
 import com.sigma48.model.User;
 import com.sigma48.util.PasswordUtils;
-
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class AuthManager {
@@ -20,24 +20,31 @@ public class AuthManager {
 
     // Metode untuk login, menggunakan prinsip abstraction dan encapsulation
     public boolean login(String username, String password) {
-        // Validasi input username dan password
         if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
             return false;
         }
 
-        // Mencari user berdasarkan username
         Optional<User> userOptional = userDao.findByUsername(username);
         
-        // Jika user ditemukan dan password cocok, set currentUser
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             if (PasswordUtils.checkPassword(password, user.getPasswordHash())) {
-                this.currentUser = user; // Set user yang sedang login
+                // PERUBAHAN PENTING: Cek apakah akun aktif sebelum login
+                if (!user.isActive()) {
+                    System.err.println("AuthManager: Login gagal. Akun " + username + " tidak aktif.");
+                    this.currentUser = null;
+                    return false;
+                }
+                
+                this.currentUser = user;
+                
+                user.setLastLogin(LocalDateTime.now());
+                userDao.save(user);
+                
                 return true;
             }
         }
 
-        // Jika gagal login, set currentUser ke null dan return false
         this.currentUser = null;
         return false;
     }

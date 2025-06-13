@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<HBox fx:id="missionItemRoot" alignment="CENTER_LEFT" spacing="15.0" styleClass="mission-list-item" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigma48.ui.controller.listitems.MissionListItemController">
+   <children>
+      <Rectangle fx:id="statusIndicatorBar" arcHeight="5.0" arcWidth="5.0" height="80.0" width="8.0" styleClass="status-indicator-bar" />
+      <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label fx:id="judulMisiLabel" styleClass="mission-item-title" text="[JUDUL MISI]" GridPane.columnSpan="2" />
+            <Label fx:id="targetMisiLabel" styleClass="mission-item-subtitle" text="Target: [NAMA TARGET]" GridPane.rowIndex="1" />
+            <Label fx:id="tujuanSingkatLabel" styleClass="mission-item-details" text="Tujuan: [TUJUAN SINGKAT...]" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <VBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowSpan="3">
+               <children>
+                  <Label fx:id="statusTextLabel" styleClass="mission-item-status" text="STATUS" />
+                  <Label fx:id="lastUpdateLabel" styleClass="mission-item-date" text="dd/mm/yyyy hh:mm" />
+                  <Label fx:id="missionIdLabel" styleClass="mission-item-id" text="ID: [ID_MISI]" />
+               </children>
+            </VBox>
+         </children>
+      </GridPane>
+      <VBox alignment="CENTER_LEFT" spacing="2.0">
+         <children>
+            <Label text="Komandan:" styleClass="mission-item-details" />
+            <Label fx:id="komandanMisiLabel" styleClass="mission-item-metadata" text="[NAMA KOMANDAN]" />
+         </children>
+         <HBox.margin>
+            <Insets right="10.0" />
+         </HBox.margin>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</HBox>

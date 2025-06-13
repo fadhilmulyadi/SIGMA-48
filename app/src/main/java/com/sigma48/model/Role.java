@@ -1,11 +1,11 @@
 package com.sigma48.model;
 
 public enum Role {
-    DIREKTUR_INTELIJEN("Direktur Intelijen"),
-    ANALIS_INTELIJEN("Analis Intelijen"),
-    KOMANDAN_OPERASI("Komandan Operasi"),
-    AGEN_LAPANGAN("Agen Lapangan"),
-    TEKNISI_DUKUNGAN("Teknisi Dukungan");
+    DIREKTUR_INTELIJEN("DIREKTUR INTELIJEN"),
+    ANALIS_INTELIJEN("ANALIS INTELIJEN"),
+    KOMANDAN_OPERASI("KOMANDAN OPERASI"),
+    AGEN_LAPANGAN("AGEN LAPAGAN"),
+    ADMIN("ADMIN");
 
     private final String displayName;
 
